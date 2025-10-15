@@ -2,18 +2,21 @@ import { createRouter, createWebHistory} from 'vue-router';
 import Home from '../pages/Home.vue';
 import Login from '../pages/Login.vue';
 import Register from '../pages/Register.vue';
-
-
-
-
+import Social from '../pages/Social.vue';
+import MyProfile from '../pages/MyProfile.vue';
+import MyProfileEdit from '../pages/MyProfileEdit.vue';
+import { subscribeToAuthChanges } from '../services/auth';
 
 
 // definir rutas
 
 const routes = [
-{path: '/',                     component: Home, },
-{path: '/Login',                     component: Login, },
-{path: '/Register',                     component: Register, },
+{path: '/',                         component: Home, },
+{path: '/ingresar',                 component: Login, },
+{path: '/crear-cuenta',             component: Register, },
+{path: '/social',                   component: Social, },
+{path: '/mi-perfil',                component: MyProfile, meta: { requiresAuth: true } },
+{path: '/mi-perfil/editar',         component: MyProfileEdit, meta: { requiresAuth: true } },
 
 ];
 
@@ -21,5 +24,20 @@ const router = createRouter({
     routes, 
     history: createWebHistory(),
 });
+
+let user = {
+    id: null,
+    email: null,
+}
+
+subscribeToAuthChanges(userState => user = userState); 
+
+router.beforeEach((to, from)=> {
+    if(to.meta.requiresAuth && user.id === null){
+        return '/ingresar';
+    }
+    
+});
+
 
 export default router;

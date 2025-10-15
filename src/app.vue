@@ -1,48 +1,54 @@
 <script>
 import Home from './pages/Home.vue';
+import { logout, subscribeToAuthChanges } from './services/auth.js';
+
 export default {
     name: 'App',
     components: { Home },
+    data(){
+        return{
+            user: {
+                id: null,
+                email: null,
+            }
+        }
+    },
+    methods:{
+        handleLogOut(){
+            logout();
+            this.$router.push('/ingresar');
+        }
+    },
+    mounted(){
+        subscribeToAuthChanges(userState => this.user = userState);
+    }
 }
 </script>
 
 
 <template>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Nyso social </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Mostar / ocultar navegación">
-                <span class="navbar-toggler-icon"></span>
+    
+    <nav class="flex justify-around gap-8 p-4 bg-red-950 text-white shadow-lg shadow-red-950/50">      
+            <RouterLink class="text-xl hover:text-[#e099a8]" to="/">Nyso </RouterLink>
+                <button class="" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Mostar / ocultar navegación">
+                <span class=""></span>
                 </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <div id="navbarNav">
+                <ul class="flex gap-4">
+                    <li>
+                        <RouterLink class="text-xl hover:text-[#e099a8]" aria-current="page" to="/">Home</RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink class="text-xl hover:text-[#e099a8]" aria-current="page" to="/social">Publicaciones</RouterLink>
                     </li>
                 </ul>
             </div>
-        </div>
     </nav>
-    <main class="container py-3">
+    <main class="p-4 mt-22">
         <RouterView />
     </main>
-    <footer class="footer">
-        <p>Clientes Web mobile - 2025</p>
+    <footer class="flex justify-center items-center border-t border-red-950 text-black h-25">
+        <p class="font-bold">NYSO - Todos los derechos reservados.</p>
     </footer>
 </template>
 
-<style>
-.footer {
-display: flex;
-justify-content: center;
-align-items: center;
-height: 100px;
-background-color: black;
-color: white;
-}
-
-.footer p {
-margin: 0;
-
-}
-</style>

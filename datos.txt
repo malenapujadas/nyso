@@ -1,0 +1,9 @@
+Carrera: Diseño y Programación Web 
+Materia: Clientes Web Mobile
+Cuatrimestre: 2do
+Año: 2025
+Turno: Noche
+Comisión: DWN4AP
+Apellido y Nombre: Dalmasso Julieta y Pujadas Malena
+Docente: Santiago Gallino
+Carácter de entrega: 1er parcial.

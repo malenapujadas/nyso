@@ -1,4 +1,3 @@
-import './bootstrap.min.css';
 import './style.css';
 import { createApp } from "vue";
 import router  from './router/router';
