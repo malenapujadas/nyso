@@ -48,7 +48,7 @@ export default {
         <RouterView />
     </main>
     <footer class="flex justify-center items-center border-t border-red-950 text-black h-25">
-        <p class="font-bold">NYSO - Todos los derechos reservados.</p>
+        <p class="font-bold">NYSO - Todos los derechossssss reservados.</p>
     </footer>
 </template>
 
