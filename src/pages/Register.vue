@@ -11,6 +11,7 @@ export default {
             user: {
                 email: '',
                 password: '',
+                nacimiento: '',
              },
             loading: false,
             errorMsg: '',
@@ -19,6 +20,27 @@ export default {
     methods:{
         async handleSubmit(){
             this.errorMsg = '';
+
+            //validacion de edad 
+            if (!this.user.nacimiento) {
+                this.errorMsg = 'Por favor, ingresá tu fecha de nacimiento.';
+                return;
+            }
+
+            const nacimiento = new Date(this.user.nacimiento);
+            const hoy = new Date();
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const mes = hoy.getMonth() - nacimiento.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
+
+            if (edad < 18) {
+                this.errorMsg = 'Debes ser mayor de 18 años para ingresar.';
+                return;
+            }
+            
             try {
                 this.loading = true;
 
@@ -56,6 +78,17 @@ export default {
                 type="email" 
                 placeholder="mail@gmail.com" 
                 v-model="user.email"
+            />
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="nacimiento">
+                Fecha de Nacimiento
+            </label>
+            <input 
+                class="shadow border rounded w-full py-2 px-3 text-gray-700 mb-3 " 
+                id="nacimiento" 
+                type="date" 
+                v-model="user.nacimiento"
             />
         </div>
         <div class="mb-6">

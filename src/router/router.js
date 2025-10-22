@@ -5,6 +5,7 @@ import Register from '../pages/Register.vue';
 import Social from '../pages/Social.vue';
 import MyProfile from '../pages/MyProfile.vue';
 import MyProfileEdit from '../pages/MyProfileEdit.vue';
+import Detail from '../pages/Detail.vue';
 import { subscribeToAuthChanges } from '../services/auth';
 
 
@@ -15,6 +16,7 @@ const routes = [
 {path: '/ingresar',                 component: Login, },
 {path: '/crear-cuenta',             component: Register, },
 {path: '/social',                   component: Social, },
+{path: '/detalle/:id', name: 'detalle', component: Detail, },
 {path: '/mi-perfil',                component: MyProfile, meta: { requiresAuth: true } },
 {path: '/mi-perfil/editar',         component: MyProfileEdit, meta: { requiresAuth: true } },
 
