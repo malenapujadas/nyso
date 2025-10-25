@@ -55,7 +55,16 @@ export default {
               class="hover:text-[#4e0d05] transition-colors"
               :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/social' }"
             >
-              Publicaciones
+              Vinos
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              to="/blog"
+              class="hover:text-[#4e0d05] transition-colors"
+              :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/blog' }"
+            >
+              Blog
             </RouterLink>
           </li>
         </ul>
