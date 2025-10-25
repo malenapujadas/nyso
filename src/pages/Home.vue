@@ -31,50 +31,59 @@ export default {
 
 <template>
   <section class="flex flex-col justify-center items-center text-center py-20">
-    <img class="w-48 mb-6" :src="logo" alt="Logo de Nyso social" />
-    <p class="max-w-md mb-8">
+    <!-- Personaje Nysito -->
+    <img
+      src="/nysito.png"
+      alt="Personaje Nysito"
+      class="w-28 mb-6"
+    />
+
+    <!-- Frase principal -->
+    <p class="max-w-md mb-10 text-[#4e0d05] leading-tight">
+
       Tu red social de confianza para subir o mirar reseñas de todos los vinos de Argentina.
     </p>
 
     <ul class="flex gap-4 justify-center">
-      <template v-if="user.id === null">
-        <li>
-          <RouterLink
-            class="text-lg rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center"
-            to="/ingresar"
-          >
-            Login
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink
-            class="text-lg rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center"
-            to="/crear-cuenta"
-          >
-            Registrarme
-          </RouterLink>
-        </li>
-      </template>
+  <template v-if="user.id === null">
+    <li>
+      <RouterLink
+        to="/ingresar"
+        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
+      >
+        Login
+      </RouterLink>
+    </li>
+    <li>
+      <RouterLink
+        to="/crear-cuenta"
+        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
+      >
+        Registrarme
+      </RouterLink>
+    </li>
+  </template>
 
-      <template v-else>
-        <li>
-          <RouterLink
-            class="text-lg rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center"
-            to="/mi-perfil"
-          >
-            Mi perfil
-          </RouterLink>
-        </li>
-        <li>
-          <button
-            @click="handleLogOut"
-            class="text-lg rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center"
-          >
-            Cerrar sesión
-          </button>
-        </li>
-      </template>
-    </ul>
+  <template v-else>
+    <li>
+      <RouterLink
+        to="/mi-perfil"
+        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
+      >
+        Mi perfil
+      </RouterLink>
+    </li>
+    <li>
+      <button
+        @click="handleLogOut"
+        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
+      >
+        Cerrar sesión
+      </button>
+    </li>
+  </template>
+</ul>
+
+
   </section>
 </template>
-

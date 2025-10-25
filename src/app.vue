@@ -2,6 +2,7 @@
 import Home from './pages/Home.vue';
 import { logout, subscribeToAuthChanges } from './services/auth.js';
 
+
 export default {
     name: 'App',
     components: { Home },
@@ -28,27 +29,47 @@ export default {
 
 <template>
     
-    <nav class="flex justify-around gap-8 p-4 bg-red-950 text-white shadow-lg shadow-red-950/50">      
-            <RouterLink class="text-xl hover:text-[#e099a8]" to="/">Nyso </RouterLink>
-                <button class="" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Mostar / ocultar navegación">
-                <span class=""></span>
-                </button>
-            <div id="navbarNav">
-                <ul class="flex gap-4">
-                    <li>
-                        <RouterLink class="text-xl hover:text-[#e099a8]" aria-current="page" to="/">Home</RouterLink>
-                    </li>
-                    <li>
-                        <RouterLink class="text-xl hover:text-[#e099a8]" aria-current="page" to="/social">Publicaciones</RouterLink>
-                    </li>
-                </ul>
-            </div>
-    </nav>
-    <main class="p-4 mt-22">
-        <RouterView />
-    </main>
-    <footer class="flex justify-center items-center border-t border-red-950 text-black h-25">
-        <p class="font-bold">NYSO - Todos los derechossssss reservados.</p>
-    </footer>
-</template>
+    <div class="min-h-screen bg-[#f6f6eb] font-helvetica text-[#333333] flex flex-col">
+  
+    
+      <nav class="flex justify-between items-center px-8 py-4 bg-[#f6f6eb] border-b border-[#4e0d05]">
 
+        <RouterLink to="/" class="flex items-center">
+        <img src="/logo.png" alt="Logo NYSO" class="h-10 w-auto" />
+        </RouterLink>
+  
+   
+        <ul class="flex gap-6 text-sm font-medium">
+          <li>
+            <RouterLink
+              to="/"
+              class="hover:text-[#4e0d05] transition-colors"
+              :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/' }"
+            >
+              Home
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink
+              to="/social"
+              class="hover:text-[#4e0d05] transition-colors"
+              :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/social' }"
+            >
+              Publicaciones
+            </RouterLink>
+          </li>
+        </ul>
+      </nav>
+  
+
+      <main class="flex-1 p-6">
+        <RouterView />
+      </main>
+  
+   
+      <footer class="border-t border-[#4e0d05] py-4 text-center font-medium text-[#4e0d05]">
+        NYSO — Todos los derechos reservados.
+      </footer>
+  
+    </div>
+  </template>
