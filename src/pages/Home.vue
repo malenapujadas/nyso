@@ -30,66 +30,87 @@ export default {
 </script>
 
 <template>
-  <!-- AGREGAR UN H1, AUNQ SEA CON EL LOGO  -->
-  <section class="flex flex-col justify-center items-center text-center py-20">
-    <!-- Personaje Nysito -->
+  <section class="relative flex flex-col justify-center items-center text-center py-20 bg-[#f6f6eb] overflow-hidden">
     <img
-      src="/nysito.png"
-      alt="Personaje Nysito"
-      class="w-28 mb-6"
+      src="/icono1.png"
+      alt="Decoración"
+      class="absolute top-10 left-12 w-40 opacity-70"
+    />
+    <img
+      src="/icono2.png"
+      alt="Decoración"
+      class="absolute bottom-4 left-32 w-32 opacity-75"
+    />
+    <img
+      src="/icono3.png"
+      alt="Decoración"
+      class="absolute top-20 right-24 w-20 opacity-80"
     />
 
-    <!-- Frase principal -->
-    <p class="max-w-md mb-10 text-[#4e0d05] leading-tight">
 
-      Tu red social de confianza para subir o mirar reseñas de todos los vinos de Argentina.
-    </p>
+    <img src="/logo.png" alt="Logo NYSO" class="w-55 mb-10 relative z-10" />
 
-    <ul class="flex gap-4 justify-center">
-  <template v-if="user.id === null">
-    <li>
-      <RouterLink
-        to="/ingresar"
-        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
-      >
-        Login
-      </RouterLink>
-    </li>
-    <li>
-      <RouterLink
-        to="/crear-cuenta"
-        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
-      >
-        Registrarme
-      </RouterLink>
-    </li>
-  </template>
-
-  <template v-else>
-    <li>
-      <RouterLink
-        to="/mi-perfil"
-        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
-      >
-        Mi perfil
-      </RouterLink>
-    </li>
-    <li>
-      <button
-        @click="handleLogOut"
-        class="text-base font-medium rounded-full px-6 py-2 bg-[#3c490b] text-[#f6f6eb] hover:bg-[#e099a8] hover:text-[#4e0d05] transition-colors duration-300"
-      >
-        Cerrar sesión
-      </button>
-    </li>
-  </template>
-</ul>
-
-
+    
+    <h2
+      class="text-[#4e0d05] font-extrabold text-4xl leading-tight max-w-3xl uppercase tracking-tight font-[Poppins] relative z-10"
+    >
+      DESCUBRIR,
+      <span class="text-[#3c490b]">GUARDAR</span>,
+      Y COMPARTIR
+      <span class="text-[#e099a8]">VINOS</span>
+      DE UNA FORMA SIMPLE Y CERCANA, SIN NECESIDAD DE SER UN
+      <span class="text-[#e099a8]">EXPERTO.</span>
+    </h2>
   </section>
 
-  <section class="max-w-3xl mx-auto px-4 py-8">
-    <h2>Hola, soy nysito!</h2>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quibusdam eum ut sint commodi. Aliquid sint aperiam maiores suscipit ducimus doloribus quibusdam, voluptatibus odio repudiandae, repellat quae sequi vitae officiis iste!</p>
-  </section>
+
+<section class="relative w-full bg-[#e099a8] py-20 mt-16 overflow-hidden">
+
+
+  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-10 w-28 opacity-100" />
+  <img src="/icono1.png" alt="Decoración" class="absolute bottom-16 right-24 w-40 opacity-100 rotate-12" />
+  <img src="/icono1.png" alt="Decoración" class="absolute top-28 right-1/4 w-32 opacity-100 rotate-45" />
+  <img src="/icono1.png" alt="Decoración" class="absolute bottom-8 left-1/3 w-24 opacity-100 -rotate-12" />
+  <img src="/icono1.png" alt="Decoración" class="absolute top-1/2 right-12 w-28 opacity-100 rotate-6" />
+
+
+  <div class="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-center gap-10 px-6 z-10 relative">
+  
+    <div class="flex justify-center md:justify-start w-full md:w-1/2">
+      <img src="/nysito.png" alt="Personaje Nysito" class="w-56 md:w-64" />
+    </div>
+
+
+    <div class="text-[#4e0d05] text-left font-[Poppins] md:w-1/2 leading-snug">
+      <h3 class="text-2xl font-extrabold mb-3">¡Hola, soy Nysito!</h3>
+      <p class="text-base">
+        Voy a ayudarte a moverte por el mundo del vino.  
+        Usá el buscador con filtros para encontrar ese vino perfecto,  
+        y creá tu perfil para guardar tus favoritos, compartir  
+        y conectar con gente como vos.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<section class="relative bg-[#f6f6eb] w-full h-20">
+  <img 
+    src="/lineacuadros.png" 
+    alt="Divisor decorativo" 
+    class="absolute -top-[37px] left-0 w-full h-auto block"
+  />
+</section>
+
+
 </template>
+
+
+<style scoped>
+
+img[alt="Decoración"] {
+  pointer-events: none;
+  user-select: none;
+}
+</style>
+

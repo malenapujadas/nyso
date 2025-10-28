@@ -24,15 +24,22 @@ const routes = [
 
 ];
 
-const router = createRouter({
-    routes, 
-    history: createWebHistory(),
-});
 
-let user = {
+const router = createRouter({
+    history: createWebHistory(),
+  
+    routes,
+  
+ 
+    scrollBehavior(to, from, savedPosition) {
+      return { top: 0, behavior: 'smooth' };
+    },
+  });
+  
+  let user = {
     id: null,
     email: null,
-}
+  };
 
 subscribeToAuthChanges(userState => user = userState); 
 
