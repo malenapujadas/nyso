@@ -46,7 +46,7 @@ export default {
               class="hover:text-[#4e0d05] transition-colors"
               :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/' }"
             >
-              Home
+              Inicio
             </RouterLink>
           </li>
           <li>

@@ -1,6 +1,9 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
 import vinos from '../vinos.json';
+import { supabase } from '../services/supabase.js';
+import { addFavorite } from '../services/favorites.js';
+import { addHistory } from '../services/history.js';
 
 export default {
     name: 'Detail',
@@ -9,18 +12,44 @@ export default {
         return {
             vino: null,
             id: null,
+            user: null,
+            message: null
         };
     },
-    mounted() {
-        // obtener id desde la ruta y buscar el vino correspondiente
+    async mounted() {
         this.id = this.$route.params.id;
         if (this.id) {
             const found = vinos.find(v => String(v.id) === String(this.id));
             if (found) this.vino = found;
         }
+
+        // obtener usuario actual
+        const { data } = await supabase.auth.getUser();
+        this.user = data.user;
+    },
+    methods: {
+        async handleAddFavorite() {
+            if (!this.user) return alert('Debes iniciar sesión.');
+            try {
+                await addFavorite(this.user.id, this.vino.id);
+                this.message = 'Agregado a favoritos 🍷';
+            } catch (e) {
+                console.error(e);
+                this.message = 'Error al agregar a favoritos';
+            }
+        },
+        async handleAddHistory() {
+            if (!this.user) return alert('Debes iniciar sesión.');
+            try {
+                await addHistory(this.user.id, this.vino.id);
+                this.message = 'Agregado al historial 🕓';
+            } catch (e) {
+                console.error(e);
+                this.message = 'Error al agregar al historial';
+            }
+        }
     }
 };
-
 </script>
 
 <template>
@@ -47,8 +76,18 @@ export default {
 
                     <div>
                         <RouterLink to="/social" class="text-md rounded-lg px-4 py-2 mt-4 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center">
-                            Volver al listado de vinos 
+                            Volver al listado
                         </RouterLink>
+
+                        <button @click="handleAddFavorite" class="text-md rounded-lg px-4 py-2 mt-4 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center ml-4">
+                            Agregar a favoritos
+                        </button>
+
+                        <button @click="handleAddHistory" class="text-md rounded-lg px-4 py-2 mt-4 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center ml-4">
+                            Agregar al historial
+                        </button>
+
+                        <p v-if="message" class="mt-2 text-sm text-gray-700">{{ message }}</p>
                     </div>
                 </div>
             </div>

@@ -10,8 +10,8 @@ export default {
         return{
             formData:{
                 display_name: '',
-                bio: '',
-                career: '',
+                vino: '',
+                /* career: '', */
             },
             loading: false,
         }
@@ -33,8 +33,8 @@ export default {
         subscribeToAuthChanges(userState =>{
             this.formData = {
                 display_name: userState.display_name ?? '',
-                bio: userState.bio ?? '',
-                career: userState.career ?? '',
+                vino: userState.vino ?? '',
+                /* career: userState.career ?? '', */
             }
         });
     }
@@ -50,14 +50,14 @@ export default {
     >
 
         <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="bio">
-                    Biografía
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="vino">
+                    Preferencia de Vinos
                 </label>
                 <textarea 
                     class="shadow border rounded w-full py-2 px-3 text-gray-700" 
-                    id="bio" 
+                    id="vino" 
                     type="text" 
-                    v-model="formData.bio"
+                    v-model="formData.vino"
                 ></textarea>
         </div>
         <div class="mb-4">
@@ -71,7 +71,7 @@ export default {
                 v-model="formData.display_name"
             />
         </div>
-        <div class="mb-4">
+        <!-- <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="career">
                 Carrera
             </label>
@@ -81,7 +81,7 @@ export default {
                 type="text" 
                 v-model="formData.career"
             />
-        </div>
+        </div> -->
         <div class="flex items-center justify-between">
             <button class="text-lg rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center" type="submit" >
                 Editar 
