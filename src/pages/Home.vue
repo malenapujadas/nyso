@@ -30,6 +30,7 @@ export default {
 </script>
 
 <template>
+  <!-- AGREGAR UN H1, AUNQ SEA CON EL LOGO  -->
   <section class="flex flex-col justify-center items-center text-center py-20">
     <!-- Personaje Nysito -->
     <img
@@ -85,5 +86,10 @@ export default {
 </ul>
 
 
+  </section>
+
+  <section class="max-w-3xl mx-auto px-4 py-8">
+    <h2>Hola, soy nysito!</h2>
+    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quibusdam eum ut sint commodi. Aliquid sint aperiam maiores suscipit ducimus doloribus quibusdam, voluptatibus odio repudiandae, repellat quae sequi vitae officiis iste!</p>
   </section>
 </template>
