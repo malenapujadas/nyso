@@ -1,30 +1,43 @@
 <script>
-import Home from './pages/Home.vue';
 import { logout, subscribeToAuthChanges } from './services/auth.js';
 
-
 export default {
-    name: 'App',
-    components: { Home },
-    data(){
-        return{
-            user: {
-                id: null,
-                email: null,
-            }
-        }
+  name: 'App',
+
+  data() {
+    return {
+      user: null,
+    };
+  },
+
+  computed: {
+    userName() {
+      if (!this.user) return null;
+      return this.user.user_metadata?.nombre || this.user.email || null;
     },
-    methods:{
-        handleLogOut(){
-            logout();
-            this.$router.push('/ingresar');
-        }
+  },
+
+  methods: {
+    async handleLogOut() {
+      try {
+        await logout(); //cierra sesión correctamente en Supabase
+        this.user = null; //  limpia el estado local
+        this.$router.push('/ingresar'); // redirige a login
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
     },
-    mounted(){
-        subscribeToAuthChanges(userState => this.user = userState);
-    }
-}
+  },
+
+  mounted() {
+    subscribeToAuthChanges((userState) => {
+      this.user = userState;
+    });
+  },
+};
 </script>
+
+
 
 
 <template>
@@ -32,10 +45,10 @@ export default {
     <div class="min-h-screen bg-[#f6f6eb] font-helvetica text-[#333333] flex flex-col">
   
     
-<nav class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between">
-
+      <nav
+  class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between"
+>
   <div class="w-32"></div>
-
 
   <ul class="flex justify-center gap-8 text-base font-medium">
     <li>
@@ -67,22 +80,42 @@ export default {
     </li>
   </ul>
 
+<!-- usuario en el header -->
+<div class="flex items-center gap-4 w-auto pr-4">
 
-  <div class="flex gap-3 items-center w-32 justify-end">
+  <template v-if="user">
+    <RouterLink
+      to="/mi-perfil"
+      class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8] transition-colors whitespace-nowrap"
+    >
+      Hola, {{ userName }}
+    </RouterLink>
+
+    <button
+      @click="handleLogOut"
+      class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 hover:bg-[#e099a8] hover:text-white transition-all whitespace-nowrap"
+    >
+      Cerrar sesión
+    </button>
+  </template>
+
+  <template v-else>
     <RouterLink
       to="/ingresar"
-      class="text-sm font-medium hover:text-[#e099a8] transition-colors"
+      class="text-sm font-medium hover:text-[#e099a8] transition-colors whitespace-nowrap"
     >
       Login
     </RouterLink>
 
     <RouterLink
       to="/crear-cuenta"
-      class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1 bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all duration-300"
+      class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all duration-300 whitespace-nowrap"
     >
       Registrarme
     </RouterLink>
-  </div>
+  </template>
+</div>
+
 </nav>
 
 

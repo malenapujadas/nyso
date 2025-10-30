@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <section class="relative flex flex-col justify-center items-center text-center py-20 bg-[#f6f6eb] overflow-hidden">
+  <section class="relative flex flex-col justify-center items-center text-center py-37 bg-[#f6f6eb] overflow-hidden">
     <img
       src="/icono1.png"
       alt="Decoración"
@@ -64,42 +64,61 @@ export default {
   </section>
 
 
-<section class="relative w-full bg-[#e099a8] py-20 mt-16 overflow-hidden">
-
-
-  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-10 w-28 opacity-100" />
-  <img src="/icono1.png" alt="Decoración" class="absolute bottom-16 right-24 w-40 opacity-100 rotate-12" />
-  <img src="/icono1.png" alt="Decoración" class="absolute top-28 right-1/4 w-32 opacity-100 rotate-45" />
-  <img src="/icono1.png" alt="Decoración" class="absolute bottom-8 left-1/3 w-24 opacity-100 -rotate-12" />
-  <img src="/icono1.png" alt="Decoración" class="absolute top-1/2 right-12 w-28 opacity-100 rotate-6" />
-
-
-  <div class="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-center gap-10 px-6 z-10 relative">
-  
-    <div class="flex justify-center md:justify-start w-full md:w-1/2">
-      <img src="/nysito.png" alt="Personaje Nysito" class="w-56 md:w-64" />
-    </div>
-
-
-    <div class="text-[#4e0d05] text-left font-[Poppins] md:w-1/2 leading-snug">
-      <h3 class="text-2xl font-extrabold mb-3">¡Hola, soy Nysito!</h3>
-      <p class="text-base">
-        Voy a ayudarte a moverte por el mundo del vino.  
-        Usá el buscador con filtros para encontrar ese vino perfecto,  
-        y creá tu perfil para guardar tus favoritos, compartir  
-        y conectar con gente como vos.
-      </p>
-    </div>
-  </div>
-</section>
-
-
 <section class="relative bg-[#f6f6eb] w-full h-20">
   <img 
     src="/lineacuadros.png" 
     alt="Divisor decorativo" 
-    class="absolute -top-[37px] left-0 w-full h-auto block"
+    class="absolute -top-[1px] left-0 w-full h-auto block"
   />
+</section>
+
+<!-- SNysito -->
+<section class="relative w-full bg-[#e099a8] text-[#4e0d05] py-15 px-8 flex flex-col md:flex-row items-center justify-center gap-10 overflow-hidden">
+  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-12 w-28 opacity-60" />
+  <img src="/icono2.png" alt="Decoración" class="absolute bottom-12 right-16 w-32 opacity-50 rotate-12" />
+  <img src="/icono4.png" alt="Decoración" class="absolute top-20 right-1/3 w-28 opacity-50" />
+  <img src="/icono7.png" alt="Decoración" class="absolute bottom-8 left-1/4 w-28 opacity-50 rotate-12" />
+
+  <img src="/nysito.png" alt="Personaje Nysito" class="w-44 md:w-56 z-10" />
+  <div class="text-left max-w-md z-10">
+    <h2 class="text-3xl font-extrabold mb-3">¡Hola, soy Nysito!</h2>
+    <p class="text-lg font-medium leading-snug">
+      Voy a ayudarte a moverte por el mundo del vino.
+    </p>
+  </div>
+</section>
+
+<!-- Seccion2 2 -->
+<section class="relative w-full bg-[#3c490b] text-[#f6f6eb] py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden">
+  <img src="/icono5.png" alt="Decoración" class="absolute top-8 left-16 w-32 opacity-100 rotate-12" />
+  <img src="/icono4.png" alt="Decoración" class="absolute bottom-12 right-20 w-36 opacity-100 rotate-3" />
+
+  <div class="text-right max-w-md order-2 md:order-1 z-10 md:ml-16">
+    <p class="text-3xl font-extrabold leading-tight uppercase">
+      Usá el buscador con filtros <br />para encontrar ese vino perfecto.
+    </p>
+  </div>
+
+  <img 
+    src="/foto1.png" 
+    alt="Buscador de vinos" 
+    class="w-72 md:w-[420px] order-1 md:order-2 z-10 md:mr-16 bg-transparent"
+  />
+</section>
+
+<!-- Seccion 3 -->
+<section class="relative w-full bg-[#f6f6eb] text-[#e099a8] py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden">
+  <img src="/icono1.png" alt="Decoración" class="absolute top-12 left-20 w-32 opacity-100 rotate-12" />
+  <img src="/icono2.png" alt="Decoración" class="absolute bottom-8 right-20 w-36 opacity-100" />
+  <img src="/icono3.png" alt="Decoración" class="absolute top-1/3 left-1/3 w-28 opacity-100 rotate-6" />
+  <img src="/icono6.png" alt="Decoración" class="absolute bottom-16 left-1/4 w-32 opacity-100 -rotate-6" />
+
+  <img src="/foto2.png" alt="Perfil de usuario NYSO" class="w-72 md:w-[420px] z-10 md:ml-16" />
+  <div class="text-left max-w-md z-10 md:mr-16">
+    <p class="text-3xl font-extrabold leading-tight uppercase">
+      Creá tu perfil para guardar tus favoritos, compartir <br />y conectar con gente como vos.
+    </p>
+  </div>
 </section>
 
 
