@@ -15,7 +15,7 @@
     "descripcion": "Un clásico argentino. Tiene aroma a frutas rojas maduras, un toque de madera y taninos suaves. Ideal si te gustan los vinos con cuerpo y sabor persistente.",
     "maridaje": ["carnes rojas", "pastas con salsa", "quesos curados"],
     "temperatura_servicio": "16-18°C",
-    "imagen": "/src/assets/vinos/luigi-bosca.jpg"
+    "imagen": "/src/assets/vinos/luigi-bosca.png"
   },
   {
     "id": 2,
@@ -33,7 +33,7 @@
     "descripcion": "Un vino blanco dulce, fresco y fácil de tomar. Perfecto para quienes recién empiezan a probar vinos o prefieren sabores suaves y frutales.",
     "maridaje": ["postres", "frutas", "quesos suaves"],
     "temperatura_servicio": "8-10°C",
-    "imagen": "/src/assets/vinos/santa-julia-dulce.jpg"
+    "imagen": "/src/assets/vinos/santa-julia-dulce.png"
   },
   {
     "id": 3,
@@ -51,7 +51,7 @@
     "descripcion": "De los tintos más tradicionales. Tiene notas a pimiento, madera y especias. Ideal si te gustan los vinos con carácter y algo más potentes.",
     "maridaje": ["carnes asadas", "guisos", "quesos duros"],
     "temperatura_servicio": "16-18°C",
-    "imagen": "/src/assets/vinos/trapiche.jpg"
+    "imagen": "/src/assets/vinos/trapiche.png"
   },
   {
     "id": 4,
@@ -69,7 +69,7 @@
     "descripcion": "Un vino dulce con aroma floral y frutal, muy fresco. Ideal para acompañar postres o tomar frío en una tarde de verano.",
     "maridaje": ["tartas frutales", "quesos cremosos"],
     "temperatura_servicio": "7-9°C",
-    "imagen": "/src/assets/vinos/cosecha-tardia.jpg"
+    "imagen": "/src/assets/vinos/cosecha-tardia.png"
   },
   {
     "id": 5,
@@ -87,7 +87,7 @@
     "descripcion": "Elegante y suave. Tiene notas a frutas rojas frescas como frutillas y cerezas. Ideal para quienes buscan un vino tinto más liviano y fácil de tomar.",
     "maridaje": ["pollo al horno", "pastas suaves", "setas"],
     "temperatura_servicio": "14-16°C",
-    "imagen": "/src/assets/vinos/salentein.jpg"
+    "imagen": "/src/assets/vinos/salentein.png"
   },
   {
     "id": 6,
@@ -105,7 +105,7 @@
     "descripcion": "Muy fresco, con aroma a lima, pomelo y hierbas. Ideal para días calurosos o acompañar comidas livianas.",
     "maridaje": ["pescados", "ensaladas", "mariscos"],
     "temperatura_servicio": "8-10°C",
-    "imagen": "/src/assets/vinos/dona-paula.jpg"
+    "imagen": "/src/assets/vinos/dona-paula.png"
   },
   {
     "id": 7,
@@ -123,7 +123,7 @@
     "descripcion": "Un rosado con aroma a frutillas y flores. Fresco, liviano y con un toque de dulzura. Ideal para quienes quieren algo intermedio entre blanco y tinto.",
     "maridaje": ["picadas", "ensaladas", "pescados grillados"],
     "temperatura_servicio": "10-12°C",
-    "imagen": "/src/assets/vinos/nieto-senetiner.jpg"
+    "imagen": "/src/assets/vinos/nieto-senetiner.png"
   },
   {
     "id": 8,
@@ -141,7 +141,7 @@
     "descripcion": "Un blanco con paso por madera, cremoso y elegante. Tiene notas a manteca y frutos secos. Ideal para quienes buscan un vino con más complejidad.",
     "maridaje": ["pollo al limón", "pescados grasos", "risottos"],
     "temperatura_servicio": "10-12°C",
-    "imagen": "/src/assets/vinos/el-enemigo.jpg"
+    "imagen": "/src/assets/vinos/el-enemigo.png"
   },
   {
     "id": 9,
@@ -159,7 +159,7 @@
     "descripcion": "Un vino elegante y equilibrado, con notas de frutos negros y especias. Ideal para ocasiones especiales o comidas potentes.",
     "maridaje": ["carnes al horno", "pasta con salsa roja", "empanadas de carne"],
     "temperatura_servicio": "16-18°C",
-    "imagen": "/src/assets/vinos/rutini.jpg"
+    "imagen": "/src/assets/vinos/rutini.png"
   },
   {
     "id": 10,
@@ -177,7 +177,7 @@
     "descripcion": "Un vino floral y muy aromático, con notas a jazmín y durazno. Refrescante y fácil de tomar, ideal para quienes prefieren vinos livianos.",
     "maridaje": ["comida asiática", "ceviche", "quesos suaves"],
     "temperatura_servicio": "8-10°C",
-    "imagen": "/src/assets/vinos/colome.jpg"
+    "imagen": "/src/assets/vinos/colome.png"
   },
   {
     "id": 11,
@@ -195,7 +195,7 @@
     "descripcion": "Un vino con mucha estructura y sabor profundo. Ideal para paladares experimentados que buscan vinos con personalidad.",
     "maridaje": ["carnes rojas", "cordero", "platos especiados"],
     "temperatura_servicio": "16-18°C",
-    "imagen": "/src/assets/vinos/escorihuela.jpg"
+    "imagen": "/src/assets/vinos/escorihuela.png"
   },
   {
     "id": 12,
@@ -213,6 +213,6 @@
     "descripcion": "Con notas a ciruela, especias y un toque ahumado. Ideal para quienes buscan un vino con buena intensidad pero sin ser pesado.",
     "maridaje": ["carnes grilladas", "empanadas", "quesos semiduros"],
     "temperatura_servicio": "16-18°C",
-    "imagen": "/src/assets/vinos/mascota.jpg"
+    "imagen": "/src/assets/vinos/mascota.png"
   }
 ]

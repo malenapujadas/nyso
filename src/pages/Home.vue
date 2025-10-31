@@ -34,17 +34,17 @@ export default {
     <img
       src="/icono1.png"
       alt="Decoración"
-      class="absolute top-10 left-12 w-40 opacity-70"
+      class="absolute top-10 left-12 w-40 opacity-100"
     />
     <img
       src="/icono2.png"
       alt="Decoración"
-      class="absolute bottom-4 left-32 w-32 opacity-75"
+      class="absolute bottom-4 left-32 w-32 opacity-100"
     />
     <img
       src="/icono3.png"
       alt="Decoración"
-      class="absolute top-20 right-24 w-20 opacity-80"
+      class="absolute top-20 right-24 w-20 opacity-100"
     />
 
 
@@ -74,10 +74,10 @@ export default {
 
 <!-- SNysito -->
 <section class="relative w-full bg-[#e099a8] text-[#4e0d05] py-15 px-8 flex flex-col md:flex-row items-center justify-center gap-10 overflow-hidden">
-  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-12 w-28 opacity-60" />
-  <img src="/icono2.png" alt="Decoración" class="absolute bottom-12 right-16 w-32 opacity-50 rotate-12" />
-  <img src="/icono4.png" alt="Decoración" class="absolute top-20 right-1/3 w-28 opacity-50" />
-  <img src="/icono7.png" alt="Decoración" class="absolute bottom-8 left-1/4 w-28 opacity-50 rotate-12" />
+  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-12 w-28 opacity-100" />
+  <img src="/icono2.png" alt="Decoración" class="absolute bottom-12 right-16 w-32 opacity-100 rotate-12" />
+  <img src="/icono4.png" alt="Decoración" class="absolute top-20 right-1/3 w-28 opacity-100" />
+  <img src="/icono7.png" alt="Decoración" class="absolute bottom-1 left-1/2 w-28 opacity-100 rotate-12" />
 
   <img src="/nysito.png" alt="Personaje Nysito" class="w-44 md:w-56 z-10" />
   <div class="text-left max-w-md z-10">
@@ -85,18 +85,27 @@ export default {
     <p class="text-lg font-medium leading-snug">
       Voy a ayudarte a moverte por el mundo del vino.
     </p>
+    <p class="text-lg font-light py-2 leading-snug">
+      En Nyso vas a poder encontrar nuevos vinos, aprender de la comunidad, y compartir tus propias experiencias.
+      Mi misión es hacer que aprender y hablar de vino sea fácil, divertido y sin vueltas.</p>
   </div>
 </section>
 
-<!-- Seccion2 2 -->
-<section class="relative w-full bg-[#3c490b] text-[#f6f6eb] py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden">
-  <img src="/icono5.png" alt="Decoración" class="absolute top-8 left-16 w-32 opacity-100 rotate-12" />
-  <img src="/icono4.png" alt="Decoración" class="absolute bottom-12 right-20 w-36 opacity-100 rotate-3" />
+<!-- Sección 2 -->
+<section class="relative w-full bg-[#3c490b] text-[#f6f6eb] py-14 px-8 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden">
 
   <div class="text-right max-w-md order-2 md:order-1 z-10 md:ml-16">
-    <p class="text-3xl font-extrabold leading-tight uppercase">
+    <p class="text-3xl font-extrabold leading-tight mb-6">
       Usá el buscador con filtros <br />para encontrar ese vino perfecto.
     </p>
+
+    <!-- Botón al buscador -->
+    <RouterLink
+      to="/social"
+      class="inline-block mt-2 px-8 py-3 text-lg font-semibold bg-[#e099a8] text-[#3c490b] border border-[#f6f6eb] rounded-full hover:bg-[#f6f6eb] hover:text-[#3c490b] transition-all duration-300"
+    >
+      Ver vinos
+    </RouterLink>
   </div>
 
   <img 
@@ -105,6 +114,7 @@ export default {
     class="w-72 md:w-[420px] order-1 md:order-2 z-10 md:mr-16 bg-transparent"
   />
 </section>
+
 
 <!-- Seccion 3 -->
 <section class="relative w-full bg-[#f6f6eb] text-[#e099a8] py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden">
@@ -115,8 +125,8 @@ export default {
 
   <img src="/foto2.png" alt="Perfil de usuario NYSO" class="w-72 md:w-[420px] z-10 md:ml-16" />
   <div class="text-left max-w-md z-10 md:mr-16">
-    <p class="text-3xl font-extrabold leading-tight uppercase">
-      Creá tu perfil para guardar tus favoritos, compartir <br />y conectar con gente como vos.
+    <p class="text-3xl font-extrabold leading-tight">
+      Creá tu perfil para guardar tus favoritos,<br /> compartir y conectar con gente como vos.
     </p>
   </div>
 </section>
