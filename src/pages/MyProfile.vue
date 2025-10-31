@@ -2,7 +2,7 @@
 import AppH1 from '../components/AppH1.vue';
 import { supabase } from '../services/supabase.js';
 import { getFavorites, removeFavorite } from '../services/favorites.js';
-import { getHistory } from '../services/history.js';
+import { getHistory, clearHistory } from '../services/history.js';
 import vinos from '../vinos.json';
 
 export default {
@@ -28,13 +28,25 @@ export default {
     },
     methods: {
         async handleRemoveFavorite() {
-            if (!this.user) return alert('Debes iniciar sesión.');
+            /* if (!this.user) return alert('Debes iniciar sesión.'); */
             try {
-                await removeFavorite(this.user.id, this.vino.id);
-                this.message = 'Agregado a favoritos 🍷';
-            } catch (e) {
+                await removeFavorite(this.user.id, this.favorites[0].id);
+                this.favorites = this.favorites.slice(1);
+            }
+            catch (e) {
                 console.error(e);
-                this.message = 'Error al agregar a favoritos';
+                alert('Error al eliminar de favoritos');
+            }
+        },
+        async handleClearHistory() {
+            /* if (!this.user) return alert('Debes iniciar sesión.'); */
+            try {
+                await clearHistory(this.user.id, );
+                this.history = [];
+            }
+            catch (e) {
+                console.error(e);
+                alert('Error al eliminar del historial');
             }
         }
     }
@@ -48,6 +60,12 @@ export default {
         <p class="mb-2"><strong>Email:</strong> {{ user.email }}</p>
         <p class="mb-2"><strong>Nombre de usuario:</strong> {{ user.display_name ?? 'No establecido' }}</p>
         <p class="mb-2"><strong>Preferencia de vinos:</strong> {{ user.vino ?? 'No establecida' }}</p>
+    </div>
+
+    <div class="text-center pt-4">
+        <RouterLink class="text-blue-600 underline hover:text-blue-800" to="/mi-perfil/editar">
+            Editar Perfil 
+        </RouterLink>
     </div>
 
     <!-- Favoritos -->
@@ -72,9 +90,17 @@ export default {
     <!-- Historial -->
     <div v-if="history.length" class="px-4 py-6 max-w-3xl mx-auto">
         <h3 class="text-xl font-semibold mb-2">Mi historial 🕓</h3>
-        <ul class="list-disc pl-6">
-            <li v-for="v in history" :key="v.id">{{ v.nombre }}</li>
-        </ul>
+        <div v-for="v in history" :key="v.id">
+            <ul class="list-disc pl-6">
+                <li >{{ v.nombre }}</li>
+            </ul>
+            <div>
+                <button @click="handleClearHistory" class="text-sm rounded-lg px-4 py-2 bg-[#e099a8] shadow-lg shadow-[#e099a8]/50 hover:text-white inline-block text-center" type="submit" >
+                Eliminar del historial 
+                </button>
+            </div> 
+        </div>
+        
     </div>
     <div v-else class="px-4 py-6 max-w-3xl mx-auto">
         <h3 class="text-xl font-semibold mb-2">No tienes vinos en tu historial.</h3>

@@ -15,3 +15,11 @@ export async function getHistory(userId) {
   if (error) throw error;
   return data.map(h => h.vino_id);
 }
+
+export async function clearHistory(userId) {
+  const { error } = await supabase
+    .from('history')
+    .delete()
+    .eq('user_id', userId);
+  if (error) throw error;
+}
