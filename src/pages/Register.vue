@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       user: {
+        nombre:'',
         email: '',
         password: '',
         nacimiento: '',
@@ -42,7 +43,7 @@ export default {
 
       try {
         this.loading = true;
-        await register(this.user.email, this.user.password);
+        await register(this.user.email, this.user.password, this.user.nombre);
         this.$router.push('/mi-perfil');
       } catch (error) {
         this.errorMsg = 'No se pudo crear la cuenta';
@@ -89,6 +90,20 @@ export default {
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="nombre">
+          Nombre
+        </label>
+      <input 
+        class="shadow border rounded w-full py-2 px-3 text-gray-700" 
+          id="nombre" 
+          type="text" 
+          placeholder="Tu nombre"
+          v-model="user.nombre"
+          />
+      </div>
+
 
 
       <div>

@@ -53,19 +53,16 @@ export default {
   <section
     class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center px-8 py-16"
   >
-    <!-- 🌿 ICONOS DECORATIVOS -->
     <img src="/icono1.png" class="absolute top-12 left-10 w-14 rotate-12 opacity-100" />
     <img src="/icono6.png" class="absolute bottom-24 right-12 w-16 -rotate-6 opacity-100" />
     <img src="/icono3.png" class="absolute top-1/3 right-[8%] w-12 rotate-3 opacity-100" />
     <img src="/icono7.png" class="absolute bottom-[18%] left-[15%] w-14 opacity-100 -rotate-12" />
 
-    <AppH1 class="text-[#3c490b] mb-10 z-10">Mi perfil</AppH1>
 
-    <!-- 🧾 CONTENEDOR PRINCIPAL: DOS CARDS LADO A LADO -->
     <div
       class="flex flex-col lg:flex-row justify-center items-start gap-10 w-full max-w-6xl z-10"
     >
-      <!-- CARD PERFIL -->
+   
       <div
         class="flex-1 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-8 flex flex-col items-start gap-4"
       >
@@ -87,13 +84,13 @@ export default {
         </div>
       </div>
 
-      <!-- CARD REGISTROS -->
+    
       <div
         class="flex-1 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-8 flex flex-col gap-6"
       >
         <h2 class="text-2xl font-bold text-[#3c490b] text-center mb-2">Mis registros</h2>
 
-        <!-- Favoritos -->
+   
         <div>
           <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Vinos favoritos</h3>
 
@@ -119,7 +116,7 @@ export default {
 
         <hr class="border-[#4e0d05]/20" />
 
-        <!-- Historial -->
+     
         <div>
           <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Historial</h3>
 

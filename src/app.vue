@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       user: null,
+      isAuthChecked: false,
     };
   },
 
@@ -20,9 +21,9 @@ export default {
   methods: {
     async handleLogOut() {
       try {
-        await logout(); //cierra sesión correctamente en Supabase
-        this.user = null; //  limpia el estado local
-        this.$router.push('/ingresar'); // redirige a login
+        await logout();
+        this.user = null;
+        this.$router.push('/ingresar');
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
       }
@@ -31,11 +32,14 @@ export default {
 
   mounted() {
     subscribeToAuthChanges((userState) => {
-      this.user = userState;
+     
+      this.user = userState && userState.email ? userState : null;
+      this.isAuthChecked = true;
     });
   },
 };
 </script>
+
 
 
 
@@ -80,10 +84,12 @@ export default {
     </li>
   </ul>
 
-<!-- usuario en el header -->
 <div class="flex items-center gap-4 w-auto pr-4">
+  <template v-if="!isAuthChecked">
+    <span class="text-[#4e0d05]/40 text-sm italic">...</span>
+  </template>
 
-  <template v-if="user">
+  <template v-else-if="user">
     <RouterLink
       to="/mi-perfil"
       class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8] transition-colors whitespace-nowrap"
@@ -115,6 +121,7 @@ export default {
     </RouterLink>
   </template>
 </div>
+
 
 </nav>
 

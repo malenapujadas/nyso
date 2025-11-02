@@ -41,7 +41,7 @@ export default {
       />
       <div class="max-w-lg ml-[200px] md:ml-[300px] text-center md:text-left leading-tight">
         <p class="text-lg md:text-xl font-medium leading-snug">
-          <span class="font-bold">¡Hola de nuevo!</span> Acá vas a encontrar notas, tips y curiosidades del mundo del vino.  
+          <span class="font-bold">¡Hola de nuevo!</span> <br />Acá vas a encontrar notas, tips y curiosidades del mundo del vino.  
           Desde maridajes y nuevas etiquetas hasta consejos para disfrutar cada copa.  
           <br /><br />
           Leé, aprendé y compartí.

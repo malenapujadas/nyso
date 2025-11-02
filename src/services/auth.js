@@ -31,34 +31,38 @@ async function loadExtendedProfile(){
 }
 
 
-export async function register(email, password){
+export async function register(email, password, nombre) {
     try {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-        });
-
-        if(error) {
-            console.error('[auth.js register] Error al registrar el usuario: ', error );
-            throw new Error(error.message);
-        }
-
-        setAuthUserState({
-            id: data.user.id,
-            email: data.user.email,
-        });
-
-        await createUserProfile({
-            id: data.user.id,
-            email: data.user.email
-        });
-    } catch (error) {
-        console.error('[auth.js register] Error al registrar el usuario: ', error );
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { nombre }, 
+        },
+      });
+  
+      if (error) {
+        console.error('[auth.js register] Error al registrar el usuario: ', error);
         throw new Error(error.message);
+      }
+  
+      setAuthUserState({
+        id: data.user.id,
+        email: data.user.email,
+        nombre: nombre,
+      });
+  
+      await createUserProfile({
+        id: data.user.id,
+        email: data.user.email,
+        nombre: nombre, 
+      });
+    } catch (error) {
+      console.error('[auth.js register] Error al registrar el usuario: ', error);
+      throw new Error(error.message);
     }
-    
-    
-} 
+  }
+  
 
 export async function login(email, password){
     const { data, error } = await supabase.auth.signInWithPassword({
