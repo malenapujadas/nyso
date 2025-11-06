@@ -48,10 +48,14 @@ export default {
     
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica text-[#333333] flex flex-col">
     
-  <nav class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between">
-  <div class="w-32"></div>
+    <nav
+  class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between relative"
+    >
+  <div class="w-40"></div>
 
-  <ul class="flex justify-center gap-8 text-base font-medium">
+  <ul
+    class="absolute left-1/2 -translate-x-1/2 flex justify-center gap-10 text-base font-medium"
+  >
     <li>
       <RouterLink
         to="/"
@@ -81,12 +85,12 @@ export default {
     </li>
   </ul>
 
-  <div class="flex items-center gap-4 w-auto pr-4">
+  <div class="flex items-center gap-4 w-40 justify-end">
     <template v-if="!isAuthChecked">
       <span class="text-[#4e0d05]/40 text-sm italic">...</span>
     </template>
 
-    <!-- 👇 Cuando el usuario está logueado -->
+    <!-- Usuario logueado -->
     <template v-else-if="user">
       <RouterLink
         to="/mi-perfil"
@@ -103,7 +107,7 @@ export default {
       </button>
     </template>
 
-    <!-- 👇 Cuando NO hay usuario -->
+    <!-- Usuario no logueado -->
     <template v-else>
       <RouterLink
         to="/ingresar"
@@ -123,20 +127,19 @@ export default {
 </nav>
 
 
+
   
 
 <main class="flex-1">
     <RouterView />
 </main>
 
+
+
 <footer class="relative bg-[#f6f6eb] pt-20 flex flex-col items-center justify-center">
-
-
 <div class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-3xl px-10 py-20 text-center shadow-inner">
 
-
   <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center justify-items-center text-left">
-
 
     <div class="flex flex-col items-center md:items-start">
       <h3 class="font-bold text-lg mb-3 text-[#f6f6eb] uppercase tracking-wide">Sobre NYSO</h3>
@@ -151,13 +154,6 @@ export default {
           <RouterLink to="/blog" class="hover:text-[#e099a8] transition-colors">Blog</RouterLink>
         </li>
       </ul>
-    </div>
-
- 
-    <div class="flex justify-center items-center">
-      <div class="bg-[#e099a8]/100 border border-[#f6f6eb] rounded-full px-10 py-4 text-xl md:text-2xl font-bold text-[#3c490b] text-center">
-        info@nyso.com
-      </div>
     </div>
 
 

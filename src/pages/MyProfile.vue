@@ -41,10 +41,10 @@ export default {
         alert('Error al eliminar de favoritos');
       }
     },
-    async handleClearHistory() {
+    async handleRemoveHistory(id) {
       try {
-        await clearHistory(this.user.id);
-        this.history = [];
+        await clearHistory(this.user.id, id);
+        this.history = this.history.filter(h => h.id !== id);
       } catch (e) {
         console.error(e);
         alert('Error al eliminar del historial');
@@ -81,6 +81,7 @@ export default {
         </RouterLink>
       </div>
 
+
       <!-- Favoritos -->
       <div>
         <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
@@ -96,9 +97,9 @@ export default {
               <span class="font-medium">{{ v.nombre }}</span>
               <button
                 @click="handleRemoveFavorite(v.id)"
-                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors"
+                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
               >
-                ✕
+                Eliminar ✕
               </button>
             </li>
           </ul>
@@ -106,30 +107,39 @@ export default {
         <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
       </div>
 
-      <!-- Historial -->
-      <div>
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-          Historial
-        </h2>
-        <div v-if="history.length">
-          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
-            <li
-              v-for="v in history"
-              :key="v.id"
-              class="py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
-            >
-              {{ v.nombre }}
-            </li>
-          </ul>
-          <button
-            @click="handleClearHistory"
-            class="mt-6 rounded-full border border-[#e099a8] text-[#4e0d05] bg-[#e099a8]/20 px-6 py-2 hover:bg-[#e099a8] hover:text-white transition-all duration-300"
+
+
+    <!-- Historial -->
+    <div>
+      <h2
+        class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2"
+      >
+        Historial
+      </h2>
+
+      <div v-if="history.length">
+        <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+          <li
+            v-for="v in history"
+            :key="v.id"
+            class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
           >
-            Limpiar historial
-          </button>
-        </div>
-        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
+            <span class="font-medium">{{ v.nombre }}</span>
+            <button
+              @click="handleRemoveHistory(v.id)"
+              class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
+            >
+              Eliminar ✕
+            </button>
+          </li>
+        </ul>
       </div>
+
+      <p v-else class="text-[#4e0d05]/60 italic">
+        No tienes vinos en tu historial.
+      </p>
+    </div>
+
     </div>
   </section>
 </template>
