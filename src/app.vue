@@ -46,12 +46,9 @@ export default {
 
 <template>
     
-    <div class="min-h-screen bg-[#f6f6eb] font-helvetica text-[#333333] flex flex-col">
-  
+  <div class="min-h-screen bg-[#f6f6eb] font-helvetica text-[#333333] flex flex-col">
     
-      <nav
-  class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between"
->
+  <nav class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between">
   <div class="w-32"></div>
 
   <ul class="flex justify-center gap-8 text-base font-medium">
@@ -84,45 +81,45 @@ export default {
     </li>
   </ul>
 
-<div class="flex items-center gap-4 w-auto pr-4">
-  <template v-if="!isAuthChecked">
-    <span class="text-[#4e0d05]/40 text-sm italic">...</span>
-  </template>
+  <div class="flex items-center gap-4 w-auto pr-4">
+    <template v-if="!isAuthChecked">
+      <span class="text-[#4e0d05]/40 text-sm italic">...</span>
+    </template>
 
-  <template v-else-if="user">
-    <RouterLink
-      to="/mi-perfil"
-      class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8] transition-colors whitespace-nowrap"
-    >
-      Hola, {{ userName }}
-    </RouterLink>
+    <!-- 👇 Cuando el usuario está logueado -->
+    <template v-else-if="user">
+      <RouterLink
+        to="/mi-perfil"
+        class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8] transition-colors whitespace-nowrap"
+      >
+        Mi perfil
+      </RouterLink>
 
-    <button
-      @click="handleLogOut"
-      class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 hover:bg-[#e099a8] hover:text-white transition-all whitespace-nowrap"
-    >
-      Cerrar sesión
-    </button>
-  </template>
+      <button
+        @click="handleLogOut"
+        class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 hover:bg-[#e099a8] hover:text-white transition-all whitespace-nowrap"
+      >
+        Cerrar sesión
+      </button>
+    </template>
 
-  <template v-else>
-    <RouterLink
-      to="/ingresar"
-      class="text-sm font-medium hover:text-[#e099a8] transition-colors whitespace-nowrap"
-    >
-      Login
-    </RouterLink>
+    <!-- 👇 Cuando NO hay usuario -->
+    <template v-else>
+      <RouterLink
+        to="/ingresar"
+        class="text-sm font-medium hover:text-[#e099a8] transition-colors whitespace-nowrap"
+      >
+        Login
+      </RouterLink>
 
-    <RouterLink
-      to="/crear-cuenta"
-      class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all duration-300 whitespace-nowrap"
-    >
-      Registrarme
-    </RouterLink>
-  </template>
-</div>
-
-
+      <RouterLink
+        to="/crear-cuenta"
+        class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all duration-300 whitespace-nowrap"
+      >
+        Registrarme
+      </RouterLink>
+    </template>
+  </div>
 </nav>
 
 

@@ -22,15 +22,20 @@ export default {
     if (this.user) {
       const favIds = await getFavorites(this.user.id);
       const hisIds = await getHistory(this.user.id);
-      this.favorites = vinos.filter((v) => favIds.includes(v.id));
-      this.history = vinos.filter((v) => hisIds.includes(v.id));
+
+      this.favorites = vinos.filter(v =>
+        favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
+      );
+      this.history = vinos.filter(v =>
+        hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
+      );
     }
   },
   methods: {
     async handleRemoveFavorite(id) {
       try {
         await removeFavorite(this.user.id, id);
-        this.favorites = this.favorites.filter((f) => f.id !== id);
+        this.favorites = this.favorites.filter(f => f.id !== id);
       } catch (e) {
         console.error(e);
         alert('Error al eliminar de favoritos');
@@ -50,97 +55,80 @@ export default {
 </script>
 
 <template>
-  <section
-    class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center px-8 py-16"
-  >
-    <img src="/icono1.png" class="absolute top-12 left-10 w-14 rotate-12 opacity-100" />
-    <img src="/icono6.png" class="absolute bottom-24 right-12 w-16 -rotate-6 opacity-100" />
-    <img src="/icono3.png" class="absolute top-1/3 right-[8%] w-12 rotate-3 opacity-100" />
-    <img src="/icono7.png" class="absolute bottom-[18%] left-[15%] w-14 opacity-100 -rotate-12" />
+  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16">
+    
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-[#3c490b] mb-2">Mi perfil</h1>
+      <p class="text-[#4e0d05]/70 text-lg">Bienvenido a tu espacio personal.</p>
+    </div>
 
-
-    <div
-      class="flex flex-col lg:flex-row justify-center items-start gap-10 w-full max-w-6xl z-10"
-    >
-   
-      <div
-        class="flex-1 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-8 flex flex-col items-start gap-4"
-      >
-        <h2 class="text-2xl font-bold text-[#3c490b] mb-4 self-center">Información del usuario</h2>
-
-        <div class="space-y-2 text-[#4e0d05] w-full">
+    <div class="w-full max-w-4xl text-left space-y-12">
+      <!-- Información de usuario -->
+      <div>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+          Información de usuario
+        </h2>
+        <div class="text-[#4e0d05] space-y-2">
           <p><strong>Email:</strong> {{ user.email }}</p>
           <p><strong>Nombre de usuario:</strong> {{ user.display_name ?? 'No establecido' }}</p>
           <p><strong>Preferencia de vinos:</strong> {{ user.vino ?? 'No establecida' }}</p>
         </div>
-
-        <div class="self-center mt-6">
-          <RouterLink
-            to="/mi-perfil/editar"
-            class="text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
-          >
-            Editar perfil ↗
-          </RouterLink>
-        </div>
+        <RouterLink
+          to="/mi-perfil/editar"
+          class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
+        >
+          Editar perfil ↗
+        </RouterLink>
       </div>
 
-    
-      <div
-        class="flex-1 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-8 flex flex-col gap-6"
-      >
-        <h2 class="text-2xl font-bold text-[#3c490b] text-center mb-2">Mis registros</h2>
-
-   
-        <div>
-          <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Vinos favoritos</h3>
-
-          <div v-if="favorites.length">
-            <ul class="space-y-3 text-[#4e0d05]">
-              <li
-                v-for="v in favorites"
-                :key="v.id"
-                class="flex justify-between items-center border-b border-[#4e0d05]/20 py-2"
-              >
-                <span>{{ v.nombre }}</span>
-                <button
-                  @click="handleRemoveFavorite(v.id)"
-                  class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors"
-                >
-                  Eliminar ✕
-                </button>
-              </li>
-            </ul>
-          </div>
-          <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
-        </div>
-
-        <hr class="border-[#4e0d05]/20" />
-
-     
-        <div>
-          <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Historial</h3>
-
-          <div v-if="history.length">
-            <ul class="space-y-3 text-[#4e0d05]">
-              <li
-                v-for="v in history"
-                :key="v.id"
-                class="flex justify-between items-center border-b border-[#4e0d05]/20 py-2"
-              >
-                <span>{{ v.nombre }}</span>
-              </li>
-            </ul>
-
-            <button
-              @click="handleClearHistory"
-              class="mt-6 w-full rounded-full border border-[#e099a8] text-[#4e0d05] bg-[#e099a8]/20 px-5 py-2 hover:bg-[#e099a8] hover:text-white transition-all duration-300"
+      <!-- Favoritos -->
+      <div>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+           Favoritos
+        </h2>
+        <div v-if="favorites.length">
+          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+            <li
+              v-for="v in favorites"
+              :key="v.id"
+              class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
             >
-              Limpiar historial
-            </button>
-          </div>
-
-          <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
+              <span class="font-medium">{{ v.nombre }}</span>
+              <button
+                @click="handleRemoveFavorite(v.id)"
+                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors"
+              >
+                ✕
+              </button>
+            </li>
+          </ul>
         </div>
+        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
+      </div>
+
+      <!-- Historial -->
+      <div>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+          Historial
+        </h2>
+        <div v-if="history.length">
+          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+            <li
+              v-for="v in history"
+              :key="v.id"
+              class="py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
+            >
+              {{ v.nombre }}
+            </li>
+          </ul>
+          <button
+            @click="handleClearHistory"
+            class="mt-6 rounded-full border border-[#e099a8] text-[#4e0d05] bg-[#e099a8]/20 px-6 py-2 hover:bg-[#e099a8] hover:text-white transition-all duration-300"
+          >
+            Limpiar historial
+          </button>
+        </div>
+        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
       </div>
     </div>
   </section>

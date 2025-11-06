@@ -126,9 +126,25 @@ export default {
   <img src="/foto2.png" alt="Perfil de usuario NYSO" class="w-72 md:w-[420px] z-10 md:ml-16" />
   <div class="text-left max-w-md z-10 md:mr-16">
     <p class="text-3xl font-extrabold leading-tight">
-      Creá tu perfil para guardar tus favoritos,<br /> compartir y conectar con gente como vos.
+      Creá tu perfil para guardar tus favoritos, compartir y conectar con gente como vos.
     </p>
+
+    <RouterLink
+      to="/crear-cuenta"
+      class="inline-block mt-2 px-7 py-3 text-lg font-semibold bg-[#e099a8] text-[#3c490b] border border-[#f6f6eb] rounded-full hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+      > Crear cuenta
+    </RouterLink>
+
   </div>
+</section>
+
+<!-- Banner KITMENS -->
+<section class="w-full">
+  <img
+    src="/KITMENS.png"
+    alt="Banner KITMENS"
+    class="w-full h-auto block object-cover"
+  />
 </section>
 
 

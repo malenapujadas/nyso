@@ -80,6 +80,16 @@ export default {
       this.filters = { tipo: '', uva: '', region: '', dulzor: '', cuerpo: '', año: '' };
       this.selectedMinPrice = null;
       this.selectedMaxPrice = null;
+    },
+    getOptions(key) {
+      const map = {
+        tipo: this.tipos,
+        uva: this.uvas,
+        region: this.regiones, 
+        cuerpo: this.cuerpos,
+        año: this.años,
+      };
+      return map[key] || [];
     }
   },
 
@@ -91,14 +101,16 @@ export default {
 };
 </script>
 
+
+
 <template>
   <section class="relative w-full min-h-screen bg-[#f6f6eb] flex flex-col lg:flex-row gap-10 px-8 py-12 overflow-visible">
     
     <!--  FILTROS -->
-    <aside class="w-full lg:w-1/4 text-[#4e0d05] space-y-6 lg:sticky lg:top-10 h-fit">
-      <h2 class="text-2xl font-extrabold mb-4 text-[#3c490b]">Filtros</h2>
+    <aside class="w-full lg:w-1/4 text-[#4e0d05] space-y-4 lg:sticky lg:top-10 h-fit">
+      <h2 class="text-1xl font-extrabold mb-4 text-[#3c490b]">Filtros</h2>
 
-      <!-- Filtro genérico -->
+      <!-- Filtro  -->
       <details
         v-for="(label, key) in { tipo: 'Tipo', uva: 'Uva', region: 'Región', cuerpo: 'Cuerpo', año: 'Año' }"
         :key="key"
@@ -113,7 +125,7 @@ export default {
           class="mt-3 block w-full border border-[#4e0d05]/40 text-[#4e0d05] bg-transparent p-2 focus:ring-1 focus:ring-[#e099a8] outline-none"
         >
           <option value="">Todos</option>
-          <option v-for="valor in this[`${key}s`]" :key="valor" :value="valor">{{ valor }}</option>
+          <option v-for="valor in getOptions(key)" :key="valor" :value="valor">{{ valor }}</option>
         </select>
       </details>
 
