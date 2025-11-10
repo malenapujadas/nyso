@@ -1,25 +1,80 @@
 <template>
-  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16">
-    <div class="w-full max-w-2xl">
-      <h1 class="text-3xl font-bold mb-6 text-[#3c490b]">Perfil público</h1>
-      <div v-if="loading" class="text-center py-8">Cargando...</div>
-      <div v-else-if="!profile" class="text-center py-8 text-[#e099a8]">Usuario no encontrado.</div>
-      <div v-else class="bg-white rounded-lg shadow p-6">
-        <p class="mb-2"><strong>Nombre:</strong> {{ profile.display_name || 'Sin nombre' }}</p>
-        <p class="mb-2"><strong>Email:</strong> {{ profile.email }}</p>
-        <div v-if="preferences">
-          <h2 class="font-semibold mt-4 mb-2">Preferencias</h2>
-          <p><strong>Preferencia de vino:</strong> {{ gustoOpc[preferences.gusto] || 'No respondido' }}</p>
-          <p><strong>¿Cómo preferís tomar vino?</strong> {{ comoOpc[preferences.como] || 'No respondido' }}</p>
-          <p><strong>Intensidad:</strong> {{ intensidadOpc[preferences.intensidad] || 'No respondido' }}</p>
-          <p><strong>Sabores:</strong> {{ Array.isArray(preferences.sabores) && preferences.sabores.length ? preferences.sabores.map(s => saboresOpc[s] || s).join(', ') : 'No respondido' }}</p>
-          <p><strong>¿Con qué frecuencia tomás vino?</strong> {{ frecuenciaOpc[preferences.frecuencia] || 'No respondido' }}</p>
-          <p><strong>¿Con quién solés tomar vino?</strong> {{ conQuienOpc[preferences.con_quien] || 'No respondido' }}</p>
-          <p><strong>¿Qué temas te interesan?</strong> {{ Array.isArray(preferences.temas) && preferences.temas.length ? preferences.temas.map(t => temasOpc[t] || t).join(', ') : 'No respondido' }}</p>
-          <p><strong>Otro tema que te gustaría ver:</strong> {{ preferences.temas_libre || 'No respondido' }}</p>
+  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
+    
+    <!-- Íconos  -->
+    <img src="/icono1.png" class="absolute top-10 left-10 w-14 opacity-100 rotate-12" />
+    <img src="/icono6.png" class="absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
+    <img src="/icono1.png" class="absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
+    <img src="/icono3.png" class="absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3" />
+    <img src="/icono7.png" class="absolute bottom-[18%] left-[15%] w-25 opacity-100 -rotate-12" />
+
+
+    <div class="w-full max-w-3xl z-10 bg-[#ede8d7] rounded-3xl shadow-lg p-8 border border-[#4e0d05]/20">
+      <h1 class="text-3xl font-extrabold text-[#3c490b] mb-6 text-center">
+        Perfil
+      </h1>
+
+      <div v-if="loading" class="text-center py-8 text-[#4e0d05]/70 italic">
+        Cargando perfil...
+      </div>
+
+      <div v-else-if="!profile" class="text-center py-8 text-[#e099a8] font-semibold">
+        Usuario no encontrado 😢
+      </div>
+
+      <div v-else class="space-y-6">
+        <!-- info del usuario -->
+        <div class="bg-[#f6f6eb] rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10">
+          <div class="flex flex-col items-center text-center">
+            <!-- Imagen -->
+            <img
+              src="/nysito2.png"
+              alt="Avatar"
+              class="w-28 h-28 rounded-full object-cover border-4 border-[#e099a8]/70 mb-4 bg-white"
+            />
+            <h2 class="text-2xl font-bold text-[#4e0d05] mb-1">
+              {{ profile.display_name || 'Sin nombre' }}
+            </h2>
+            <p class="text-sm text-[#4e0d05]/70">{{ profile.email }}</p>
+          </div>
+        </div>
+
+        <!-- Preferencias del usuario -->
+        <div v-if="preferences" class="rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10">
+          <h3 class="text-xl font-semibold text-[#3c490b] mb-4 text-center">
+            Preferencias personales:
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-[#4e0d05]">
+            <p><strong>Tipo:</strong> {{ gustoOpc[preferences.gusto] || 'No respondido' }}</p>
+            <p><strong>Cómo lo toma:</strong> {{ comoOpc[preferences.como] || 'No respondido' }}</p>
+            <p><strong>Intensidad:</strong> {{ intensidadOpc[preferences.intensidad] || 'No respondido' }}</p>
+            <p>
+              <strong>Sabores:</strong>
+              {{ Array.isArray(preferences.sabores) && preferences.sabores.length
+                ? preferences.sabores.map(s => saboresOpc[s] || s).join(', ')
+                : 'No respondido' }}
+            </p>
+            <p><strong>Frecuencia:</strong> {{ frecuenciaOpc[preferences.frecuencia] || 'No respondido' }}</p>
+            <p><strong>Con quién:</strong> {{ conQuienOpc[preferences.con_quien] || 'No respondido' }}</p>
+            <p class="sm:col-span-2">
+              <strong>Temas de interés:</strong>
+              {{ Array.isArray(preferences.temas) && preferences.temas.length
+                ? preferences.temas.map(t => temasOpc[t] || t).join(', ')
+                : 'No respondido' }}
+            </p>
+            <p class="sm:col-span-2">
+              <strong>Otro tema:</strong> {{ preferences.temas_libre || 'No respondido' }}
+            </p>
+          </div>
+        </div>
+
+        <div v-else class="text-center text-[#4e0d05]/60 italic">
+          Este usuario aún no completó sus preferencias.
         </div>
       </div>
     </div>
+
   </section>
 </template>
 
@@ -37,7 +92,7 @@ export default {
       gustoOpc: {
         rosado: '🟪 Rosado',
         espumante: '🍾 Espumante',
-        descubrir: '🤷‍♀️ No sé, quiero descubrir',
+        descubrir: '🤷‍♀️ Quiero descubrir',
       },
       comoOpc: {
         con_comida: '🍽️ Con comida',
@@ -65,16 +120,16 @@ export default {
         fan: '¡Soy fan total!',
       },
       conQuienOpc: {
-        amigos: 'Amigos',
-        pareja: 'Pareja',
-        familia: 'Familia',
-        solo: 'Solo',
+        amigos: 'Amigos 👯‍♀️',
+        pareja: 'Pareja ❤️',
+        familia: 'Familia 👨‍👩‍👧‍👦',
+        solo: 'Solo 🍷',
       },
       temasOpc: {
-        nuevas_bodegas: 'Nuevas bodegas',
-        maridajes: 'Maridajes',
-        tips: 'Tips para elegir',
-        experiencias: 'Experiencias y eventos',
+        nuevas_bodegas: 'Nuevas bodegas 🏞️',
+        maridajes: 'Maridajes 🍽️',
+        tips: 'Tips para elegir 💡',
+        experiencias: 'Experiencias y eventos 🎉',
       },
     };
   },
@@ -84,8 +139,8 @@ export default {
       this.loading = false;
       return;
     }
-    // Obtener perfil
-    const { data, error } = await supabase
+    //  perfil
+    const { data } = await supabase
       .from('user_profiles')
       .select('id, display_name, email')
       .eq('id', userId)

@@ -146,42 +146,60 @@ export default {
 
 
 <footer class="relative bg-[#f6f6eb] pt-20 flex flex-col items-center justify-center">
-<div class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-3xl px-10 py-20 text-center shadow-inner">
 
-  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 items-center justify-items-center text-left">
+<!-- Contenido -->
+<div class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-[40px] px-10 py-16 shadow-inner">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start justify-items-center text-left">
 
+    <!-- sobre nyso-->
     <div class="flex flex-col items-center md:items-start">
-      <h3 class="font-bold text-lg mb-3 text-[#f6f6eb] uppercase tracking-wide">Sobre NYSO</h3>
+      <h3 class="font-bold text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
+        Sobre NYSO
+      </h3>
       <ul class="space-y-2 text-sm text-[#f6f6eb]">
-        <li>
-          <RouterLink to="/" class="hover:text-[#e099a8] transition-colors">Inicio</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/social" class="hover:text-[#e099a8] transition-colors">Vinos</RouterLink>
-        </li>
-        <li>
-          <RouterLink to="/blog" class="hover:text-[#e099a8] transition-colors">Blog</RouterLink>
-        </li>
+        <li><RouterLink to="/" class="hover:text-[#e099a8] transition-colors">Inicio</RouterLink></li>
+        <li><RouterLink to="/social" class="hover:text-[#e099a8] transition-colors">Vinos</RouterLink></li>
+        <li><RouterLink to="/blog" class="hover:text-[#e099a8] transition-colors">Blog</RouterLink></li>
+        <li><RouterLink to="/red-social" class="hover:text-[#e099a8] transition-colors">Red social</RouterLink></li>
       </ul>
     </div>
 
-
-    <div class="flex flex-col items-center md:items-end">
-      <h3 class="font-bold text-lg mb-4 text-[#f6f6eb] uppercase tracking-wide">Seguinos</h3>
-      <div class="flex justify-center md:justify-end gap-6 items-center">
-        <a href="https://www.instagram.com/nyso_vinos/" target="_blank" rel="noopener noreferrer">
-          <img src="/ig.png" alt="Instagram" class="w-8 h-8 hover:scale-110 transition-transform duration-300" />
-        </a>
-        <img src="/tiktok.png" alt="TikTok" class="w-8 h-8 hover:scale-110 transition-transform duration-300" />
+    <!-- info -->
+    <div class="flex flex-col items-center text-center">
+      <img src="/logo.png" alt="Logo NYSO" class="w-28 mb-4" />
+      <p class="text-sm leading-relaxed max-w-xs">
+        Descubrí, guardá y compartí tus vinos favoritos.  
+        Somos una comunidad donde el vino se disfruta.
+      </p>
+      <div class="mt-4 bg-[#e099a8] text-[#3c490b] font-semibold text-sm px-6 py-2 rounded-full border border-[#f6f6eb]/40">
+        info@nyso.com
       </div>
     </div>
 
+    <!-- redes sociales-->
+    <div class="flex flex-col items-center md:items-end text-center md:text-right">
+      <h3 class="font-bold text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
+        Seguinos
+      </h3>
+      <div class="flex justify-center md:justify-end gap-5 mb-4">
+        <a href="https://www.instagram.com/nyso_vinos/" target="_blank" rel="noopener noreferrer">
+          <img src="/ig.png" alt="Instagram" class="w-8 h-8 hover:scale-110 transition-transform duration-300" />
+        </a>
+        <a href="#">
+          <img src="/tiktok.png" alt="TikTok" class="w-8 h-8 hover:scale-110 transition-transform duration-300" />
+        </a>
+      </div>
+      <p class="text-xs text-[#f6f6eb]/80">#DescubríNYSO</p>
+    </div>
   </div>
 </div>
 
+<!-- derechos reservados-->
+<div class="w-full bg-[#2d3707] text-[#f6f6eb]/70 text-sm py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8">
+  <p>© 2025 NYSO. Todos los derechos reservados.</p>
+</div>
 
 </footer>
-
 
 </div>
 </template>

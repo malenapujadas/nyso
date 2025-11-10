@@ -64,15 +64,24 @@ export default {
 </script>
 
 <template>
-  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16">
-    
-    <div class="text-center mb-12">
+  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
+
+    <!-- iconos -->
+    <img src="/icono1.png" class="absolute top-12 left-12 w-16 rotate-12 opacity-100" />
+    <img src="/icono2.png" class="absolute bottom-50 right-20 w-20 opacity-100 -rotate-6" />
+    <img src="/icono6.png" class="absolute top-1/3 right-10 w-16 opacity-100 rotate-3" />
+    <img src="/icono7.png" class="absolute bottom-[25%] left-[10%] w-20 opacity-100 -rotate-12" />
+
+    <!-- titulo -->
+    <div class="text-center mb-12 relative z-10">
       <h1 class="text-4xl font-bold text-[#3c490b] mb-2">Mi perfil</h1>
       <p class="text-[#4e0d05]/70 text-lg">Bienvenido a tu espacio personal.</p>
     </div>
 
-    <div class="w-full max-w-4xl text-left space-y-12">
-      <!-- Información de usuario -->
+
+    <div class="w-full max-w-4xl text-left space-y-12 relative z-10">
+
+      <!-- INFO de usuario -->
       <div>
         <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
           Información de usuario
@@ -81,17 +90,23 @@ export default {
           <p><strong>Email:</strong> {{ user.email }}</p>
           <p><strong>Nombre de usuario:</strong> {{ user.display_name ?? 'No establecido' }}</p>
         </div>
+
         <div v-if="preferences" class="mt-6 space-y-2">
           <h3 class="font-semibold text-lg mb-2">Tus preferencias</h3>
           <p><strong>Preferencia de vino:</strong> {{ preferences.gusto || 'No respondido' }}</p>
           <p><strong>¿Cómo preferís tomar vino?</strong> {{ preferences.como || 'No respondido' }}</p>
           <p><strong>Intensidad:</strong> {{ preferences.intensidad || 'No respondido' }}</p>
-          <p><strong>Sabores:</strong> {{ Array.isArray(preferences.sabores) && preferences.sabores.length ? preferences.sabores.join(', ') : 'No respondido' }}</p>
+          <p><strong>Sabores:</strong> 
+            {{ Array.isArray(preferences.sabores) && preferences.sabores.length ? preferences.sabores.join(', ') : 'No respondido' }}
+          </p>
           <p><strong>¿Con qué frecuencia tomás vino?</strong> {{ preferences.frecuencia || 'No respondido' }}</p>
           <p><strong>¿Con quién solés tomar vino?</strong> {{ preferences.con_quien || 'No respondido' }}</p>
-          <p><strong>¿Qué temas te interesan?</strong> {{ Array.isArray(preferences.temas) && preferences.temas.length ? preferences.temas.join(', ') : 'No respondido' }}</p>
+          <p><strong>¿Qué temas te interesan?</strong> 
+            {{ Array.isArray(preferences.temas) && preferences.temas.length ? preferences.temas.join(', ') : 'No respondido' }}
+          </p>
           <p><strong>Otro tema que te gustaría ver:</strong> {{ preferences.temas_libre || 'No respondido' }}</p>
         </div>
+
         <RouterLink
           to="/mi-perfil/editar"
           class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
@@ -100,11 +115,10 @@ export default {
         </RouterLink>
       </div>
 
-
-      <!-- Favoritos -->
+      <!-- favs -->
       <div>
         <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-           Favoritos
+          Favoritos
         </h2>
         <div v-if="favorites.length">
           <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
@@ -126,39 +140,41 @@ export default {
         <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
       </div>
 
+      <!-- hisotrial -->
+      <div>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+          Historial
+        </h2>
 
-
-    <!-- Historial -->
-    <div>
-      <h2
-        class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2"
-      >
-        Historial
-      </h2>
-
-      <div v-if="history.length">
-        <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
-          <li
-            v-for="v in history"
-            :key="v.id"
-            class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
-          >
-            <span class="font-medium">{{ v.nombre }}</span>
-            <button
-              @click="handleRemoveHistory(v.id)"
-              class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
+        <div v-if="history.length">
+          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+            <li
+              v-for="v in history"
+              :key="v.id"
+              class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
             >
-              Eliminar ✕
-            </button>
-          </li>
-        </ul>
+              <span class="font-medium">{{ v.nombre }}</span>
+              <button
+                @click="handleRemoveHistory(v.id)"
+                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
+              >
+                Eliminar ✕
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
       </div>
-
-      <p v-else class="text-[#4e0d05]/60 italic">
-        No tienes vinos en tu historial.
-      </p>
     </div>
 
-    </div>
+    <div class="relative -mx-6 mt-24">
+  <img
+    src="/lineacuadros.png"
+    alt="Decoración NYSO"
+    class="w-full h-auto object-cover block"
+  />
+</div>
+
   </section>
 </template>

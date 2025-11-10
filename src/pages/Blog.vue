@@ -9,7 +9,6 @@ export default {
       loading: true,
       error: null,
       openPost: null,
-      // suggestion form state
       sugg: {
         nombre: '',
         email: '',
@@ -33,24 +32,23 @@ export default {
   methods: {
     togglePost(id) {
       this.openPost = this.openPost === id ? null : id;
-    }
-    ,
-    async submitSugg(){
+    },
+    async submitSugg() {
       this.suggestionMessage = '';
-      if(!this.sugg.titulo || !this.sugg.descripcion){
-        this.suggestionMessage = 'Por favor completa título y descripción.';
+      if (!this.sugg.titulo || !this.sugg.descripcion) {
+        this.suggestionMessage = 'Por favor completá título y descripción.';
         return;
       }
 
       this.sendingSuggestion = true;
-      try{
+      try {
         await submitSuggestion(this.sugg);
-        this.suggestionMessage = 'Gracias — tu tema fue enviado al equipo.';
+        this.suggestionMessage = '¡Gracias! Tu tema fue enviado al equipo ';
         this.sugg = { nombre: '', email: '', titulo: '', descripcion: '' };
-      } catch(err){
+      } catch (err) {
         console.error(err);
         this.suggestionMessage = err.message || 'Error al enviar la sugerencia.';
-      } finally{
+      } finally {
         this.sendingSuggestion = false;
       }
     }
@@ -61,52 +59,121 @@ export default {
 <template>
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-visible">
 
-    <!-- INTRO -->
-    <section class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-col md:flex-row items-center justify-center gap-8 py-20 px-8 md:pl-24 relative">
-      <img
-        src="/nysito2.png"
-        alt="Personaje Nysito"
-        class="w-44 md:w-60 absolute left-16 md:left-28 top-1/2 -translate-y-1/2"
+
+    <!-- banner-->
+<section
+  class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 py-12 px-10 md:px-20 relative overflow-hidden"
+>
+  <!-- Íconos  -->
+  <img
+    src="/icono3.png"
+    alt="Decoración"
+    class="absolute top-10 right-20 w-14 opacity-100 rotate-6"
+  />
+  <img
+    src="/icono6.png"
+    alt="Decoración"
+    class="absolute bottom-10 left-20 w-16 opacity-100 -rotate-6"
+  />
+
+
+  <img
+    src="/nysito2.png"
+    alt="Personaje Nysito"
+    class="w-44 md:w-56 z-10"
+  />
+
+  <!-- Texto -->
+  <div class="max-w-lg text-center md:text-left z-10 leading-snug flex flex-col justify-center">
+    <h1 class="text-4xl font-extrabold mb-4">
+      ¡Hola de nuevo! 
+    </h1>
+    <p class="text-lg font-medium leading-relaxed">
+      Acá vas a encontrar notas, tips y curiosidades del mundo del vino.  
+      Desde maridajes y nuevas etiquetas hasta consejos para disfrutar cada copa.  
+      <br /><br />
+      <span class="font-semibold text-[#3c490b]">
+        Leé, aprendé y compartí con la comunidad NYSO.
+      </span>
+    </p>
+  </div>
+</section>
+
+
+
+<!-- form-->
+<section
+  class="relative w-[95%] md:w-[90%] max-w-[1200px] py-16 px-8 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-sm mt-16 mb-20 text-left flex flex-col items-center mx-auto"
+>
+  <div class="w-full max-w-4xl">
+    <h2 class="text-3xl font-bold text-[#3c490b] mb-4 text-center">
+      ¿Querés que hablemos de algo?
+    </h2>
+    <p class="text-[#4e0d05]/80 text-center mb-10 text-base max-w-2xl mx-auto">
+      Enviá tu pregunta o tema y el equipo lo evaluará.  
+      Si respondemos, lo publicaremos en el blog.
+    </p>
+
+    <form @submit.prevent="submitSugg" class="flex flex-col gap-5 max-w-3xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input
+          v-model="sugg.nombre"
+          placeholder="Tu nombre (opcional)"
+          class="p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
+        />
+        <input
+          v-model="sugg.email"
+          placeholder="Tu email (opcional)"
+          class="p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
+        />
+      </div>
+
+      <input
+        v-model="sugg.titulo"
+        placeholder="Título / tema"
+        class="p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
       />
-      <div class="max-w-lg ml-[200px] md:ml-[300px] text-center md:text-left leading-tight">
-        <p class="text-lg md:text-xl font-medium leading-snug">
-          <span class="font-bold">¡Hola de nuevo!</span> <br />Acá vas a encontrar notas, tips y curiosidades del mundo del vino.  
-          Desde maridajes y nuevas etiquetas hasta consejos para disfrutar cada copa.  
-          <br /><br />
-          Leé, aprendé y compartí.
-        </p>
+
+      <textarea
+        v-model="sugg.descripcion"
+        rows="4"
+        placeholder="Descripción / pregunta"
+        class="p-3 rounded-3xl border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] resize-none w-full"
+      ></textarea>
+
+      <div class="flex justify-center mt-4">
+        <button
+          type="submit"
+          :disabled="sendingSuggestion"
+          class="px-10 py-3 rounded-full text-lg font-semibold bg-[#e099a8] text-[#3c490b] border border-[#3c490b] hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {{ sendingSuggestion ? 'Enviando...' : 'Enviar sugerencia' }}
+        </button>
       </div>
-    </section>
 
-    <!-- FORMULARIO PARA SUGERENCIAS -->
-    <section class="w-[95%] max-w-[800px] py-8 px-6 bg-white rounded-lg shadow-md mb-20">
-      <h2 class="text-2xl font-bold mb-4">¿Querés que hablemos de algo?</h2>
-      <p class="mb-4 text-sm text-gray-600">Enviá tu pregunta o tema y el equipo lo evaluará. Si respondemos, lo publicaremos en el blog.</p>
+      <p
+        v-if="suggestionMessage"
+        class="text-center mt-3 font-medium"
+        :class="suggestionMessage.includes('Gracias') ? 'text-[#3c490b]' : 'text-red-600'"
+      >
+        {{ suggestionMessage }}
+      </p>
+    </form>
+  </div>
 
-      <div class="grid grid-cols-1 gap-3">
-        <input v-model="sugg.nombre" placeholder="Tu nombre (opcional)" class="p-2 border rounded" />
-        <input v-model="sugg.email" placeholder="Tu email (opcional)" class="p-2 border rounded" />
-        <input v-model="sugg.titulo" placeholder="Título / tema" class="p-2 border rounded" />
-        <textarea v-model="sugg.descripcion" rows="4" placeholder="Descripción / pregunta" class="p-2 border rounded"></textarea>
+  <!-- Iconos  -->
+  <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-20 w-16 opacity-100 rotate-12" />
+  <img src="/icono6.png" alt="Decoración" class="absolute bottom-10 right-20 w-20 opacity-100 -rotate-6" />
+</section>
 
-        <div class="flex items-center gap-3">
-          <button @click="submitSugg" :disabled="sendingSuggestion" class="px-4 py-2 bg-[#e099a8] rounded text-white">
-            <span v-if="sendingSuggestion">Enviando...</span>
-            <span v-else>Enviar sugerencia</span>
-          </button>
-          <div class="text-sm text-green-600">{{ suggestionMessage }}</div>
-        </div>
-      </div>
-    </section>
 
-    <!-- PUBLICACIONES -->
+    <!-- publicaciones -->
     <section class="relative w-[95%] max-w-[1200px] py-20 px-6 space-y-10 text-left overflow-visible">
 
       <img src="/icono1.png" class="absolute top-8 left-[-60px] w-14 opacity-100 rotate-12" />
       <img src="/icono2.png" class="absolute top-1/4 right-[-70px] w-10 opacity-100 -rotate-6" />
       <img src="/icono3.png" class="absolute top-1/2 left-[-80px] w-20 opacity-100 rotate-3" />
       <img src="/icono6.png" class="absolute top-[70%] right-[-90px] w-18 opacity-100 rotate-6" />
-
       <img src="/icono1.png" class="absolute bottom-[10%] right-[-80px] w-14 opacity-100 rotate-12" />
       <img src="/icono2.png" class="absolute top-[60%] left-[-70px] w-10 opacity-100 rotate-6" />
       <img src="/icono6.png" class="absolute bottom-[40%] right-[-60px] w-20 opacity-100 rotate-6" />
