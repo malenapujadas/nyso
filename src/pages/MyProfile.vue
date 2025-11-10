@@ -1,8 +1,10 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { supabase } from '../services/supabase.js';
+
+import { subscribeToAuthChanges } from '../services/auth.js';
 import { getFavorites, removeFavorite } from '../services/favorites.js';
 import { getHistory, clearHistory } from '../services/history.js';
+import { getPreferencesForUser } from '../services/preferences.js';
 import vinos from '../vinos.json';
 
 export default {
@@ -10,26 +12,33 @@ export default {
   components: { AppH1 },
   data() {
     return {
-      user: { id: null, email: null, display_name: null, vino: null },
+      user: { 
+        id: null, 
+        email: null, 
+        display_name: null, 
+        vino: null 
+      },
       favorites: [],
       history: [],
+      preferences: null,
     };
   },
-  async mounted() {
-    const { data } = await supabase.auth.getUser();
-    this.user = data.user;
-
-    if (this.user) {
-      const favIds = await getFavorites(this.user.id);
-      const hisIds = await getHistory(this.user.id);
-
-      this.favorites = vinos.filter(v =>
-        favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
-      );
-      this.history = vinos.filter(v =>
-        hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
-      );
-    }
+  mounted() {
+    subscribeToAuthChanges(async (userState) => {
+      this.user = userState;
+      if (this.user && this.user.id) {
+        const favIds = await getFavorites(this.user.id);
+        const hisIds = await getHistory(this.user.id);
+        this.favorites = vinos.filter(v =>
+          favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
+        );
+        this.history = vinos.filter(v =>
+          hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
+        );
+        // cargar preferencias del onboarding
+        this.preferences = await getPreferencesForUser(this.user.id);
+      }
+    });
   },
   methods: {
     async handleRemoveFavorite(id) {
@@ -71,7 +80,17 @@ export default {
         <div class="text-[#4e0d05] space-y-2">
           <p><strong>Email:</strong> {{ user.email }}</p>
           <p><strong>Nombre de usuario:</strong> {{ user.display_name ?? 'No establecido' }}</p>
-          <p><strong>Preferencia de vinos:</strong> {{ user.vino ?? 'No establecida' }}</p>
+        </div>
+        <div v-if="preferences" class="mt-6 space-y-2">
+          <h3 class="font-semibold text-lg mb-2">Tus preferencias</h3>
+          <p><strong>Preferencia de vino:</strong> {{ preferences.gusto || 'No respondido' }}</p>
+          <p><strong>¿Cómo preferís tomar vino?</strong> {{ preferences.como || 'No respondido' }}</p>
+          <p><strong>Intensidad:</strong> {{ preferences.intensidad || 'No respondido' }}</p>
+          <p><strong>Sabores:</strong> {{ Array.isArray(preferences.sabores) && preferences.sabores.length ? preferences.sabores.join(', ') : 'No respondido' }}</p>
+          <p><strong>¿Con qué frecuencia tomás vino?</strong> {{ preferences.frecuencia || 'No respondido' }}</p>
+          <p><strong>¿Con quién solés tomar vino?</strong> {{ preferences.con_quien || 'No respondido' }}</p>
+          <p><strong>¿Qué temas te interesan?</strong> {{ Array.isArray(preferences.temas) && preferences.temas.length ? preferences.temas.join(', ') : 'No respondido' }}</p>
+          <p><strong>Otro tema que te gustaría ver:</strong> {{ preferences.temas_libre || 'No respondido' }}</p>
         </div>
         <RouterLink
           to="/mi-perfil/editar"

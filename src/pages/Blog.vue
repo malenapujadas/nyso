@@ -1,5 +1,5 @@
 <script>
-import { fetchLastpost } from '../services/blog.js';
+import { fetchLastpost, submitSuggestion } from '../services/blog.js';
 
 export default {
   name: 'Blog',
@@ -8,7 +8,16 @@ export default {
       posts: [],
       loading: true,
       error: null,
-      openPost: null
+      openPost: null,
+      // suggestion form state
+      sugg: {
+        nombre: '',
+        email: '',
+        titulo: '',
+        descripcion: ''
+      },
+      sendingSuggestion: false,
+      suggestionMessage: ''
     };
   },
   async mounted() {
@@ -24,6 +33,26 @@ export default {
   methods: {
     togglePost(id) {
       this.openPost = this.openPost === id ? null : id;
+    }
+    ,
+    async submitSugg(){
+      this.suggestionMessage = '';
+      if(!this.sugg.titulo || !this.sugg.descripcion){
+        this.suggestionMessage = 'Por favor completa título y descripción.';
+        return;
+      }
+
+      this.sendingSuggestion = true;
+      try{
+        await submitSuggestion(this.sugg);
+        this.suggestionMessage = 'Gracias — tu tema fue enviado al equipo.';
+        this.sugg = { nombre: '', email: '', titulo: '', descripcion: '' };
+      } catch(err){
+        console.error(err);
+        this.suggestionMessage = err.message || 'Error al enviar la sugerencia.';
+      } finally{
+        this.sendingSuggestion = false;
+      }
     }
   }
 };
@@ -46,6 +75,27 @@ export default {
           <br /><br />
           Leé, aprendé y compartí.
         </p>
+      </div>
+    </section>
+
+    <!-- FORMULARIO PARA SUGERENCIAS -->
+    <section class="w-[95%] max-w-[800px] py-8 px-6 bg-white rounded-lg shadow-md mb-20">
+      <h2 class="text-2xl font-bold mb-4">¿Querés que hablemos de algo?</h2>
+      <p class="mb-4 text-sm text-gray-600">Enviá tu pregunta o tema y el equipo lo evaluará. Si respondemos, lo publicaremos en el blog.</p>
+
+      <div class="grid grid-cols-1 gap-3">
+        <input v-model="sugg.nombre" placeholder="Tu nombre (opcional)" class="p-2 border rounded" />
+        <input v-model="sugg.email" placeholder="Tu email (opcional)" class="p-2 border rounded" />
+        <input v-model="sugg.titulo" placeholder="Título / tema" class="p-2 border rounded" />
+        <textarea v-model="sugg.descripcion" rows="4" placeholder="Descripción / pregunta" class="p-2 border rounded"></textarea>
+
+        <div class="flex items-center gap-3">
+          <button @click="submitSugg" :disabled="sendingSuggestion" class="px-4 py-2 bg-[#e099a8] rounded text-white">
+            <span v-if="sendingSuggestion">Enviando...</span>
+            <span v-else>Enviar sugerencia</span>
+          </button>
+          <div class="text-sm text-green-600">{{ suggestionMessage }}</div>
+        </div>
       </div>
     </section>
 

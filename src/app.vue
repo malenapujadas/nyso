@@ -83,6 +83,15 @@ export default {
         Blog
       </RouterLink>
     </li>
+    <li>
+      <RouterLink
+        to="/red-social"
+        class="hover:text-[#e099a8] transition-colors"
+        :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/red-social' }"
+      >
+        Red Social
+      </RouterLink>
+    </li>
   </ul>
 
   <div class="flex items-center gap-4 w-40 justify-end">

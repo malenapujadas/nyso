@@ -31,9 +31,26 @@ export async function updateUserProfile(id, newData){
         .from('user_profiles')
         .update(newData)
         .eq('id', id)
+        .select()
+        .single(); // <-- esto trae el perfil actualizado
 
     if(error){
         console.error('[user-profiles.js updateUserProfile] Error al actualizar el perfil del usuario: ', error);
         throw new Error(error.message);
     }
-} 
+    return data; // <-- retorna el perfil actualizado
+}
+/* export async function updateUserProfile(id, newData){
+    const {data, error} = await supabase
+        .from('user_profiles')
+        .update(newData)
+        .eq('id', id)
+
+    const perfilActualizado = await updateUserProfile(id, newData);
+    this.perfil = perfilActualizado;
+
+    if(error){
+        console.error('[user-profiles.js updateUserProfile] Error al actualizar el perfil del usuario: ', error);
+        throw new Error(error.message);
+    }
+}  */

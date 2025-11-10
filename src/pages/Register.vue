@@ -44,7 +44,8 @@ export default {
       try {
         this.loading = true;
         await register(this.user.email, this.user.password, this.user.nombre);
-        this.$router.push('/mi-perfil');
+        /* this.$router.push('/mi-perfil'); */
+        this.$router.push('/preferencias');
       } catch (error) {
         this.errorMsg = 'No se pudo crear la cuenta';
       }
