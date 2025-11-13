@@ -1,6 +1,5 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { supabase } from '../services/supabase.js';
 import { register } from '../services/auth.js';
 
 export default {
@@ -44,7 +43,6 @@ export default {
       try {
         this.loading = true;
         await register(this.user.email, this.user.password, this.user.nombre);
-        /* this.$router.push('/mi-perfil'); */
         this.$router.push('/preferencias');
       } catch (error) {
         this.errorMsg = 'No se pudo crear la cuenta';
@@ -104,9 +102,6 @@ export default {
           v-model="user.nombre"
           />
       </div>
-
-
-
       <div>
         <label for="nacimiento" class="block text-[#3c490b] text-sm font-bold mb-1"
           >Fecha de Nacimiento</label
@@ -118,8 +113,6 @@ export default {
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-[#4e0d05] bg-white placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
-
-
       <div>
         <label for="password" class="block text-[#3c490b] text-sm font-bold mb-1">Contraseña</label>
         <input
@@ -133,8 +126,6 @@ export default {
           * La contraseña debe contener mínimo 6 (seis) caracteres
         </p>
       </div>
-
-
       <button
         type="submit"
         :disabled="loading"
@@ -142,8 +133,6 @@ export default {
       >
         {{ loading ? 'Creando cuenta...' : 'Crear cuenta' }}
       </button>
-
-
       <p class="text-center text-sm text-[#4e0d05]/70 mt-3">
         ¿Ya tenés una cuenta?
         <RouterLink

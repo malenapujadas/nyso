@@ -1,7 +1,8 @@
 
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { supabase } from '../services/supabase.js';
+import { getCurrentUser } from '../services/auth.js';
+import * as opciones from '../data/preferences-options.js';
 import { savePreferencesForUser } from '../services/preferences.js';
 
 export default {
@@ -15,54 +16,11 @@ export default {
         intensidad: null,
         sabores: [],
         frecuencia: null,
-        conQuien: null,
+        con_quien: null,
         temas: [],
         temas_libre: '',
       },
-      gustos: [
-        { value: 'tinto', label: '🟥 Tinto' },
-        { value: 'blanco', label: '🟨 Blanco' },
-        { value: 'rosado', label: '🟪 Rosado' },
-        { value: 'espumante', label: '🍾 Espumante' },
-        { value: 'descubrir', label: '🤷‍♀️ No sé, quiero descubrir' },
-      ],
-      como: [
-        { value: 'con_comida', label: '🍽️ Con comida' },
-        { value: 'reuniones', label: '🎉 En reuniones' },
-        { value: 'tranqui', label: '🌅 Tranqui' },
-        { value: 'pareja', label: '❤️ En pareja' },
-      ],
-      intensidad: [
-        { value: 'intenso', label: '💃 Intenso y con carácter' },
-        { value: 'suave', label: '😌 Suave y relajado' },
-        { value: 'equilibrado', label: '🤓 Equilibrado' },
-        { value: 'sorprendente', label: '😜 Sorprendente' },
-      ],
-      saboresOpc: [
-        { value: 'frutales', label: 'Frutales 🍒' },
-        { value: 'dulces', label: 'Dulces 🍯' },
-        { value: 'acidos', label: 'Ácidos 🍋' },
-        { value: 'terrosos', label: 'Terrosos 🌿' },
-        { value: 'especiados', label: 'Especiados 🌶️' },
-      ],
-      frecuencia: [
-        { value: 'fines_semana', label: 'Casi todos los fines de semana' },
-        { value: 'ocasiones', label: 'Solo en ocasiones especiales' },
-        { value: 'descubriendo', label: 'Lo estoy descubriendo' },
-        { value: 'fan', label: '¡Soy fan total!' },
-      ],
-      conQuien: [
-        { value: 'amigos', label: 'Amigos' },
-        { value: 'pareja', label: 'Pareja' },
-        { value: 'familia', label: 'Familia' },
-        { value: 'solo', label: 'Solo' },
-      ],
-      temasOpc: [
-        { value: 'nuevas_bodegas', label: 'Nuevas bodegas' },
-        { value: 'maridajes', label: 'Maridajes' },
-        { value: 'tips', label: 'Tips para elegir' },
-        { value: 'experiencias', label: 'Experiencias y eventos' },
-      ],
+      ...opciones,
       saving: false,
     };
   },
@@ -86,28 +44,17 @@ export default {
     async saveAnswers() {
       this.saving = true;
       try {
-        const { data } = await supabase.auth.getUser();
-        const user = data?.user;
+        const user = await getCurrentUser();
         if (!user) throw new Error('Usuario no encontrado');
-
         // convertimos reactive -> POJO
         const plainPreferences = JSON.parse(JSON.stringify(this.answers));
-
-        console.log('Saving preferences for user', user.id, plainPreferences);
-
+        console.log('Guardando preferencias del usuario', user.id, plainPreferences);
         // guardamos en la tabla relacional
-        const result = await savePreferencesForUser(user.id, user.email, plainPreferences);
-
-        console.log('Preferences saved (user_preferences):', result);
-
-        // opcional: mantener también user_profiles.preferences para retrocompatibilidad
-        // await supabase.from('user_profiles').upsert([{ id: user.id, email: user.email, preferences: plainPreferences }], { returning: 'minimal' });
-
+        const result = await savePreferencesForUser(user.id, plainPreferences);
+        console.log('Preferencias guardadas (user_preferences):', result);
         this.$router.push('/mi-perfil');
       } catch (err) {
         console.error('Error guardando preferencias', err);
-        const msg = err?.message || 'No se pudieron guardar las preferencias. Intentá de nuevo.';
-        alert(msg);
       } finally {
         this.saving = false;
       }
@@ -116,19 +63,13 @@ export default {
     async skip() {
       this.saving = true;
       try {
-        const { data } = await supabase.auth.getUser();
-        const user = data?.user;
+        const user = await getCurrentUser();
         if (!user) throw new Error('Usuario no encontrado');
-
         const plainPreferences = { skipped: true };
-
-        const result = await savePreferencesForUser(user.id, user.email, plainPreferences);
-        console.log('Skip saved (user_preferences):', result);
-
+        await savePreferencesForUser(user.id, plainPreferences);
         this.$router.push('/mi-perfil');
       } catch (err) {
-        console.error(err);
-        alert('Error al saltar. Intentá de nuevo.');
+        console.error('Error al saltar preferencias', err);
       } finally {
         this.saving = false;
       }
@@ -146,7 +87,7 @@ export default {
       <div class="mb-6">
         <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué tipo de vino va más con vos?</h3>
         <div class="flex gap-2 flex-wrap">
-          <button type="button" v-for="opt in gustos" :key="opt.value"
+          <button type="button" v-for="opt in gustoOpc" :key="opt.value"
             @click="answers.gusto = opt.value"
             :class="chipClass(answers.gusto === opt.value)">
             <span v-html="opt.label"></span>
@@ -155,7 +96,7 @@ export default {
 
         <h4 class="mt-4 font-semibold text-[#3c490b]">¿Cómo te gusta disfrutar el vino?</h4>
         <div class="flex gap-2 flex-wrap mt-2">
-          <button v-for="opt in como" :key="opt.value" type="button"
+          <button v-for="opt in comoOpc" :key="opt.value" type="button"
             @click="answers.como = opt.value"
             :class="chipClass(answers.como === opt.value)">
             {{ opt.label }}
@@ -167,7 +108,7 @@ export default {
       <div class="mb-6">
         <h3 class="font-semibold text-[#3c490b] mb-2">Si tu vino ideal fuera una persona, sería…</h3>
         <div class="flex gap-2 flex-wrap">
-          <button v-for="opt in intensidad" :key="opt.value" type="button"
+          <button v-for="opt in intensidadOpc" :key="opt.value" type="button"
             @click="answers.intensidad = opt.value"
             :class="chipClass(answers.intensidad === opt.value)">
             {{ opt.label }}
@@ -188,7 +129,7 @@ export default {
       <div class="mb-6">
         <h3 class="font-semibold text-[#3c490b] mb-2">¿Cada cuánto tomás vino?</h3>
         <div class="flex gap-2 flex-wrap">
-          <button v-for="opt in frecuencia" :key="opt.value" type="button"
+          <button v-for="opt in frecuenciaOpc" :key="opt.value" type="button"
             @click="answers.frecuencia = opt.value"
             :class="chipClass(answers.frecuencia === opt.value)">
             {{ opt.label }}
@@ -197,7 +138,7 @@ export default {
 
         <h4 class="mt-4 font-semibold text-[#3c490b]">¿Con quién compartís más el vino?</h4>
         <div class="flex gap-2 flex-wrap mt-2">
-          <button v-for="opt in conQuien" :key="opt.value" type="button"
+          <button v-for="opt in conQuienOpc" :key="opt.value" type="button"
             @click="answers.conQuien = opt.value"
             :class="chipClass(answers.conQuien === opt.value)">
             {{ opt.label }}

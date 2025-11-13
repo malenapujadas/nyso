@@ -5,26 +5,26 @@ let user = {
     id: null,
     email: null,
 }
-let observers=[];
+let observers=[]; //funciones que quieren enterarse si el usuario cambia
 
 loadUserCurrentAuthState();
 
+//ver si hay sesión activa
 async function loadUserCurrentAuthState(){
     const { data, error } = await supabase.auth.getUser();
 
-    if(error) {
-        console.warn('[auth.js loadUserCurrentAuthState] No hay un usuario autenticado ');
-        return;
-    }
+    if (error) return console.warn('[auth.js] No hay usuario autenticado');
 
     setAuthUserState({
         id: data.user.id,
         email: data.user.email,
     });
 
+    //para completar el perfil
     loadExtendedProfile();
 };
 
+//si hay usuario, carga datos completos desed la tabla
 async function loadExtendedProfile(){
     if(user.id === null) return;
     setAuthUserState(await getUserProfileById(user.id));
@@ -98,7 +98,8 @@ export async function updateAuthUserData(data){
 
         setAuthUserState(data); 
     } catch (error) {
-        
+        console.error('[auth.js updateAuthUserData] Error al actualizar usuario:', error);
+        throw new Error(error.message);
     }
 }
 
@@ -106,6 +107,11 @@ export async function updateAuthUserData(data){
 export function subscribeToAuthChanges(callback){
     observers.push(callback);
     notify(callback);
+}
+
+export async function getCurrentUser() {
+  const { data } = await supabase.auth.getUser();
+  return data?.user || null;
 }
 
 function notify(callback){

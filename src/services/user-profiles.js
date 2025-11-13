@@ -32,25 +32,25 @@ export async function updateUserProfile(id, newData){
         .update(newData)
         .eq('id', id)
         .select()
-        .single(); // <-- esto trae el perfil actualizado
+        .single(); // trae el perfil actualizado
 
     if(error){
         console.error('[user-profiles.js updateUserProfile] Error al actualizar el perfil del usuario: ', error);
         throw new Error(error.message);
     }
-    return data; // <-- retorna el perfil actualizado
+    return data; 
 }
-/* export async function updateUserProfile(id, newData){
-    const {data, error} = await supabase
-        .from('user_profiles')
-        .update(newData)
-        .eq('id', id)
 
-    const perfilActualizado = await updateUserProfile(id, newData);
-    this.perfil = perfilActualizado;
 
-    if(error){
-        console.error('[user-profiles.js updateUserProfile] Error al actualizar el perfil del usuario: ', error);
-        throw new Error(error.message);
-    }
-}  */
+export async function getAllUsers() {
+  const { data, error } = await supabase
+    .from('user_profiles')
+    .select('id, display_name, email');
+
+  if (error) {
+    console.error('[users.js getAllUsers] Error al obtener usuarios:', error);
+    throw new Error(error.message);
+  }
+
+  return data || [];
+}

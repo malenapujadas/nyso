@@ -1,6 +1,8 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { supabase } from '../services/supabase.js';
+import { getAllUsers } from '../services/user-profiles.js';
+import { getCurrentUser } from '../services/auth.js';
+import { sendConnectionRequest } from '../services/connections.js';
 
 export default {
   name: 'RedSocial',
@@ -9,17 +11,49 @@ export default {
     return {
       users: [],
       loading: true,
+      searchQuery: '',
+      user: null,
+      message: '',
     };
   },
-  async mounted() {
-    // Traer todos los perfiles de usuario
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .select('id, display_name, email');
-    if (data) {
-      this.users = data;
+  computed: {
+    filteredUsers() {
+      const q = this.searchQuery.toLowerCase();
+      return this.users.filter(u =>
+        (u.display_name || '').toLowerCase().includes(q)
+      );
+    },
+  },
+  methods: {
+    async handleConnect(receiverId) {
+      console.log('Intentando conectar con', receiverId);
+      if (!this.user) {
+        this.message = 'Debes iniciar sesión para conectar con alguien.';
+        setTimeout(() => (this.message = ''), 3000);
+        return;
+      }
+      try {
+        await sendConnectionRequest(this.user.id, receiverId);
+        this.message = 'Solicitud de conexión enviada 🍷';
+        setTimeout(() => (this.message = ''), 3000);
+      } catch (err) {
+        console.error('Error enviando solicitud de conexión:', err);
+      }
     }
-    this.loading = false;
+  },
+  async mounted() {
+      try {
+      this.users = await getAllUsers();
+      /* const { data } = await getCurrentUser();
+      this.user = data?.user; */
+      const u = await getCurrentUser();
+      this.user = u;
+    } catch (err) {
+      console.error('[RedSocial.vue] Error cargando usuarios:', err);
+      this.users = [];
+    } finally {
+      this.loading = false;
+    }
   },
 };
 </script>
@@ -72,7 +106,18 @@ export default {
     </p>
   </div>
 </section>
-
+  <!-- Buscador -->
+  <div class="relative w-full max-w-lg mb-10 z-10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
+    </svg>
+    <input
+      v-model="searchQuery"
+      type="search"
+      placeholder="Buscar usuario por nombre..."
+      class="w-full border border-[#e099a8] rounded-full p-3 pl-10 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
+    />
+  </div>
 
     <!-- 👥 Usuarios registrados -->
     <section class="w-[90%] max-w-[1000px] py-16 px-6 md:px-10 text-left">
@@ -84,7 +129,7 @@ export default {
 
       <ul v-else class="space-y-5">
         <li
-          v-for="u in users"
+          v-for="u in filteredUsers"
           :key="u.id"
           class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between hover:shadow-md hover:scale-[1.01] transition-all duration-300"
         >
@@ -99,6 +144,13 @@ export default {
           >
             Ver perfil ↗
           </router-link>
+          <button
+            v-if="user && user.id !== u.id"
+            @click="handleConnect(u.id)"
+            class="mt-2 md:mt-0 text-[#3c490b] border border-[#3c490b] rounded-full px-5 py-1.5 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+          >
+            + Conectar 
+          </button>
         </li>
       </ul>
 

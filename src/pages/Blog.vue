@@ -1,5 +1,5 @@
 <script>
-import { fetchLastpost, submitSuggestion } from '../services/blog.js';
+import { fetchLastPost, submitSuggestion } from '../services/blog.js';
 
 export default {
   name: 'Blog',
@@ -21,7 +21,7 @@ export default {
   },
   async mounted() {
     try {
-      this.posts = await fetchLastpost() || [];
+      this.posts = await fetchLastPost() || [];
     } catch (err) {
       console.error('Error cargando posts:', err);
       this.error = err.message || 'Error al cargar publicaciones';
@@ -44,6 +44,7 @@ export default {
       try {
         await submitSuggestion(this.sugg);
         this.suggestionMessage = '¡Gracias! Tu tema fue enviado al equipo ';
+        setTimeout(() => (this.suggestionMessage = ''), 4000);
         this.sugg = { nombre: '', email: '', titulo: '', descripcion: '' };
       } catch (err) {
         console.error(err);
@@ -58,8 +59,6 @@ export default {
 
 <template>
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-visible">
-
-
     <!-- banner-->
 <section
   class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 py-12 px-10 md:px-20 relative overflow-hidden"
@@ -75,14 +74,11 @@ export default {
     alt="Decoración"
     class="absolute bottom-10 left-20 w-16 opacity-100 -rotate-6"
   />
-
-
   <img
     src="/nysito2.png"
     alt="Personaje Nysito"
     class="w-44 md:w-56 z-10"
   />
-
   <!-- Texto -->
   <div class="max-w-lg text-center md:text-left z-10 leading-snug flex flex-col justify-center">
     <h1 class="text-4xl font-extrabold mb-4">
@@ -98,9 +94,6 @@ export default {
     </p>
   </div>
 </section>
-
-
-
 <!-- form-->
 <section
   class="relative w-[95%] md:w-[90%] max-w-[1200px] py-16 px-8 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-sm mt-16 mb-20 text-left flex flex-col items-center mx-auto"
@@ -165,7 +158,6 @@ export default {
   <img src="/icono1.png" alt="Decoración" class="absolute top-10 left-20 w-16 opacity-100 rotate-12" />
   <img src="/icono6.png" alt="Decoración" class="absolute bottom-10 right-20 w-20 opacity-100 -rotate-6" />
 </section>
-
 
     <!-- publicaciones -->
     <section class="relative w-[95%] max-w-[1200px] py-20 px-6 space-y-10 text-left overflow-visible">

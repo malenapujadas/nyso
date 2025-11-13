@@ -1,7 +1,7 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import vinos from '../vinos.json';
-import { supabase } from '../services/supabase.js';
+import { getVinoById } from '../services/wines.js';
+import { getCurrentUser } from '../services/auth.js';
 import { addFavorite, getFavorites } from '../services/favorites.js';
 import { addHistory } from '../services/history.js';
 
@@ -20,12 +20,15 @@ export default {
   async mounted() {
     this.id = this.$route.params.id;
     if (this.id) {
-      const found = vinos.find((v) => String(v.id) === String(this.id));
-      if (found) this.vino = found;
+      try {
+        this.vino = await getVinoById(this.id);
+      } catch (error) {
+        console.error('[Detail.vue] Error al cargar detalle de vino:', error);
+      }
     }
 
-    const { data } = await supabase.auth.getUser();
-    this.user = data.user;
+    const user = await getCurrentUser();
+    this.user = user;
 
     if (this.user && this.vino) {
       const favIds = await getFavorites(this.user.id);

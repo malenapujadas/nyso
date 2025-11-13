@@ -1,6 +1,9 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import vinos from '../vinos.json';
+import { getVinos } from '../services/wines.js';
+import { matchesSearch, matchesFilters, matchesPrice } from '../utils/wineFilters.js';
+
+
 
 export default {
   name: 'Vinos',
@@ -24,24 +27,17 @@ export default {
   },
 
   computed: {
-    tipos() {
-      return [...new Set(this.vinosList.map(v => v.tipo))].filter(Boolean);
-    },
-    uvas() {
-      return [...new Set(this.vinosList.map(v => v.uva))].filter(Boolean);
-    },
-    regiones() {
-      return [...new Set(this.vinosList.map(v => v.region))].filter(Boolean);
-    },
-    dulzores() {
-      return [...new Set(this.vinosList.map(v => v.dulzor))].filter(Boolean);
-    },
-    cuerpos() {
-      return [...new Set(this.vinosList.map(v => v.cuerpo))].filter(Boolean);
-    },
+    // opciones únicas para cada campo
+    tipos() { return this.uniqueValues('tipo'); },
+    uvas() { return this.uniqueValues('uva'); },
+    regiones() { return this.uniqueValues('region'); },
+    dulzores() { return this.uniqueValues('dulzor'); },
+    cuerpos() { return this.uniqueValues('cuerpo'); },
     años() {
-      return [...new Set(this.vinosList.map(v => v["año"]))].filter(Boolean).sort((a, b) => b - a);
+      return this.uniqueValues('año').sort((a, b) => b - a);
     },
+
+    // precios mínimos y máximos
     priceMin() {
       if (!this.vinosList.length) return 0;
       return Math.min(...this.vinosList.map(v => v.precio_aproximado || 0));
@@ -50,31 +46,24 @@ export default {
       if (!this.vinosList.length) return 0;
       return Math.max(...this.vinosList.map(v => v.precio_aproximado || 0));
     },
+
+    // filtrado principal
     filteredVinos() {
-      const q = this.searchQuery && this.searchQuery.toLowerCase();
-      return this.vinosList.filter(v => {
-        if (q) {
-          const hay = ((v.nombre || '') + ' ' + (v.bodega || '') + ' ' + (v.descripcion || '')).toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
-
-        if (this.filters.tipo && v.tipo !== this.filters.tipo) return false;
-        if (this.filters.uva && v.uva !== this.filters.uva) return false;
-        if (this.filters.region && v.region !== this.filters.region) return false;
-        if (this.filters.dulzor && v.dulzor !== this.filters.dulzor) return false;
-        if (this.filters.cuerpo && v.cuerpo !== this.filters.cuerpo) return false;
-        if (this.filters.año && String(v['año']) !== String(this.filters.año)) return false;
-
-        const p = Number(v.precio_aproximado || 0);
-        if (this.selectedMinPrice != null && p < Number(this.selectedMinPrice)) return false;
-        if (this.selectedMaxPrice != null && p > Number(this.selectedMaxPrice)) return false;
-
-        return true;
-      });
-    }
+      const query = this.searchQuery?.toLowerCase() || '';
+      return this.vinosList.filter(vino =>
+        matchesSearch(vino, query) &&
+        matchesFilters(vino, this.filters) &&
+        matchesPrice(vino, this.selectedMinPrice, this.selectedMaxPrice)
+      );
+    },
   },
-
   methods: {
+    uniqueValues(key) {
+      // Si la lista está vacía o no es un array, devolvemos un array vacío
+      if (!Array.isArray(this.vinosList)) return [];
+      // Extraemos los valores únicos y eliminamos vacíos o null
+      return [...new Set(this.vinosList.map(v => v[key]))].filter(Boolean);
+    },
     resetFilters() {
       this.searchQuery = '';
       this.filters = { tipo: '', uva: '', region: '', dulzor: '', cuerpo: '', año: '' };
@@ -93,10 +82,15 @@ export default {
     }
   },
 
-  mounted() {
-    this.vinosList = vinos;
-    this.selectedMinPrice = this.priceMin;
-    this.selectedMaxPrice = this.priceMax;
+  async mounted() {
+    try {
+     const data = await getVinos();
+     this.vinosList = data || [];
+     this.selectedMinPrice = this.priceMin;
+     this.selectedMaxPrice = this.priceMax;
+    } catch (error) {
+      console.error('[Social.vue] Error al cargar vinos desde Supabase:', error);
+    }
   }
 };
 </script>

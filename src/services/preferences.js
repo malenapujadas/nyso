@@ -1,36 +1,29 @@
 // src/services/preferences.js
 import { supabase } from './supabase.js';
 
-/**
- * Guarda / actualiza las preferencias del usuario en user_preferences
- * @param {string} userId
- * @param {string|null} email
- * @param {Object} preferences  // POJO (no proxy)
- * @returns {Array} data (representation) or throws error
- */
-export async function savePreferencesForUser(userId, email = null, preferences = {}) {
+export async function savePreferencesForUser(userId, answers) {
   // asegúrate que preferences sea POJO, no Proxy (Vue reactive)
-  const plainPrefs = JSON.parse(JSON.stringify(preferences || {}));
+  /* const plainPrefs = JSON.parse(JSON.stringify(preferences || {}));  */ 
 
   const payload = {
     user_id: userId,
-    gusto: plainPrefs.gusto ?? null,
-    como: plainPrefs.como ?? null,
-    intensidad: plainPrefs.intensidad ?? null,
-    sabores: Array.isArray(plainPrefs.sabores) ? plainPrefs.sabores : (plainPrefs.sabores ? [plainPrefs.sabores] : []),
-    frecuencia: plainPrefs.frecuencia ?? null,
-    con_quien: plainPrefs.conQuien ?? plainPrefs.con_quien ?? null,
-    temas: Array.isArray(plainPrefs.temas) ? plainPrefs.temas : (plainPrefs.temas ? [plainPrefs.temas] : []),
-    temas_libre: plainPrefs.temas_libre ?? null,
-    updated_at: new Date().toISOString(),
+    ...answers,
+    // Convertir arrays a texto JSON antes de guardar
+    sabores: JSON.stringify(answers.sabores || []),
+    temas: JSON.stringify(answers.temas || []),
   };
 
   // upsert: user_id debe ser PK o unique
+
   const { data, error } = await supabase
     .from('user_preferences')
-    .upsert([payload], { returning: 'representation' });
+    .upsert(payload, { returning: 'representation' });
 
-  if (error) throw error;
+  if (error) {
+    console.error('[preferences.js savePreferencesForUser] Error al guardar:', error);
+    throw new Error(error.message);
+  }
+
   return data;
 }
 
@@ -44,8 +37,18 @@ export async function getPreferencesForUser(userId) {
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error) throw error;
-  return data; // puede ser null si no existe
+    if (error) {
+    console.warn('[preferences.js getPreferencesForUser] No se pudieron cargar preferencias:', error);
+    return null;
+  }
+
+  if (data) {
+    // convertir de texto JSON a arrays reales
+    data.sabores = typeof data.sabores === 'string' ? JSON.parse(data.sabores) : data.sabores || [];
+    data.temas = typeof data.temas === 'string' ? JSON.parse(data.temas) : data.temas || [];
+  }
+
+  return data;
 }
 
 // Trae user_preferences y los datos de auth.user

@@ -1,9 +1,10 @@
 
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { subscribeToAuthChanges } from '../services/auth.js';
+import { getCurrentUser, updateAuthUserData } from '../services/auth.js';
 import { getPreferencesForUser, savePreferencesForUser } from '../services/preferences.js';
-import { supabase } from '../services/supabase.js';
+import { updateUserProfile } from '../services/user-profiles.js';
+import * as opciones from '../data/preferences-options.js';
 
 export default {
   name: 'MyProfileEdit',
@@ -22,52 +23,12 @@ export default {
         temas_libre: '',
       },
       loading: false,
-      gustoOpc: [
-        { value: 'rosado', label: '🟪 Rosado' },
-        { value: 'espumante', label: '🍾 Espumante' },
-        { value: 'descubrir', label: '🤷‍♀️ No sé, quiero descubrir' },
-      ],
-      como: [
-        { value: 'con_comida', label: '🍽️ Con comida' },
-        { value: 'reuniones', label: '🎉 En reuniones' },
-        { value: 'tranqui', label: '🌅 Tranqui' },
-        { value: 'pareja', label: '❤️ En pareja' },
-      ],
-      intensidad: [
-        { value: 'intenso', label: '💃 Intenso y con carácter' },
-        { value: 'suave', label: '😌 Suave y relajado' },
-        { value: 'equilibrado', label: '🤓 Equilibrado' },
-        { value: 'sorprendente', label: '😜 Sorprendente' },
-      ],
-      saboresOpc: [
-        { value: 'frutales', label: 'Frutales 🍒' },
-        { value: 'dulces', label: 'Dulces 🍯' },
-        { value: 'acidos', label: 'Ácidos 🍋' },
-        { value: 'terrosos', label: 'Terrosos 🌿' },
-        { value: 'especiados', label: 'Especiados 🌶️' },
-      ],
-      frecuencia: [
-        { value: 'fines_semana', label: 'Casi todos los fines de semana' },
-        { value: 'ocasiones', label: 'Solo en ocasiones especiales' },
-        { value: 'descubriendo', label: 'Lo estoy descubriendo' },
-        { value: 'fan', label: '¡Soy fan total!' },
-      ],
-      conQuien: [
-        { value: 'amigos', label: 'Amigos' },
-        { value: 'pareja', label: 'Pareja' },
-        { value: 'familia', label: 'Familia' },
-        { value: 'solo', label: 'Solo' },
-      ],
-      temasOpc: [
-        { value: 'nuevas_bodegas', label: 'Nuevas bodegas' },
-        { value: 'maridajes', label: 'Maridajes' },
-        { value: 'tips', label: 'Tips para elegir' },
-        { value: 'experiencias', label: 'Experiencias y eventos' },
-      ],
+      ...opciones,
     };
   },
   methods: {
     chipClass(selected) {
+      //clase dinamica, si esta seleccionado me lo pinta de rosa
       return [
         'px-3 py-1 rounded-full border',
         selected ? 'bg-[#e099a8] text-white' : 'bg-white text-[#3c490b]'
@@ -86,28 +47,25 @@ export default {
     async handleSubmit() {
       try {
         this.loading = true;
-        const { data } = await supabase.auth.getUser();
-        const user = data?.user;
+        const user = await getCurrentUser();
         if (!user) throw new Error('Usuario no encontrado');
         // Guardar preferencias
-        await savePreferencesForUser(user.id, user.email, this.answers);
+        await savePreferencesForUser(user.id, this.answers);
         // Guardar nombre de usuario
         if (this.display_name) {
-          const { updateUserProfile } = await import('../services/user-profiles.js');
           await updateUserProfile(user.id, { display_name: this.display_name });
-          const { updateAuthUserData } = await import('../services/auth.js');
           await updateAuthUserData({ display_name: this.display_name });
         }
         this.$router.push('/mi-perfil');
       } catch (error) {
-        console.error(error);
+        console.error('[MyProfileEdit] Error al editar datos:', error);
+        alert('Ocurrió un error al guardar los cambios. Intentá nuevamente.');
       }
       this.loading = false;
     },
   },
   async mounted() {
-    const { data } = await supabase.auth.getUser();
-    const user = data?.user;
+    const user = await getCurrentUser();
     if (user) {
       // Precargar nombre de usuario
       this.display_name = user.user_metadata?.display_name || user.display_name || '';
@@ -123,18 +81,6 @@ export default {
           con_quien: prefs.con_quien ?? '',
           temas: Array.isArray(prefs.temas) ? prefs.temas : [],
           temas_libre: prefs.temas_libre ?? '',
-        };
-      } else {
-        // Si no hay preferencias, asegurar valores por defecto
-        this.answers = {
-          gusto: '',
-          como: '',
-          intensidad: '',
-          sabores: [],
-          frecuencia: '',
-          con_quien: '',
-          temas: [],
-          temas_libre: '',
         };
       }
     }
@@ -171,7 +117,7 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué tipo de vino va más con vos?</h3>
           <div class="flex gap-2 flex-wrap">
-            <button type="button" v-for="opt in gustos" :key="opt.value"
+            <button type="button" v-for="opt in gustoOpc" :key="opt.value"
               @click="answers.gusto = opt.value"
               :class="chipClass(answers.gusto === opt.value)">
               <span v-html="opt.label"></span>
@@ -180,7 +126,7 @@ export default {
 
           <h4 class="mt-4 font-semibold text-[#3c490b]">¿Cómo te gusta disfrutar el vino?</h4>
           <div class="flex gap-2 flex-wrap mt-2">
-            <button v-for="opt in como" :key="opt.value" type="button"
+            <button v-for="opt in comoOpc" :key="opt.value" type="button"
               @click="answers.como = opt.value"
               :class="chipClass(answers.como === opt.value)">
               {{ opt.label }}
@@ -192,7 +138,7 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">Si tu vino ideal fuera una persona, sería…</h3>
           <div class="flex gap-2 flex-wrap">
-            <button v-for="opt in intensidad" :key="opt.value" type="button"
+            <button v-for="opt in intensidadOpc" :key="opt.value" type="button"
               @click="answers.intensidad = opt.value"
               :class="chipClass(answers.intensidad === opt.value)">
               {{ opt.label }}
@@ -213,7 +159,7 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Cada cuánto tomás vino?</h3>
           <div class="flex gap-2 flex-wrap">
-            <button v-for="opt in frecuencia" :key="opt.value" type="button"
+            <button v-for="opt in frecuenciaOpc" :key="opt.value" type="button"
               @click="answers.frecuencia = opt.value"
               :class="chipClass(answers.frecuencia === opt.value)">
               {{ opt.label }}
@@ -222,7 +168,7 @@ export default {
 
           <h4 class="mt-4 font-semibold text-[#3c490b]">¿Con quién compartís más el vino?</h4>
           <div class="flex gap-2 flex-wrap mt-2">
-            <button v-for="opt in conQuien" :key="opt.value" type="button"
+            <button v-for="opt in conQuienOpc" :key="opt.value" type="button"
               @click="answers.con_quien = opt.value"
               :class="chipClass(answers.con_quien === opt.value)">
               {{ opt.label }}

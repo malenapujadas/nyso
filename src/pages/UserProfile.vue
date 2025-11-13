@@ -1,3 +1,74 @@
+
+<script>
+import { getPreferencesForUser } from '../services/preferences.js';
+import { getUserProfileById } from '../services/user-profiles.js';
+import { supabase } from '../services/supabase.js';
+
+export default {
+  name: 'UserProfile',
+  data() {
+    return {
+      profile: null,
+      preferences: null,
+      loading: true,
+      gustoOpc: {
+        rosado: '🟪 Rosado',
+        espumante: '🍾 Espumante',
+        descubrir: '🤷‍♀️ Quiero descubrir',
+      },
+      comoOpc: {
+        con_comida: '🍽️ Con comida',
+        reuniones: '🎉 En reuniones',
+        tranqui: '🌅 Tranqui',
+        pareja: '❤️ En pareja',
+      },
+      intensidadOpc: {
+        intenso: '💃 Intenso y con carácter',
+        suave: '😌 Suave y relajado',
+        equilibrado: '🤓 Equilibrado',
+        sorprendente: '😜 Sorprendente',
+      },
+      saboresOpc: {
+        frutales: 'Frutales 🍒',
+        dulces: 'Dulces 🍯',
+        acidos: 'Ácidos 🍋',
+        terrosos: 'Terrosos 🌿',
+        especiados: 'Especiados 🌶️',
+      },
+      frecuenciaOpc: {
+        fines_semana: 'Casi todos los fines de semana',
+        ocasiones: 'Solo en ocasiones especiales',
+        descubriendo: 'Lo estoy descubriendo',
+        fan: '¡Soy fan total!',
+      },
+      conQuienOpc: {
+        amigos: 'Amigos 👯‍♀️',
+        pareja: 'Pareja ❤️',
+        familia: 'Familia 👨‍👩‍👧‍👦',
+        solo: 'Solo 🍷',
+      },
+      temasOpc: {
+        nuevas_bodegas: 'Nuevas bodegas 🏞️',
+        maridajes: 'Maridajes 🍽️',
+        tips: 'Tips para elegir 💡',
+        experiencias: 'Experiencias y eventos 🎉',
+      },
+    };
+  },
+  async mounted() {
+    try {
+      const userId = this.$route.params.id;
+      this.profile = await getUserProfileById(userId);
+      this.preferences = await getPreferencesForUser(userId);
+    } catch (error) {
+      console.error('[UserProfile] Error al obtener datos:', error);
+    } finally {
+      this.loading = false;
+    }
+  }
+};
+</script>
+
 <template>
   <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
     
@@ -19,7 +90,7 @@
       </div>
 
       <div v-else-if="!profile" class="text-center py-8 text-[#e099a8] font-semibold">
-        Usuario no encontrado 😢
+        Usuario no encontrado.
       </div>
 
       <div v-else class="space-y-6">
@@ -77,79 +148,3 @@
 
   </section>
 </template>
-
-<script>
-import { getPreferencesForUser } from '../services/preferences.js';
-import { supabase } from '../services/supabase.js';
-
-export default {
-  name: 'UserProfile',
-  data() {
-    return {
-      profile: null,
-      preferences: null,
-      loading: true,
-      gustoOpc: {
-        rosado: '🟪 Rosado',
-        espumante: '🍾 Espumante',
-        descubrir: '🤷‍♀️ Quiero descubrir',
-      },
-      comoOpc: {
-        con_comida: '🍽️ Con comida',
-        reuniones: '🎉 En reuniones',
-        tranqui: '🌅 Tranqui',
-        pareja: '❤️ En pareja',
-      },
-      intensidadOpc: {
-        intenso: '💃 Intenso y con carácter',
-        suave: '😌 Suave y relajado',
-        equilibrado: '🤓 Equilibrado',
-        sorprendente: '😜 Sorprendente',
-      },
-      saboresOpc: {
-        frutales: 'Frutales 🍒',
-        dulces: 'Dulces 🍯',
-        acidos: 'Ácidos 🍋',
-        terrosos: 'Terrosos 🌿',
-        especiados: 'Especiados 🌶️',
-      },
-      frecuenciaOpc: {
-        fines_semana: 'Casi todos los fines de semana',
-        ocasiones: 'Solo en ocasiones especiales',
-        descubriendo: 'Lo estoy descubriendo',
-        fan: '¡Soy fan total!',
-      },
-      conQuienOpc: {
-        amigos: 'Amigos 👯‍♀️',
-        pareja: 'Pareja ❤️',
-        familia: 'Familia 👨‍👩‍👧‍👦',
-        solo: 'Solo 🍷',
-      },
-      temasOpc: {
-        nuevas_bodegas: 'Nuevas bodegas 🏞️',
-        maridajes: 'Maridajes 🍽️',
-        tips: 'Tips para elegir 💡',
-        experiencias: 'Experiencias y eventos 🎉',
-      },
-    };
-  },
-  async mounted() {
-    const userId = this.$route.params.id;
-    if (!userId) {
-      this.loading = false;
-      return;
-    }
-    //  perfil
-    const { data } = await supabase
-      .from('user_profiles')
-      .select('id, display_name, email')
-      .eq('id', userId)
-      .single();
-    if (data) {
-      this.profile = data;
-      this.preferences = await getPreferencesForUser(userId);
-    }
-    this.loading = false;
-  },
-};
-</script>

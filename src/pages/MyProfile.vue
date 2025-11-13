@@ -5,6 +5,8 @@ import { subscribeToAuthChanges } from '../services/auth.js';
 import { getFavorites, removeFavorite } from '../services/favorites.js';
 import { getHistory, clearHistory } from '../services/history.js';
 import { getPreferencesForUser } from '../services/preferences.js';
+import * as opciones from '../data/preferences-options.js';
+import { getFriends, getPendingRequests, respondToRequest } from '../services/connections.js';
 import vinos from '../vinos.json';
 
 export default {
@@ -21,42 +23,56 @@ export default {
       favorites: [],
       history: [],
       preferences: null,
+      ...opciones,
+      friends: [],
+      pendingRequests: [],
     };
   },
   mounted() {
     subscribeToAuthChanges(async (userState) => {
       this.user = userState;
+
       if (this.user && this.user.id) {
-        const favIds = await getFavorites(this.user.id);
-        const hisIds = await getHistory(this.user.id);
+        const [favIds, hisIds, friends, pending] = await Promise.all([
+          getFavorites(this.user.id),
+          getHistory(this.user.id),
+          getFriends(this.user.id),
+          getPendingRequests(this.user.id),
+        ]);
+
+        this.friends = friends;
+        this.pendingRequests = pending;
+
         this.favorites = vinos.filter(v =>
           favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
         );
+
         this.history = vinos.filter(v =>
           hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
         );
-        // cargar preferencias del onboarding
+
         this.preferences = await getPreferencesForUser(this.user.id);
       }
     });
   },
+
   methods: {
     async handleRemoveFavorite(id) {
       try {
         await removeFavorite(this.user.id, id);
-        this.favorites = this.favorites.filter(f => f.id !== id);
-      } catch (e) {
-        console.error(e);
-        alert('Error al eliminar de favoritos');
+        this.favorites = this.favorites.filter(f => f.id !== id);  
+      } catch (error) {
+        console.error('[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ', error);
+        throw new Error(error.message);
       }
     },
     async handleRemoveHistory(id) {
       try {
         await clearHistory(this.user.id, id);
-        this.history = this.history.filter(h => h.id !== id);
-      } catch (e) {
-        console.error(e);
-        alert('Error al eliminar del historial');
+        this.history = this.history.filter(h => h.id !== id); 
+      } catch (error) {
+        console.error('[MyProfile.vue handleRemoveHistory] Error al eliminar vino del historial: ', error);
+        throw new Error(error.message);
       }
     },
   },
@@ -92,20 +108,60 @@ export default {
         </div>
 
         <div v-if="preferences" class="mt-6 space-y-2">
-          <h3 class="font-semibold text-lg mb-2">Tus preferencias</h3>
-          <p><strong>Preferencia de vino:</strong> {{ preferences.gusto || 'No respondido' }}</p>
-          <p><strong>¿Cómo preferís tomar vino?</strong> {{ preferences.como || 'No respondido' }}</p>
-          <p><strong>Intensidad:</strong> {{ preferences.intensidad || 'No respondido' }}</p>
-          <p><strong>Sabores:</strong> 
-            {{ Array.isArray(preferences.sabores) && preferences.sabores.length ? preferences.sabores.join(', ') : 'No respondido' }}
-          </p>
-          <p><strong>¿Con qué frecuencia tomás vino?</strong> {{ preferences.frecuencia || 'No respondido' }}</p>
-          <p><strong>¿Con quién solés tomar vino?</strong> {{ preferences.con_quien || 'No respondido' }}</p>
-          <p><strong>¿Qué temas te interesan?</strong> 
-            {{ Array.isArray(preferences.temas) && preferences.temas.length ? preferences.temas.join(', ') : 'No respondido' }}
-          </p>
-          <p><strong>Otro tema que te gustaría ver:</strong> {{ preferences.temas_libre || 'No respondido' }}</p>
-        </div>
+        <h3 class="font-semibold text-lg mb-2">Tus preferencias</h3>
+
+        <p>
+          <strong>Preferencia de vino:</strong>
+          {{ gustoOpc.find(opt => opt.value === preferences.gusto)?.label || 'No respondido' }}
+        </p>
+
+        <p>
+          <strong>¿Cómo preferís tomar vino?</strong>
+          {{ comoOpc.find(opt => opt.value === preferences.como)?.label || 'No respondido' }}
+        </p>
+
+        <p>
+          <strong>Intensidad:</strong>
+          {{ intensidadOpc.find(opt => opt.value === preferences.intensidad)?.label || 'No respondido' }}
+        </p>
+
+        <p>
+          <strong>Sabores:</strong>
+          {{
+            Array.isArray(preferences.sabores) && preferences.sabores.length
+              ? preferences.sabores
+                  .map(s => saboresOpc.find(opt => opt.value === s)?.label || s)
+                  .join(', ')
+              : 'No respondido'
+          }}
+        </p>
+
+        <p>
+          <strong>¿Con qué frecuencia tomás vino?</strong>
+          {{ frecuenciaOpc.find(opt => opt.value === preferences.frecuencia)?.label || 'No respondido' }}
+        </p>
+
+        <p>
+          <strong>¿Con quién solés tomar vino?</strong>
+          {{ conQuienOpc.find(opt => opt.value === preferences.con_quien)?.label || 'No respondido' }}
+        </p>
+
+        <p>
+          <strong>¿Qué temas te interesan?</strong>
+          {{
+            Array.isArray(preferences.temas) && preferences.temas.length
+              ? preferences.temas
+                  .map(t => temasOpc.find(opt => opt.value === t)?.label || t)
+                  .join(', ')
+              : 'No respondido'
+          }}
+        </p>
+
+        <p>
+          <strong>Otro tema que te gustaría ver:</strong>
+          {{ preferences.temas_libre || 'No respondido' }}
+        </p>
+      </div>
 
         <RouterLink
           to="/mi-perfil/editar"
@@ -163,18 +219,60 @@ export default {
             </li>
           </ul>
         </div>
-
         <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
       </div>
+
+      <!-- amigos -->
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+          Amigos
+        </h2>
+      <div v-if="friends.length" class="mt-6 space-y-2">
+        <h3 class="font-semibold text-lg mb-2">Amigos</h3>
+        <ul>
+          <li v-for="f in friends" :key="f.id" class="border-b border-[#4e0d05]/10 py-2">
+            {{ f.requester_id === user.id ? f.receiver_id : f.requester_id }}
+          </li>
+        </ul>
+      </div>
+      <div v-else class="text-[#4e0d05]/60 italic">
+        No tienes amigos conectados aún.
+      </div>
+
+      <!-- solicitudes -->
+       <div v-if="pendingRequests.length" class="mt-8">
+      <h3 class="text-lg font-semibold text-[#3c490b] mb-2">Solicitudes pendientes 🍇</h3>
+      <ul class="space-y-2">
+        <li
+          v-for="r in pendingRequests"
+          :key="r.id"
+          class="p-3 bg-[#ede8d7] rounded-lg border border-[#4e0d05]/10 flex justify-between items-center"
+        >
+          <span>{{ r.requester.display_name || 'Usuario' }}</span>
+          <div class="flex gap-2">
+            <button
+              @click="handleResponse(r.id, 'accepted')"
+              class="px-3 py-1 bg-[#3c490b] text-[#f6f6eb] rounded-full text-sm"
+            >
+              Aceptar
+            </button>
+            <button
+              @click="handleResponse(r.id, 'rejected')"
+              class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
+            >
+              Rechazar
+            </button>
+          </div>
+        </li>
+      </ul>
     </div>
 
+    </div>
     <div class="relative -mx-6 mt-24">
-  <img
-    src="/lineacuadros.png"
-    alt="Decoración NYSO"
-    class="w-full h-auto object-cover block"
-  />
-</div>
-
+      <img
+        src="/lineacuadros.png"
+        alt="Decoración NYSO"
+        class="w-full h-auto object-cover block"
+      />
+    </div>
   </section>
 </template>

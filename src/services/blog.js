@@ -1,35 +1,19 @@
  import { supabase } from './supabase.js';
 
-/*  export async function savePost(data){
-    const {error} = await supabase
-        .from('social_posts')
-        .insert ({
-            email: data.email,
-            title: `Publicación ${data.title}`,
-            content: data.content,
-    });
-
-    if(error){
-        console.error('[posts.js savePost] error al insertar la publicación: ', error);
-        throw new Error(error.message);
-    }
- } */
-
- export async function fetchLastpost(){
+ export async function fetchLastPost(){
     const { data, error } = await supabase
             .from('blog')
             .select();
         
     if(error){
-        console.error('[posts.js fetchLastpost] error al traer las ultimas publicaciones: ', error);
+        console.error('[blog.js fetchLastPost] error al traer las ultimas publicaciones: ', error);
         throw new Error(error.message);
     }  
     return data; 
  }
 
-// SUGERENCIAS: los usuarios pueden enviar preguntas/temas para el blog
+// funcion para las sugerencias de los usuarios
 export async function submitSuggestion(suggestion){
-   // suggestion: { nombre, email, titulo, descripcion }
    const { data, error } = await supabase
        .from('blog_suggestions')
        .insert([{
@@ -45,7 +29,8 @@ export async function submitSuggestion(suggestion){
        throw new Error(error.message);
    }
 
-   return data && data[0];
+   return data;
+   /* return data && data[0]; */
 }
 
 export async function fetchSuggestions(){
@@ -62,67 +47,107 @@ export async function fetchSuggestions(){
    return data;
 }
 
-// Responder una sugerencia: actualiza la sugerencia y crea una entrada en la tabla `blog`
-export async function respondSuggestion(suggestionId, responseText){
-   // obtener la sugerencia
-   const { data: suggs, error: getErr } = await supabase
-       .from('blog_suggestions')
-       .select('*')
-       .eq('id', suggestionId)
-       .limit(1)
-       .single();
+export async function getSuggestionById(id) {
+  const { data, error } = await supabase
+    .from('blog_suggestions')
+    .select('*')
+    .eq('id', id)
+    .single();
 
-   if(getErr){
-       console.error('[blog.js respondSuggestion] Error al leer sugerencia: ', getErr);
-       throw new Error(getErr.message);
-   }
+  if (error) {
+    console.error('[blog.js getSuggestionById] Error:', error);
+    throw new Error(error.message);
+  }
 
-   const suggestion = suggs;
-
-   // crear post en la tabla blog combinando pregunta y respuesta
-   const titulo = suggestion.titulo || 'Pregunta del lector';
-   const descripcion = `${suggestion.descripcion}\n\nRespuesta del equipo:\n${responseText}`;
-   // sinopsis: primeros 100 caracteres de la pregunta o el título
-   const sinopsis = (suggestion.descripcion || titulo).substring(0, 100);
-
-   // NO enviar campo id, solo los campos de contenido
-   const { data: createdPost, error: createErr } = await supabase
-       .from('blog')
-       .insert([{ titulo, descripcion, sinopsis }]);
-
-   if(createErr){
-       console.error('[blog.js respondSuggestion] Error al crear post: ', createErr);
-       throw new Error(createErr.message);
-   }
-
-   // actualizar la sugerencia para marcarla como respondida
-   const { data: updated, error: updErr } = await supabase
-       .from('blog_suggestions')
-       .update({ responded: true, response: responseText, responded_at: new Date().toISOString() })
-       .eq('id', suggestionId);
-
-   if(updErr){
-       console.error('[blog.js respondSuggestion] Error al actualizar sugerencia: ', updErr);
-       throw new Error(updErr.message);
-   }
-
-   return { suggestion: updated && updated[0], post: createdPost && createdPost[0] };
+  return data;
 }
 
-/*  export async function suscribeToPosts(callback){
-    const postChannel = supabase.channel('social_posts');
 
-    postChannel.on(
-        'postgres_changes',
-        {
-            event: 'INSERT',
-            table: 'social_posts',
-            schema: 'public',
-        },
-        payload => {
-            callback(payload.new);
-        }
-    );
+export async function createBlogPostFromSuggestion(suggestion, responseText) {
+  const titulo = suggestion.titulo || 'Pregunta del lector';
+  const descripcion = responseText;
+  const sinopsis = (suggestion.descripcion || titulo).substring(0, 100);
 
-    postChannel.subscribe();
- } */
+  const { data, error } = await supabase
+    .from('blog')
+    .insert([{ titulo, descripcion, sinopsis }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('[blog.js createBlogPostFromSuggestion] Error:', error);
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+export async function markSuggestionAsResponded(id, responseText) {
+  const { data, error } = await supabase
+    .from('blog_suggestions')
+    .update({
+      responded: true,
+      response: responseText,
+      responded_at: new Date().toISOString(),
+    })
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('[blog.js markSuggestionAsResponded] Error:', error);
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+//funcion que coordina las 3 anteriores (leer sugerencia, crear post, marcar como respondida)
+export async function respondSuggestion(suggestionId, responseText) {
+  if (!responseText?.trim()) {
+    throw new Error('Debe ingresar una respuesta antes de enviar.');
+  }
+
+  // obtener la sugerencia
+  const suggestion = await getSuggestionById(suggestionId);
+  if (suggestion.responded) {
+    console.warn('[blog.js respondSuggestion] Sugerencia ya respondida:', suggestionId);
+    return suggestion;
+  }
+
+  // crear post y actualizar sugerencia
+  const createdPost = await createBlogPostFromSuggestion(suggestion, responseText);
+  const updatedSuggestion = await markSuggestionAsResponded(suggestionId, responseText);
+
+  return { suggestion: updatedSuggestion, post: createdPost };
+}
+
+//eliminar sugerencia
+export async function deleteSuggestion(suggestionId) {
+  const { error } = await supabase
+    .from('blog_suggestions')
+    .delete()
+    .eq('id', suggestionId);
+
+  if (error) {
+    console.error('[blog.js deleteSuggestion] Error al eliminar sugerencia:', error);
+    throw new Error(error.message);
+  }
+
+  return true;
+}
+
+//eliminar publicacion del blog
+export async function deletePost(postId) {
+  const { error } = await supabase
+    .from('blog')
+    .delete()
+    .eq('id', postId);
+
+  if (error) {
+    console.error('[blog.js deletePost] Error al eliminar post:', error);
+    throw new Error(error.message);
+  }
+
+  return true;
+}
