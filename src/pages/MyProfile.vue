@@ -6,7 +6,7 @@ import { getFavorites, removeFavorite } from '../services/favorites.js';
 import { getHistory, clearHistory } from '../services/history.js';
 import { getPreferencesForUser } from '../services/preferences.js';
 import * as opciones from '../data/preferences-options.js';
-import { getFriends, getPendingRequests, respondToRequest } from '../services/connections.js';
+import { getFriends, getPendingRequests } from '../services/connections.js';
 import vinos from '../vinos.json';
 
 export default {
