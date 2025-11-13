@@ -94,7 +94,7 @@ export default {
           </button>
         </div>
 
-        <h4 class="mt-4 font-semibold text-[#3c490b]">¿Cómo te gusta disfrutar el vino?</h4>
+        <h4 class="mt-4 font-semibold text-[#3c490b]">¿Cómo preferís disfrutarlo?</h4>
         <div class="flex gap-2 flex-wrap mt-2">
           <button v-for="opt in comoOpc" :key="opt.value" type="button"
             @click="answers.como = opt.value"
@@ -106,7 +106,7 @@ export default {
 
       <!-- 2. Intensidad y sabor -->
       <div class="mb-6">
-        <h3 class="font-semibold text-[#3c490b] mb-2">Si tu vino ideal fuera una persona, sería…</h3>
+        <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué tipo de intensidad disfrutás en un vino?</h3>
         <div class="flex gap-2 flex-wrap">
           <button v-for="opt in intensidadOpc" :key="opt.value" type="button"
             @click="answers.intensidad = opt.value"
@@ -148,7 +148,7 @@ export default {
 
       <!-- 4. Comunidad -->
       <div class="mb-6">
-        <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué temas del mundo del vino te gustaría ver en NYSO?</h3>
+        <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué temas te interesan?</h3>
         <div class="flex gap-2 flex-wrap">
           <button v-for="opt in temasOpc" :key="opt.value" type="button"
             @click="toggleTema(opt.value)"

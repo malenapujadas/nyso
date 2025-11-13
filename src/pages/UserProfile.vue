@@ -110,35 +110,80 @@ export default {
           </div>
         </div>
 
-        <!-- Preferencias del usuario -->
-        <div v-if="preferences" class="rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10">
-          <h3 class="text-xl font-semibold text-[#3c490b] mb-4 text-center">
-            Preferencias personales:
-          </h3>
+    <!-- Preferencias del usuario -->
+    <div
+      v-if="preferences"
+      class="rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10 bg-[#ede8d7]/70"
+    >
+      <h3 class="text-xl font-semibold text-[#3c490b] mb-6 text-center">
+        Preferencias personales
+      </h3>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-[#4e0d05]">
-            <p><strong>Tipo:</strong> {{ gustoOpc[preferences.gusto] || 'No respondido' }}</p>
-            <p><strong>Cómo lo toma:</strong> {{ comoOpc[preferences.como] || 'No respondido' }}</p>
-            <p><strong>Intensidad:</strong> {{ intensidadOpc[preferences.intensidad] || 'No respondido' }}</p>
-            <p>
-              <strong>Sabores:</strong>
-              {{ Array.isArray(preferences.sabores) && preferences.sabores.length
-                ? preferences.sabores.map(s => saboresOpc[s] || s).join(', ')
-                : 'No respondido' }}
-            </p>
-            <p><strong>Frecuencia:</strong> {{ frecuenciaOpc[preferences.frecuencia] || 'No respondido' }}</p>
-            <p><strong>Con quién:</strong> {{ conQuienOpc[preferences.con_quien] || 'No respondido' }}</p>
-            <p class="sm:col-span-2">
-              <strong>Temas de interés:</strong>
-              {{ Array.isArray(preferences.temas) && preferences.temas.length
-                ? preferences.temas.map(t => temasOpc[t] || t).join(', ')
-                : 'No respondido' }}
-            </p>
-            <p class="sm:col-span-2">
-              <strong>Otro tema:</strong> {{ preferences.temas_libre || 'No respondido' }}
-            </p>
-          </div>
+      <!-- MINI CARDS GRID -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <!-- Tipo -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Tipo de vino</p>
+          <p class="font-semibold">{{ gustoOpc[preferences.gusto] || 'No respondido' }}</p>
         </div>
+
+        <!-- Cómo lo toma -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Cómo lo toma</p>
+          <p class="font-semibold">{{ comoOpc[preferences.como] || 'No respondido' }}</p>
+        </div>
+
+        <!-- Intensidad -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Intensidad</p>
+          <p class="font-semibold">{{ intensidadOpc[preferences.intensidad] || 'No respondido' }}</p>
+        </div>
+
+        <!-- Sabores -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Sabores</p>
+          <p class="font-semibold">
+            {{
+              Array.isArray(preferences.sabores) && preferences.sabores.length
+                ? preferences.sabores.map(s => saboresOpc[s] || s).join(', ')
+                : 'No respondido'
+            }}
+          </p>
+        </div>
+
+        <!-- Frecuencia -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Frecuencia</p>
+          <p class="font-semibold">{{ frecuenciaOpc[preferences.frecuencia] || 'No respondido' }}</p>
+        </div>
+
+        <!-- Con quién -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
+          <p class="text-sm text-[#4e0d05]/70">Con quién</p>
+          <p class="font-semibold">{{ conQuienOpc[preferences.con_quien] || 'No respondido' }}</p>
+        </div>
+
+        <!-- Temas -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm sm:col-span-2">
+          <p class="text-sm text-[#4e0d05]/70">Temas de interés</p>
+          <p class="font-semibold">
+            {{
+              Array.isArray(preferences.temas) && preferences.temas.length
+                ? preferences.temas.map(t => temasOpc[t] || t).join(', ')
+                : 'No respondido'
+            }}
+          </p>
+        </div>
+
+        <!-- Otro tema -->
+        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm sm:col-span-2">
+          <p class="text-sm text-[#4e0d05]/70">Otro tema</p>
+          <p class="font-semibold">{{ preferences.temas_libre || 'No respondido' }}</p>
+        </div>
+
+      </div>
+    </div>
 
         <div v-else class="text-center text-[#4e0d05]/60 italic">
           Este usuario aún no completó sus preferencias.

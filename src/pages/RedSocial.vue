@@ -61,7 +61,7 @@ export default {
 <template>
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden">
 
-   <!-- 🌸 Banner superior con Nysito -->
+   <!--  Banner superior con Nysito -->
 <section
   class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-20 relative overflow-hidden"
 >
@@ -107,7 +107,7 @@ export default {
   </div>
 </section>
   <!-- Buscador -->
-  <div class="relative w-full max-w-lg mb-10 z-10">
+  <div class="relative w-full max-w-lg mb-10 mt-16 z-10">
     <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
     </svg>
@@ -138,19 +138,23 @@ export default {
             <p class="text-sm text-[#4e0d05]/70">{{ u.email }}</p>
           </div>
 
-          <router-link
-            :to="`/usuario/${u.id}`"
-            class="mt-3 md:mt-0 text-[#e099a8] border border-[#e099a8] rounded-full px-5 py-1.5 text-sm font-medium hover:bg-[#e099a8] hover:text-[#f6f6eb] transition-all duration-300"
-          >
-            Ver perfil ↗
-          </router-link>
-          <button
-            v-if="user && user.id !== u.id"
-            @click="handleConnect(u.id)"
-            class="mt-2 md:mt-0 text-[#3c490b] border border-[#3c490b] rounded-full px-5 py-1.5 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
-          >
-            + Conectar 
-          </button>
+          <div class="flex gap-3 mt-3 md:mt-0 items-center md:justify-end">
+            <router-link
+              :to="`/usuario/${u.id}`"
+              class="text-[#e099a8] border border-[#e099a8] rounded-full px-5 py-1.5 text-sm font-medium hover:bg-[#e099a8] hover:text-[#f6f6eb] transition-all duration-300"
+            >
+              Ver perfil ↗
+            </router-link>
+
+            <button
+              v-if="user && user.id !== u.id"
+              @click="handleConnect(u.id)"
+              class="text-[#3c490b] border border-[#3c490b] rounded-full px-5 py-1.5 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+            >
+              + Conectar
+            </button>
+          </div>
+
         </li>
       </ul>
 
