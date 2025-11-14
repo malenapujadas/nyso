@@ -4,15 +4,23 @@ import { supabase } from './supabase.js';
 export async function sendConnectionRequest(requesterId, receiverId) {
   const { data, error } = await supabase
     .from('connections')
-    .insert([{ requester_id: requesterId, receiver_id: receiverId }]);
+    .insert([
+      {
+        requester_id: requesterId,
+        receiver_id: receiverId,
+        status: 'pending', 
+      },
+    ]);
 
   if (error) {
     console.error('[connections.js] Error al enviar solicitud:', error);
     throw error;
   }
 
+  console.log('[connections.js] Solicitud creada correctamente:', data);
   return data;
 }
+
 
 // Obtener solicitudes recibidas
 export async function getReceivedConnections(userId) {

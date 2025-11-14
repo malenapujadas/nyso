@@ -1,7 +1,7 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
 import { getAllUsers } from '../services/user-profiles.js';
-import { getCurrentUser } from '../services/auth.js';
+import { getCurrentUser, subscribeToAuthChanges } from '../services/auth.js';
 import { sendConnectionRequest } from '../services/connections.js';
 
 export default {
@@ -42,12 +42,19 @@ export default {
     }
   },
   async mounted() {
-      try {
+    try {
+      // cargo todos los usuarios
       this.users = await getAllUsers();
-      /* const { data } = await getCurrentUser();
-      this.user = data?.user; */
-      const u = await getCurrentUser();
-      this.user = u;
+
+      // usuario actual
+      this.user = await getCurrentUser();
+      console.log('[RedSocial.vue] Usuario inicial:', this.user);
+
+      //por si cambia la sesion 
+      subscribeToAuthChanges((userState) => {
+        this.user = userState;
+        console.log('[AuthChange] Usuario actualizado:', this.user);
+      });
     } catch (err) {
       console.error('[RedSocial.vue] Error cargando usuarios:', err);
       this.users = [];
