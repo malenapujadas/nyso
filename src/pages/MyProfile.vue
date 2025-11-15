@@ -82,14 +82,16 @@ export default {
 <template>
   <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
 
-    <img src="/icono1.png" class="absolute top-12 left-12 w-16 rotate-12 opacity-100" />
-    <img src="/icono2.png" class="absolute bottom-50 right-20 w-20 opacity-80 -rotate-6" />
-    <img src="/icono6.png" class="absolute top-40 right-10 w-30 opacity-80 rotate-3" />
-    <img src="/icono3.png" class="absolute top-60 left-10 w-30 opacity-80 rotate-3" />
-    <img src="/icono7.png" class="absolute bottom-[25%] left-[10%] w-23 opacity-100 -rotate-12" />
-    <img src="/icono3.png" class="absolute top-[55%] left-4 w-20 opacity-100 rotate-6" />
-    <img src="/icono5.png" class="absolute top-[72%] right-6 w-20 opacity-100 -rotate-3" />
-    <img src="/icono4.png" class="absolute top-[90%] left-[85%] w-22 opacity-100 rotate-12" />
+<!-- ICONOS SOLO DESKTOP -->
+<img src="/icono1.png" class="hidden md:block absolute top-12 left-12 w-16 rotate-12 opacity-100" />
+<img src="/icono2.png" class="hidden md:block absolute bottom-50 right-20 w-16 opacity-80 -rotate-6" />
+<img src="/icono6.png" class="hidden md:block absolute top-40 right-10 w-20 opacity-80 rotate-3" />
+<img src="/icono3.png" class="hidden md:block absolute top-60 left-10 w-20 opacity-80 rotate-3" />
+<img src="/icono7.png" class="hidden md:block absolute bottom-[25%] left-[10%] w-16 opacity-100 -rotate-12" />
+<img src="/icono3.png" class="hidden md:block absolute top-[55%] left-4 w-14 opacity-100 rotate-6" />
+<img src="/icono5.png" class="hidden md:block absolute top-[72%] right-6 w-16 opacity-100 -rotate-3" />
+<img src="/icono4.png" class="hidden md:block absolute top-[90%] left-[85%] w-16 opacity-100 rotate-12" />
+
 
     <div class="text-center mb-14 relative z-10">
       <h1 class="text-5xl font-extrabold text-[#3c490b] mb-2">Mi perfil</h1>
@@ -197,125 +199,112 @@ export default {
       </div>
 
 
+   <!-- FAVORITOS -->
+   <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Favoritos</h2>
 
-      <!-- FAVORITOS -->
-      <div class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-          Favoritos
-        </h2>
+        <div v-if="favorites.length" class="grid grid-cols-1 gap-6">
+          <div
+            v-for="v in favorites"
+            :key="v.id"
+            class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm text-center"
+          >
+            <img :src="v.imagen" class="w-24 h-36 object-contain mx-auto mb-3" />
 
-        <div v-if="favorites.length">
-          <ul class="space-y-2">
-            <li
-              v-for="v in favorites"
-              :key="v.id"
-              class="flex justify-between items-center bg-[#f0eadb] p-3 rounded-xl hover:bg-[#e099a8]/10 transition"
-            >
-              <span class="font-medium text-[#4e0d05]">{{ v.nombre }}</span>
+            <h3 class="text-lg font-semibold text-[#3c490b]">{{ v.nombre }}</h3>
+            <p class="text-sm text-[#4e0d05]/70">{{ v.bodega }} — {{ v.tipo }}</p>
+
+            <div class="flex justify-center gap-3 mt-4">
+              <RouterLink
+                :to="{ name: 'detalle', params: { id: v.id } }"
+                class="px-3 py-1 border border-[#3c490b] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
+              >
+                Ver detalle
+              </RouterLink>
+
               <button
                 @click="handleRemoveFavorite(v.id)"
-                class="text-sm text-[#e099a8] hover:text-[#3c490b]"
+                class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
               >
-                Eliminar ✕
+                Eliminar
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
 
-        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
+        <p v-else class="text-[#4e0d05]/60 italic">Aún no tenés vinos favoritos.</p>
       </div>
-
 
 
       <!-- HISTORIAL -->
-      <div class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-          Historial
-        </h2>
+      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Historial</h2>
 
-        <div v-if="history.length">
-          <ul class="space-y-2">
-            <li
-              v-for="v in history"
-              :key="v.id"
-              class="flex justify-between items-center bg-[#f0eadb] p-3 rounded-xl hover:bg-[#e099a8]/10 transition"
-            >
-              <span class="font-medium text-[#4e0d05]">{{ v.nombre }}</span>
+        <div v-if="history.length" class="grid grid-cols-1 gap-6">
+          <div
+            v-for="v in history"
+            :key="v.id"
+            class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm text-center"
+          >
+            <img :src="v.imagen" class="w-24 h-36 object-contain mx-auto mb-3" />
+
+            <h3 class="text-lg font-semibold text-[#3c490b]">{{ v.nombre }}</h3>
+            <p class="text-sm text-[#4e0d05]/70">{{ v.bodega }} — {{ v.tipo }}</p>
+
+            <div class="flex justify-center gap-3 mt-4">
+              <RouterLink
+                :to="{ name: 'detalle', params: { id: v.id } }"
+                class="px-3 py-1 border border-[#3c490b] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
+              >
+                Ver detalle
+              </RouterLink>
+
               <button
                 @click="handleRemoveHistory(v.id)"
-                class="text-sm text-[#e099a8] hover:text-[#3c490b]"
+                class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
               >
-                Eliminar ✕
+                Eliminar
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
 
-        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos en tu historial.</p>
+        <p v-else class="text-[#4e0d05]/60 italic">No hay vinos en tu historial.</p>
       </div>
-
-
-
-      <!-- AMIGOS -->
-      <div class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-          Amigos
-        </h2>
-
-        <div v-if="friends.length">
-          <ul class="space-y-2">
-            <li
-              v-for="f in friends"
-              :key="f.id"
-              class="p-3 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10"
-            >
-              {{ f.requester_id === user.id ? f.receiver_id : f.requester_id }}
-            </li>
-          </ul>
-        </div>
-
-        <p v-else class="text-[#4e0d05]/60 italic">No tienes amigos conectados aún.</p>
-      </div>
-
 
 
       <!-- SOLICITUDES -->
       <div
         v-if="pendingRequests.length"
-        class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10"
+        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
       >
-        <h3 class="text-xl font-semibold text-[#3c490b] mb-4">Solicitudes pendientes 🍇</h3>
+        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
 
-        <ul class="space-y-3">
-          <li
-            v-for="r in pendingRequests"
-            :key="r.id"
-            class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 flex justify-between items-center"
-          >
-            <span>{{ r.requester.display_name || 'Usuario' }}</span>
+        <div v-for="r in pendingRequests" :key="r.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
+          <span class="font-semibold text-[#3c490b]">
+            {{ r?.requester?.display_name || r.requester_id }}
+          </span>
 
-            <div class="flex gap-2">
-              <button
-                @click="handleResponse(r.id, 'accepted')"
-                class="px-3 py-1 bg-[#3c490b] text-[#f6f6eb] rounded-full text-sm"
-              >
-                Aceptar
-              </button>
+          <div class="flex gap-2">
+            <button
+              @click="handleResponse(r.id, 'accepted')"
+              class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
+            >
+              Aceptar
+            </button>
 
-              <button
-                @click="handleResponse(r.id, 'rejected')"
-                class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
-              >
-                Rechazar
-              </button>
-            </div>
-          </li>
-        </ul>
+            <button
+              @click="handleResponse(r.id, 'rejected')"
+              class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
+            >
+              Rechazar
+            </button>
+          </div>
+        </div>
+        </div>
       </div>
 
-    </div>
-
-    <!-- decoración inferior -->
+         <!-- decoración inferior -->
     <div class="relative -mx-6 mt-24">
       <img
         src="/lineacuadros.png"
@@ -324,5 +313,9 @@ export default {
       />
     </div>
 
+
+
+
   </section>
 </template>
+

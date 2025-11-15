@@ -72,7 +72,6 @@ export default {
 <template>
   <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
     
-    <!-- Íconos  -->
     <img src="/icono1.png" class="absolute top-10 left-10 w-14 opacity-100 rotate-12" />
     <img src="/icono6.png" class="absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
     <img src="/icono1.png" class="absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
@@ -94,10 +93,10 @@ export default {
       </div>
 
       <div v-else class="space-y-6">
-        <!-- info del usuario -->
+
         <div class="bg-[#f6f6eb] rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10">
           <div class="flex flex-col items-center text-center">
-            <!-- Imagen -->
+
             <img
               src="/nysito2.png"
               alt="Avatar"
@@ -110,8 +109,16 @@ export default {
           </div>
         </div>
 
-    <!-- Preferencias del usuario -->
-    <div
+
+      <div class="w-full flex justify-center mt-4">
+        <button
+          class="px-6 py-2 border border-[#e099a8] text-[#4e0d05] rounded-full font-medium hover:bg-[#e099a8] hover:text-white transition-all"
+        >
+          Conectar ↗
+        </button>
+      </div>
+
+      <div
       v-if="preferences"
       class="rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10 bg-[#ede8d7]/70"
     >
@@ -119,28 +126,23 @@ export default {
         Preferencias personales
       </h3>
 
-      <!-- MINI CARDS GRID -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        <!-- Tipo -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Tipo de vino</p>
           <p class="font-semibold">{{ gustoOpc[preferences.gusto] || 'No respondido' }}</p>
         </div>
 
-        <!-- Cómo lo toma -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Cómo lo toma</p>
           <p class="font-semibold">{{ comoOpc[preferences.como] || 'No respondido' }}</p>
         </div>
 
-        <!-- Intensidad -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Intensidad</p>
           <p class="font-semibold">{{ intensidadOpc[preferences.intensidad] || 'No respondido' }}</p>
         </div>
 
-        <!-- Sabores -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Sabores</p>
           <p class="font-semibold">
@@ -152,19 +154,16 @@ export default {
           </p>
         </div>
 
-        <!-- Frecuencia -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Frecuencia</p>
           <p class="font-semibold">{{ frecuenciaOpc[preferences.frecuencia] || 'No respondido' }}</p>
         </div>
 
-        <!-- Con quién -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
           <p class="text-sm text-[#4e0d05]/70">Con quién</p>
           <p class="font-semibold">{{ conQuienOpc[preferences.con_quien] || 'No respondido' }}</p>
         </div>
 
-        <!-- Temas -->
         <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm sm:col-span-2">
           <p class="text-sm text-[#4e0d05]/70">Temas de interés</p>
           <p class="font-semibold">
@@ -174,12 +173,6 @@ export default {
                 : 'No respondido'
             }}
           </p>
-        </div>
-
-        <!-- Otro tema -->
-        <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm sm:col-span-2">
-          <p class="text-sm text-[#4e0d05]/70">Otro tema</p>
-          <p class="font-semibold">{{ preferences.temas_libre || 'No respondido' }}</p>
         </div>
 
       </div>
