@@ -34,7 +34,7 @@ export default {
       }
       try {
         await sendConnectionRequest(this.user.id, receiverId);
-        this.message = 'Solicitud de conexión enviada 🍷';
+        this.message = 'Solicitud de amistad enviada!';
         setTimeout(() => (this.message = ''), 3000);
       } catch (err) {
         console.error('Error enviando solicitud de conexión:', err);
@@ -125,6 +125,10 @@ export default {
       class="w-full border border-[#e099a8] rounded-full p-3 pl-10 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
     />
   </div>
+    <!-- Mensaje -->
+    <div v-if="message" class="mb-6 px-6 py-3 bg-[#3c490b] text-[#f6f6eb] rounded-full text-center max-w-lg">
+      {{ message }}
+    </div>
 
     <!-- 👥 Usuarios registrados -->
     <section class="w-[90%] max-w-[1000px] py-16 px-6 md:px-10 text-left">

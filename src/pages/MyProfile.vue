@@ -282,7 +282,7 @@ export default {
 
         <div v-for="r in pendingRequests" :key="r.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
           <span class="font-semibold text-[#3c490b]">
-            {{ r?.requester?.display_name || r.requester_id }}
+             {{ r?.requester?.display_name || r?.requester?.email}} 
           </span>
 
           <div class="flex gap-2">
@@ -312,10 +312,5 @@ export default {
         class="w-full h-auto object-cover block opacity-90"
       />
     </div>
-
-
-
-
   </section>
 </template>
-

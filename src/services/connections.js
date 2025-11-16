@@ -10,7 +10,10 @@ export async function sendConnectionRequest(requesterId, receiverId) {
         receiver_id: receiverId,
         status: 'pending', 
       },
-    ]);
+    ])
+    //AGREGUE ESTO A VER SI FUNCIONA
+    .select("*")  
+    .single();
 
   if (error) {
     console.error('[connections.js] Error al enviar solicitud:', error);
@@ -58,7 +61,7 @@ export async function getFriends(userId) {
       receiver:receiver_id(id, display_name, email)
     `)
     .or(`requester_id.eq.${userId},receiver_id.eq.${userId}`)
-    .eq('status', 'accepted'); // 👈 solo amigos confirmados
+    .eq('status', 'accepted'); 
 
   if (error) {
     console.error('[connections.js] Error al obtener amigos:', error);
