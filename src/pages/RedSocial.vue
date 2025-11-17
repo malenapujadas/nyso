@@ -164,7 +164,7 @@ export default {
               Ver perfil ↗
             </router-link>
 
-            <button
+              <button
               v-if="user && user.id !== u.id"
               @click="handleConnect(u.id)"
               class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm
@@ -173,16 +173,12 @@ export default {
               + Conectar
             </button>
           </div>
-
         </li>
-
       </ul>
-
       <p v-if="!loading && users.length === 0"
         class="text-[#4e0d05]/60 italic text-center mt-8">
         No hay usuarios registrados todavía.
       </p>
-
     </section>
 
     <div class="w-full mt-10 md:mt-16">
