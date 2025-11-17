@@ -130,7 +130,7 @@ export default {
 
             <div class="flex gap-3 items-center">
 
-              <!-- FAVORITO -->
+              <!-- Fav -->
               <button
                 @click="handleAddFavorite"
                 class="text-3xl transition-transform transform hover:scale-125 duration-200"
@@ -139,7 +139,7 @@ export default {
                 ♥
               </button>
 
-              <!-- HISTORIAL -->
+              <!-- Historial -->
               <button
                 @click="handleAddHistory"
                 class="text-xs sm:text-sm md:text-sm font-medium rounded-full 

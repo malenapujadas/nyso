@@ -104,9 +104,7 @@ export default {
 
       <img src="/icono1.png" class="absolute top-[-50px] left-[60%] w-10 opacity-100 rotate-12" />
       <img src="/icono2.png" class="absolute top-[-40px] right-[80%] w-10 opacity-100 -rotate-6" />
-      <img src="/icono3.png" class="absolute top-[80px] left-[10%] w-18 opacity-100 rotate-3" />
       <img src="/icono6.png" class="absolute top-[120px] right-[20%] w-20 opacity-100 rotate-6" />
-      <img src="/icono7.png" class="absolute top-[120px] right-[70%] w-10 opacity-100 rotate-6" />
 
       <AppH1 class="pb-3 text-[#3c490b] relative z-10">
         Descubrí los vinos de NYSO
@@ -125,7 +123,7 @@ export default {
         />
       </div>
 
-      <!--FILTROS -->
+      <!--Filtros -->
       <button
         class="w-full bg-[#e099a8] text-[#3c490b] font-semibold py-2 rounded-full mb-6 lg:hidden"
         @click="showMobileFilters = !showMobileFilters"
@@ -192,12 +190,12 @@ export default {
         </button>
       </div>
 
-      <!-- CONTADOR -->
+      <!-- Contador -->
       <p class="mb-6 text-sm text-[#4e0d05]/70">
         Mostrando {{ filteredVinos.length }} de {{ vinosList.length }} vinos
       </p>
 
-      <!-- vinos -->
+      <!-- Vinos -->
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
         <div
           v-for="vino in filteredVinos"

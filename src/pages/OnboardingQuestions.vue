@@ -26,7 +26,7 @@ export default {
       intensidadOpc: opciones.intensidadOpc,
       saboresOpc: opciones.saboresOpc,
       frecuenciaOpc: opciones.frecuenciaOpc,
-      conQuienOpc: opciones.conQuienOpc, // <-- el error estaba acá
+      conQuienOpc: opciones.conQuienOpc, 
       temasOpc: opciones.temasOpc,
 
       saving: false,
@@ -106,7 +106,6 @@ export default {
 
 
 
-    <!-- CARD -->
     <form
       @submit.prevent="saveAnswers"
       class="w-full max-w-3xl bg-[#ede8d7] border border-[#4e0d05]/25 rounded-[30px] shadow-xl pt-10 pb-12 px-0 md:px-0 z-10"
@@ -249,7 +248,7 @@ export default {
         </div>
       </div>
 
-    <!-- BOTONES -->
+    <!-- Botones -->
     <div class="px-8 md:px-10 mt-12 flex flex-col sm:flex-row justify-between items-center gap-4">
 
     <button

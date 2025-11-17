@@ -72,7 +72,7 @@ export default {
     />
   </section>
 
-<!-- NYSITO -->
+<!-- Nysito -->
 <section
   class="relative w-full bg-[#e099a8] text-[#4e0d05] 
          py-12 md:py-20 px-6 md:px-8 
@@ -177,7 +177,7 @@ export default {
   </div>
 </section>
 
-  <!-- BANNER -->
+  <!-- Banner -->
   <section class="w-full mb-0 pb-0">
     <!-- desktop -->
     <img

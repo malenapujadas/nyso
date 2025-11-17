@@ -8,7 +8,7 @@ export default {
     return {
       user: null,
       isAuthChecked: false,
-      menuOpen: false, //  agregado para mobile
+      menuOpen: false, //  para mobile
     };
   },
 
@@ -46,12 +46,11 @@ export default {
 <template>
   <div class="min-h-screen bg-[#f6f6eb] flex flex-col">
 
-    <!-- NAV -->
     <nav
       class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between relative"
     >
 
-      <!-- MOBILE-->
+      <!-- Mobile-->
       <div class="flex md:hidden w-full items-center justify-between">
         <RouterLink to="/" @click="menuOpen = false">
           <img src="/logo.png" class="w-24" />
@@ -66,7 +65,7 @@ export default {
       
       <div class="hidden md:block w-40"></div>
 
-      <!-- DESKTOP MENU  -->
+      <!-- Menu desktop -->
       <ul
         class="hidden md:flex absolute left-1/2 -translate-x-1/2 flex justify-center gap-10 text-base font-medium"
       >
@@ -118,7 +117,7 @@ export default {
 
       </ul>
 
-      <!--  usuario escritorio -->
+      <!--  usuario desktop -->
       <div class="hidden md:flex items-center gap-4 w-56 justify-end">
 
         <template v-if="!isAuthChecked">
@@ -208,7 +207,6 @@ export default {
       </div>
     </div>
 
-    <!-- CONTENT -->
     <main class="flex-1">
       <RouterView />
     </main>
@@ -223,7 +221,7 @@ export default {
            justify-items-center text-center md:text-left"
   >
 
-    <!-- SOBRE NYSO -->
+    <!-- Sobre nyso -->
     <div class="flex flex-col items-center md:items-start">
       <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
         Sobre NYSO
@@ -236,7 +234,6 @@ export default {
       </ul>
     </div>
 
-    <!-- INFO -->
     <div class="flex flex-col items-center text-center">
       <img src="/logo.png" alt="Logo NYSO" class="w-20 md:w-28 mb-4" />
       <p class="text-xs md:text-sm leading-relaxed max-w-[220px] md:max-w-xs">
@@ -251,7 +248,7 @@ export default {
       </div>
     </div>
 
-    <!-- REDES SOCIALES -->
+    <!-- Redes -->
     <div class="flex flex-col items-center md:items-end text-center md:text-right">
       <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
         Seguinos
@@ -274,7 +271,6 @@ export default {
   </div>
 </div>
 
-<!-- DERECHOS -->
 <div
   class="w-full bg-[#2d3707] text-[#f6f6eb]/70 text-xs md:text-sm 
          py-3 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8"

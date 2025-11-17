@@ -60,25 +60,21 @@ export default {
 <template>
   <div class="min-h-screen bg-[#f6f6eb] flex flex-col items-center overflow-visible">
 
-    <!-- ===================== -->
-    <!-- BANNER -->
-    <!-- ===================== -->
+    <!-- Banner -->
     <section
       class="w-full bg-[#e099a8] text-[#f6f6eb]
              flex flex-row items-center justify-center
              gap-4 md:gap-20 py-10 px-6 md:px-20
              relative overflow-hidden"
     >
-      <!-- ICONOS -->
       <img src="/icono3.png"
            class="absolute top-4 md:top-10 right-4 md:right-20 w-10 md:w-14 rotate-6 opacity-100" />
       <img src="/icono6.png"
            class="absolute bottom-4 md:bottom-10 left-4 md:left-20 w-12 md:w-16 -rotate-6 opacity-100" />
 
-      <!-- NYSITO -->
       <img src="/nysito2.png" class="w-28 md:w-56 z-10" />
 
-      <!-- TEXTO -->
+      <!-- txt -->
       <div class="max-w-xs md:max-w-lg text-left z-10 ml-3 md:ml-0">
         <h1 class="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4">
           ¡Hola de nuevo!
@@ -94,9 +90,8 @@ export default {
       </div>
     </section>
 
-    <!-- ===================== -->
-    <!-- PUBLICACIONES -->
-    <!-- ===================== -->
+    <!-- Publicaciones -->
+ 
     <section
       class="relative w-full max-w-[1200px] py-12 px-6 space-y-8 text-left"
     >
@@ -147,7 +142,7 @@ export default {
       </div>
     </section>
 
-<!-- FORMULARIO SUGERENCIAS -->
+<!-- Form sugerencias -->
 <section
   class="relative 
          w-[92%] sm:w-[90%] md:w-[90%] max-w-[1200px]
@@ -160,7 +155,7 @@ export default {
          mx-auto overflow-hidden"
 >
 
-  <!-- MOBILE: SIN ICONOS -->
+  <!-- Mobile -->
   <img
     src="/icono1.png"
     class="hidden md:block absolute top-10 left-20 w-16 opacity-100 rotate-12"
@@ -180,12 +175,12 @@ export default {
     Si respondemos, lo publicaremos en el blog.
   </p>
 
-  <!-- FORM -->
+  <!-- form -->
   <form
     @submit.prevent="submitSugg"
     class="flex flex-col gap-5 w-full max-w-lg mx-auto"
   >
-    <!-- FILA 1 -->
+    <!-- Fila 1 -->
     <div class="flex flex-col sm:flex-row gap-4 w-full">
       <input
         v-model="sugg.nombre"
@@ -206,7 +201,7 @@ export default {
       class="p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
     />
 
-    <!-- DESCRIPCIÓN -->
+    <!-- Descripc -->
     <textarea
       v-model="sugg.descripcion"
       rows="4"
@@ -214,7 +209,7 @@ export default {
       class="p-3 rounded-3xl border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] resize-none w-full"
     ></textarea>
 
-    <!-- BOTON -->
+    <!-- Boton -->
     <div class="flex justify-center mt-4">
       <button
         type="submit"
@@ -225,7 +220,7 @@ export default {
       </button>
     </div>
 
-    <!-- MENSAJE -->
+    <!-- Mensaje -->
     <p
       v-if="suggestionMessage"
       class="text-center mt-3 font-medium"

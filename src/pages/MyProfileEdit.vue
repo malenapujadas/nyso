@@ -113,7 +113,7 @@ export default {
             class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none"
           />
         </div>
-        <!-- 1. Gusto general -->
+
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué tipo de vino va más con vos?</h3>
           <div class="flex gap-2 flex-wrap">
@@ -134,7 +134,6 @@ export default {
           </div>
         </div>
 
-        <!-- 2. Intensidad y sabor -->
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">Si tu vino ideal fuera una persona, sería…</h3>
           <div class="flex gap-2 flex-wrap">
@@ -155,7 +154,6 @@ export default {
           </div>
         </div>
 
-        <!-- 3. Contexto -->
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Cada cuánto tomás vino?</h3>
           <div class="flex gap-2 flex-wrap">
@@ -176,7 +174,6 @@ export default {
           </div>
         </div>
 
-        <!-- 4. Temas de interés -->
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué temas te interesan?</h3>
           <div class="flex gap-2 flex-wrap">

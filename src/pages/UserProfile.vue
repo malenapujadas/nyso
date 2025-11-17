@@ -111,11 +111,7 @@ export default {
 
 
       <div class="w-full flex justify-center mt-4">
-        <button
-          class="px-6 py-2 border border-[#e099a8] text-[#4e0d05] rounded-full font-medium hover:bg-[#e099a8] hover:text-white transition-all"
-        >
-          Conectar ↗
-        </button>
+
       </div>
 
       <div
