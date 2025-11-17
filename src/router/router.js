@@ -11,6 +11,8 @@ import Detail from '../pages/Detail.vue';
 import AdminSuggestions from '../pages/admin/Admin.vue';
 import RedSocial from '../pages/RedSocial.vue';
 import UserProfile from '../pages/UserProfile.vue';
+import RecuperarContrasena from '../pages/RecoverPassword.vue';
+import ResetPassword from '../pages/ResetPassword.vue';
 import { subscribeToAuthChanges } from '../services/auth';
 import { getAuthUser } from '../services/auth';
 
@@ -28,7 +30,9 @@ const routes = [
   {path: '/detalle/:id', name: 'detalle', component: Detail, },
   {path: '/mi-perfil',                    component: MyProfile, meta: { requiresAuth: true } },
   {path: '/mi-perfil/editar',             component: MyProfileEdit, meta: { requiresAuth: true } },
-  {path: '/admin',                        component:AdminSuggestions},
+  {path: '/admin',                        component: AdminSuggestions},
+  {path: '/recuperar-contrasena',         component: RecuperarContrasena, },
+  {path: '/reset-password',               component: ResetPassword, },
   {path: '/usuario/:id',                  component: UserProfile, name: 'UserProfile', props: true },
 ];
 
@@ -70,18 +74,10 @@ router.beforeEach((to, from, next) => {
 
     if (user.role !== "admin") {
       // Está logueado pero no es admin
-      return next("/ingresar"); // o una página 403
+      return next("/ingresar"); 
     }  
   }
   next();
 });
-/*   const user = getAuthUser(); 
-
-
-  if (to.path === '/admin') {
-    if (!user || user.role !== 'admin') {
-      return next('/ingresar'); 
-    }
-  } */
 
 export default router;

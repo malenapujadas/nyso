@@ -16,6 +16,24 @@ export async function getUserProfileById(id) {
     return data;
 }
 
+export async function getUserProfileByEmail(email) {
+  const { data, error } = await supabase
+    .from("user_profiles")
+    .select("*")
+    .eq("email", email)
+    .limit(1)
+    .single();
+
+  if (error && error.code !== 'PGRST116') { 
+    // PGRST116 --> no hay filas encontradas 
+    console.error('[getUserProfileByEmail] Error al obtener perfil:', error);
+    return null;
+  }
+
+  return data;
+}
+
+
 export async function createUserProfile(data){
     const { error } = await supabase
         .from('user_profiles')

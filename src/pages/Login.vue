@@ -89,6 +89,11 @@ export default {
                  text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
+      <RouterLink 
+        class="text-left text-xs md:text-sm text-[#4e0d05]/70 font-semibold hover:text-[#3c490b] transition-colors"
+        to="/recuperar-contrasena">
+        ¿Olvidaste tu contraseña?
+      </RouterLink>
 
       <button
         type="submit"
