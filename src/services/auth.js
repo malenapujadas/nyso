@@ -26,8 +26,26 @@ async function loadUserCurrentAuthState(){
 
 //si hay usuario, carga datos completos desed la tabla
 async function loadExtendedProfile(){
-    if(user.id === null) return;
-    setAuthUserState(await getUserProfileById(user.id));
+    if(!user.id) return;
+        const profile = await getUserProfileById(user.id);
+
+    // Si el perfil no existe, lo crea 
+    if (!profile) {
+        console.log("[auth] No existe perfil → Creándolo…");
+        await createUserProfile({
+            id: user.id,
+            email: user.email,
+            role: "user", // default
+        });
+
+        // volver a cargar el perfil recién creado
+        const newProfile = await getUserProfileById(user.id);
+        setAuthUserState(newProfile);
+        return;
+    }
+
+    // Si el perfil existe, lo carga
+    setAuthUserState(profile);
 }
 
 
@@ -80,7 +98,7 @@ export async function login(email, password){
         email: data.user.email,
     });
     
-
+    await loadExtendedProfile();
 }
 
 export async function logout(){
@@ -128,4 +146,8 @@ function setAuthUserState(newData){
         ...newData,
     }
     notifyAll();
+}
+
+export function getAuthUser() {
+    return { ...user }; 
 }

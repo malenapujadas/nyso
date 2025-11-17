@@ -106,6 +106,16 @@ export default {
             Red Social
           </RouterLink>
         </li>
+        <li v-if="user && user.role === 'admin'">
+          <RouterLink
+            to="/admin"
+            class="hover:text-[#e099a8] transition-colors"
+            :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/admin' }"
+          >
+            Panel Admin
+          </RouterLink>
+        </li>
+
       </ul>
 
       <!--  usuario escritorio -->

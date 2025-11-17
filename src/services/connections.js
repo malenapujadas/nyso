@@ -84,17 +84,18 @@ export async function getFriends(userId) {
 } */
 
   export async function getPendingRequests(userId) {
-    const { data, error } = await supabase
-      .from('connections')
-      .select('*')
-      .eq('receiver_id', userId)
-      .eq('status', 'pending');
+      // traer las solicitudes pendientes incluyendo datos del requester
+      const { data, error } = await supabase
+        .from('connections')
+        .select(`*, requester:requester_id(id, display_name, email)`)
+        .eq('receiver_id', userId)
+        .eq('status', 'pending');
   
     if (error) {
       console.error('[connections.js] Error al traer pendientes:', error);
       return [];
     }
-  
-    return data;
+
+    return data
   }
   

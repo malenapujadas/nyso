@@ -6,7 +6,7 @@ import { getFavorites, removeFavorite } from '../services/favorites.js';
 import { getHistory, clearHistory } from '../services/history.js';
 import { getPreferencesForUser } from '../services/preferences.js';
 import * as opciones from '../data/preferences-options.js';
-import { getFriends, getPendingRequests } from '../services/connections.js';
+import { getFriends, getPendingRequests, updateConnectionStatus } from '../services/connections.js';
 import vinos from '../vinos.json';
 
 export default {
@@ -75,26 +75,30 @@ export default {
         throw new Error(error.message);
       }
     },
+    async handleResponse(connectionId, status) {
+      try {
+        await updateConnectionStatus(connectionId, status);
+        // recargar pendientes y amigos
+        if (this.user && this.user.id) {
+          const friends = await getFriends(this.user.id);
+          const pending = await getPendingRequests(this.user.id);
+          this.friends = friends;
+          this.pendingRequests = pending;
+        }
+      } catch (error) {
+        console.error('[MyProfile.vue handleResponse] Error actualizando solicitud: ', error);
+      /*alert('No se pudo procesar la solicitud'); */
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
-
-<!-- ICONOS SOLO DESKTOP -->
-<img src="/icono1.png" class="hidden md:block absolute top-12 left-12 w-16 rotate-12 opacity-100" />
-<img src="/icono2.png" class="hidden md:block absolute bottom-50 right-20 w-16 opacity-80 -rotate-6" />
-<img src="/icono6.png" class="hidden md:block absolute top-40 right-10 w-20 opacity-80 rotate-3" />
-<img src="/icono3.png" class="hidden md:block absolute top-60 left-10 w-20 opacity-80 rotate-3" />
-<img src="/icono7.png" class="hidden md:block absolute bottom-[25%] left-[10%] w-16 opacity-100 -rotate-12" />
-<img src="/icono3.png" class="hidden md:block absolute top-[55%] left-4 w-14 opacity-100 rotate-6" />
-<img src="/icono5.png" class="hidden md:block absolute top-[72%] right-6 w-16 opacity-100 -rotate-3" />
-<img src="/icono4.png" class="hidden md:block absolute top-[90%] left-[85%] w-16 opacity-100 rotate-12" />
-
-
-    <div class="text-center mb-14 relative z-10">
-      <h1 class="text-5xl font-extrabold text-[#3c490b] mb-2">Mi perfil</h1>
+  <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16">
+    
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-[#3c490b] mb-2">Mi perfil</h1>
       <p class="text-[#4e0d05]/70 text-lg">Bienvenido a tu espacio personal.</p>
     </div>
 
@@ -113,7 +117,7 @@ export default {
 
         <div class="w-full border-t border-[#3c490b]/20 my-6"></div>
 
-        <!-- preferencias -->
+          <!-- preferencias -->
         <div v-if="preferences" class="mt-6">
           <h3 class="font-semibold text-xl text-[#3c490b] mb-3">Tus preferencias</h3>
 
@@ -189,18 +193,17 @@ export default {
 
           </div>
         </div>
-
         <RouterLink
           to="/mi-perfil/editar"
-          class="inline-block mt-5 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
+          class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
         >
           Editar perfil ↗
         </RouterLink>
       </div>
 
 
-   <!-- FAVORITOS -->
-   <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+      <!-- Favoritos -->
+       <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
         <h2 class="text-xl font-bold text-[#3c490b] mb-4">Favoritos</h2>
 
         <div v-if="favorites.length" class="grid grid-cols-1 gap-6">
@@ -234,10 +237,34 @@ export default {
 
         <p v-else class="text-[#4e0d05]/60 italic">Aún no tenés vinos favoritos.</p>
       </div>
+<!--       <div>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
+           Favoritos
+        </h2>
+        <div v-if="favorites.length">
+          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+            <li
+              v-for="v in favorites"
+              :key="v.id"
+              class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
+            >
+              <span class="font-medium">{{ v.nombre }}</span>
+              <button
+                @click="handleRemoveFavorite(v.id)"
+                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
+              >
+                Eliminar ✕
+              </button>
+            </li>
+          </ul>
+        </div>
+        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
+      </div> -->
 
 
-      <!-- HISTORIAL -->
-      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+
+    <!-- Historial -->
+           <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
         <h2 class="text-xl font-bold text-[#3c490b] mb-4">Historial</h2>
 
         <div v-if="history.length" class="grid grid-cols-1 gap-6">
@@ -271,46 +298,77 @@ export default {
 
         <p v-else class="text-[#4e0d05]/60 italic">No hay vinos en tu historial.</p>
       </div>
-
-
-      <!-- SOLICITUDES -->
-      <div
-        v-if="pendingRequests.length"
-        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
+<!--     <div>
+      <h2
+        class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2"
       >
-        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
+        Historial
+      </h2>
 
-        <div v-for="r in pendingRequests" :key="r.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
-          <span class="font-semibold text-[#3c490b]">
-             {{ r?.requester?.display_name || r?.requester?.email}} 
-          </span>
-
-          <div class="flex gap-2">
+      <div v-if="history.length">
+        <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
+          <li
+            v-for="v in history"
+            :key="v.id"
+            class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
+          >
+            <span class="font-medium">{{ v.nombre }}</span>
             <button
-              @click="handleResponse(r.id, 'accepted')"
-              class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
-            >
-              Aceptar
-            </button>
-
-            <button
-              @click="handleResponse(r.id, 'rejected')"
+              @click="handleRemoveHistory(v.id)"
               class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
             >
-              Rechazar
+              Eliminar ✕
             </button>
-          </div>
-        </div>
-        </div>
+          </li>
+        </ul>
       </div>
 
-         <!-- decoración inferior -->
-    <div class="relative -mx-6 mt-24">
-      <img
-        src="/lineacuadros.png"
-        alt="Decoración NYSO"
-        class="w-full h-auto object-cover block opacity-90"
-      />
+      <p v-else class="text-[#4e0d05]/60 italic">
+        No tienes vinos en tu historial.
+      </p>
+    </div> -->
+
+    <!-- AMIGOS -->
+    <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+      <h2 class="text-2xl font-bold text-[#3c490b] mb-4">Mis amigos</h2>
+
+      <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic mb-4">No tienes amigos aún.</div>
+
+      <div v-for="f in friends" :key="f.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
+        <span class="font-semibold text-[#3c490b]">
+          {{ f.display_name || f.email || f.id }}
+        </span>
+      </div>
+    </div>
+
+    <!-- SOLICITUDES -->
+    <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+      <h2 class="text-xl font-bold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
+
+      <div v-if="pendingRequests.length === 0" class="text-[#4e0d05]/60 italic mb-4">No hay solicitudes pendientes.</div>
+
+      <div v-for="r in pendingRequests" :key="r.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
+        <span class="font-semibold text-[#3c490b]">
+          {{ r?.requester?.display_name || r?.requester?.email || r.requester_id }}
+        </span>
+
+        <div class="flex gap-2">
+          <button
+            @click="handleResponse(r.id, 'accepted')"
+            class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
+          >
+            Aceptar
+          </button>
+
+          <button
+            @click="handleResponse(r.id, 'rejected')"
+            class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
+          >
+            Rechazar
+          </button>
+        </div>
+      </div>
+    </div>
     </div>
   </section>
 </template>

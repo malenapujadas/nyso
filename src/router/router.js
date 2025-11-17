@@ -12,6 +12,7 @@ import AdminSuggestions from '../pages/admin/Admin.vue';
 import RedSocial from '../pages/RedSocial.vue';
 import UserProfile from '../pages/UserProfile.vue';
 import { subscribeToAuthChanges } from '../services/auth';
+import { getAuthUser } from '../services/auth';
 
 
 // definir rutas
@@ -51,11 +52,36 @@ const router = createRouter({
 subscribeToAuthChanges(userState => user = userState); 
 
 router.beforeEach((to, from)=> {
-    if(to.meta.requiresAuth && user.id === null){
-        return '/ingresar';
-    }
-    
+  if(to.meta.requiresAuth && user.id === null){
+      return '/ingresar';
+  }
+  
 });
 
+router.beforeEach((to, from, next) => {
+  const user = getAuthUser();
+
+  // Si la ruta requiere admin
+  if (to.path === "/admin") {
+    if (!user?.id) {
+      // No está logueado
+      return next("/ingresar");
+    }
+
+    if (user.role !== "admin") {
+      // Está logueado pero no es admin
+      return next("/ingresar"); // o una página 403
+    }  
+  }
+  next();
+});
+/*   const user = getAuthUser(); 
+
+
+  if (to.path === '/admin') {
+    if (!user || user.role !== 'admin') {
+      return next('/ingresar'); 
+    }
+  } */
 
 export default router;

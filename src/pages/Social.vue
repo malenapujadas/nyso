@@ -112,6 +112,7 @@ export default {
         Descubrí los vinos de NYSO
       </AppH1>
 
+      <!-- buscador -->
       <div class="relative w-full max-w-lg mb-6 z-10">
         <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" />
@@ -196,7 +197,7 @@ export default {
         Mostrando {{ filteredVinos.length }} de {{ vinosList.length }} vinos
       </p>
 
-      <!-- LISTADO -->
+      <!-- vinos -->
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
         <div
           v-for="vino in filteredVinos"
