@@ -35,7 +35,7 @@ export default {
   <section
     class="relative flex flex-col justify-center items-center text-center py-32 bg-[#f6f6eb] overflow-hidden"
   >
-    <!-- iconos enmobile-->
+    <!-- iconos en mobile-->
     <img src="/icono1.png" class="absolute top-6 left-4 w-20 md:w-40 opacity-100" />
     <img src="/icono2.png" class="absolute bottom-2 left-10 w-16 md:w-32 opacity-100" />
     <img src="/icono3.png" class="absolute top-10 right-10 w-14 md:w-20 opacity-100" />

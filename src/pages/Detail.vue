@@ -140,7 +140,7 @@ export default {
             </h2>
 
             <div class="flex gap-3 items-center">
-              <!-- Fav -->
+              <!-- Favs -->
               <button
                 @click="handleAddFavorite"
                 class="text-3xl transition-transform transform hover:scale-125 duration-200"

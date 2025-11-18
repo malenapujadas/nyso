@@ -204,7 +204,7 @@ export default {
         </RouterLink>
       </p>
 
-      <!-- Form -->
+      <!-- form -->
       <form
         v-else
         @submit.prevent="submitSugg"
