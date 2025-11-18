@@ -1,9 +1,16 @@
 <script>
-import { fetchSuggestions, respondSuggestion, deleteSuggestion, fetchLastPost, deletePost } from '../../services/blog.js';
+import {
+  fetchSuggestions,
+  respondSuggestion,
+  deleteSuggestion,
+  fetchLastPost,
+  deletePost
+} from '../../services/blog.js';
 import { subscribeToAuthChanges } from '../../services/auth.js';
 
 export default {
   name: 'AdminSuggestions',
+
   data() {
     return {
       suggestions: [],
@@ -17,12 +24,12 @@ export default {
       user: { id: null },
       showConfirmModal: false,
       confirmMessage: "",
-      confirmAction: null,
+      confirmAction: null
     };
   },
 
   async mounted() {
-    subscribeToAuthChanges(user => this.user = user || { id: null });
+    subscribeToAuthChanges(user => (this.user = user || { id: null }));
     await this.load();
   },
 
@@ -30,6 +37,7 @@ export default {
     async load() {
       this.loading = true;
       this.postsLoading = true;
+
       try {
         [this.suggestions, this.posts] = await Promise.all([
           fetchSuggestions(),
@@ -54,6 +62,7 @@ export default {
       if (!text) return;
 
       this.sendingReply = { ...this.sendingReply, [sugg.id]: true };
+
       try {
         await respondSuggestion(sugg.id, text);
         await this.load();
@@ -90,15 +99,15 @@ export default {
           await this.load();
         }
       );
-    },
+    }
   }
 };
 </script>
 
-
 <template>
-  <section class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-16 px-8 overflow-hidden">
-
+  <section
+    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-16 px-8 overflow-hidden"
+  >
     <img src="/icono1.png" class="absolute top-10 left-10 w-16 opacity-90 rotate-12" />
     <img src="/icono2.png" class="absolute top-16 right-20 w-20 opacity-100 -rotate-6" />
     <img src="/icono3.png" class="absolute top-1/3 left-10 w-22 opacity-80 rotate-3" />
@@ -110,23 +119,27 @@ export default {
     <img src="/icono6.png" class="absolute bottom-22 left-20 w-24 opacity-100 -rotate-6" />
 
     <div class="relative z-10 max-w-5xl mx-auto">
-
-      <h1 class="text-4xl font-bold text-[#3c490b] mb-10 text-center  tracking-wide">
+      <h1
+        class="text-4xl font-bold text-[#3c490b] mb-10 text-center tracking-wide"
+      >
         Panel de administración
       </h1>
 
       <!-- sugerencias -->
       <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-8 mb-12">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-6">
-          Sugerencias del blog
-        </h2>
+        <h2 class="text-2xl font-semibold text-[#3c490b] mb-6">Sugerencias del blog</h2>
 
-        <div v-if="loading" class="text-[#e099a8] text-center py-4">Cargando sugerencias...</div>
-        <div v-else-if="error" class="text-red-600">{{ error }}</div>
+        <div v-if="loading" class="text-[#e099a8] text-center py-4">
+          Cargando sugerencias...
+        </div>
+
+        <div v-else-if="error" class="text-red-600">
+          {{ error }}
+        </div>
 
         <div v-else>
           <p v-if="suggestions.length === 0" class="text-[#4e0d05]/60 italic">
-            No hay sugerencias por ahora 
+            No hay sugerencias por ahora
           </p>
 
           <div
@@ -138,11 +151,15 @@ export default {
               <div>
                 <h3 class="font-semibold text-lg">{{ s.titulo }}</h3>
                 <p class="text-sm text-[#4e0d05]/80">{{ s.descripcion }}</p>
+
                 <p class="text-xs text-[#4e0d05]/50 mt-2">
                   Enviado por: {{ s.nombre || 'Anónimo' }}
                   <span v-if="s.email">({{ s.email }})</span>
                 </p>
-                <p v-if="s.responded" class="text-sm text-[#3c490b] mt-2 font-medium">Respondido ✔</p>
+
+                <p v-if="s.responded" class="text-sm text-[#3c490b] mt-2 font-medium">
+                  Respondido ✔
+                </p>
               </div>
 
               <button
@@ -161,6 +178,7 @@ export default {
                 class="w-full border border-[#e099a8]/50 rounded-lg p-3 text-sm text-[#4e0d05] focus:ring-2 focus:ring-[#e099a8] focus:outline-none"
                 placeholder="Escribir respuesta..."
               ></textarea>
+
               <div class="mt-3 flex gap-2">
                 <button
                   @click="reply(s)"
@@ -185,12 +203,14 @@ export default {
         <div v-if="postsLoading" class="text-[#e099a8] text-center py-4">
           Cargando publicaciones...
         </div>
+
         <div v-else-if="postsError" class="text-red-600">
           {{ postsError }}
         </div>
+
         <div v-else>
           <p v-if="posts.length === 0" class="text-[#4e0d05]/60 italic">
-            No hay publicaciones aún 
+            No hay publicaciones aún
           </p>
 
           <div
@@ -200,8 +220,11 @@ export default {
           >
             <div>
               <h3 class="font-semibold text-lg text-[#4e0d05]">{{ p.titulo }}</h3>
-              <p class="text-sm text-[#4e0d05]/80">{{ p.sinopsis || p.descripcion }}</p>
+              <p class="text-sm text-[#4e0d05]/80">
+                {{ p.sinopsis || p.descripcion }}
+              </p>
             </div>
+
             <button
               @click="deletePostConfirm(p.id)"
               class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors ml-4"
@@ -211,7 +234,6 @@ export default {
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- confirmacion -->
@@ -219,10 +241,16 @@ export default {
       v-if="showConfirmModal"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
     >
-      <div class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-8 w-[90%] max-w-md shadow-xl text-center">
-        
-        <h3 class="text-xl font-bold text-[#3c490b] mb-4">Eliminar sugerencia</h3>
-        <p class="text-[#4e0d05]/80 mb-6">{{ confirmMessage }}</p>
+      <div
+        class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-8 w-[90%] max-w-md shadow-xl text-center"
+      >
+        <h3 class="text-xl font-bold text-[#3c490b] mb-4">
+          Eliminar sugerencia
+        </h3>
+
+        <p class="text-[#4e0d05]/80 mb-6">
+          {{ confirmMessage }}
+        </p>
 
         <div class="flex justify-center gap-4">
           <button
@@ -239,9 +267,7 @@ export default {
             Sí, eliminar
           </button>
         </div>
-
       </div>
     </div>
-
   </section>
 </template>

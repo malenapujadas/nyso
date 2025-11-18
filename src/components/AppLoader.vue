@@ -6,7 +6,6 @@
 
 
 <style scoped>
-
     .loader {
     width: 50px;
     aspect-ratio: 1;
