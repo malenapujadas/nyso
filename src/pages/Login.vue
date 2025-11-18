@@ -102,7 +102,7 @@ export default {
         />
       </div>
       <RouterLink 
-        class="text-left text-xs md:text-sm text-[#4e0d05]/70 font-semibold hover:text-[#3c490b] transition-colors"
+        class="text-left text-xs md:text-sm text-[#3c490b]/70 font-bold hover:text-[#e099a8] transition-colors"
         to="/recuperar-contrasena">
         ¿Olvidaste tu contraseña?
       </RouterLink>

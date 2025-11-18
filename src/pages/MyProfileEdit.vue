@@ -5,10 +5,11 @@ import { getCurrentUser, updateAuthUserData } from '../services/auth.js';
 import { getPreferencesForUser, savePreferencesForUser } from '../services/preferences.js';
 import { updateUserProfile } from '../services/user-profiles.js';
 import * as opciones from '../data/preferences-options.js';
+import AppLoader from '../components/AppLoader.vue';
 
 export default {
   name: 'MyProfileEdit',
-  components: { AppH1 },
+  components: { AppH1, AppLoader },
   data() {
     return {
       display_name: '',
@@ -89,7 +90,13 @@ export default {
 </script>
 
 <template>
+
+  <div v-if="loading" class="min-h-screen flex items-center justify-center bg-[#f6f6eb]">
+    <AppLoader />
+  </div>
+
   <section
+    v-else
     class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center justify-start px-6 pt-16 pb-20"
   >
     
@@ -98,10 +105,12 @@ export default {
     <img src="/icono6.png" class="absolute top-1/3 right-[12%] w-12 rotate-3 opacity-100" />
     <img src="/icono7.png" class="absolute bottom-[15%] left-[18%] w-14 opacity-100 -rotate-12" />
 
-
-  
-    <form @submit.prevent="handleSubmit" class="relative z-10 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-10 w-full max-w-xl">
+    <form
+      @submit.prevent="handleSubmit"
+      class="relative z-10 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-10 w-full max-w-xl"
+    >
       <div class="space-y-6">
+
         <div>
           <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="display_name">
             Nombre de usuario
@@ -183,12 +192,6 @@ export default {
               {{ opt.label }}
             </button>
           </div>
-          <!-- <input
-            v-model="answers.temas_libre"
-            type="text"
-            placeholder="Otro tema que te gustaría ver"
-            class="w-full mt-2 rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none"
-          /> -->
         </div> 
 
         <div class="flex justify-center pt-4">
@@ -200,7 +203,9 @@ export default {
             Guardar cambios
           </button>
         </div>
+
       </div>
     </form>
   </section>
+
 </template>

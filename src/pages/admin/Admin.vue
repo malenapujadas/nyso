@@ -14,13 +14,18 @@ export default {
       postsError: null,
       replyText: {},
       sendingReply: {},
-      user: { id: null }
+      user: { id: null },
+      showConfirmModal: false,
+      confirmMessage: "",
+      confirmAction: null,
     };
   },
+
   async mounted() {
     subscribeToAuthChanges(user => this.user = user || { id: null });
     await this.load();
   },
+
   methods: {
     async load() {
       this.loading = true;
@@ -38,6 +43,7 @@ export default {
         this.postsLoading = false;
       }
     },
+
     async reply(sugg) {
       if (!this.user || !this.user.id) {
         this.$router.push('/ingresar');
@@ -59,33 +65,36 @@ export default {
         this.sendingReply = { ...this.sendingReply, [sugg.id]: false };
       }
     },
-    async deleteSuggestionConfirm(id) {
-      const confirmed = confirm('¿Seguro que querés eliminar esta sugerencia?');
-      if (!confirmed) return;
-      try {
-        await deleteSuggestion(id);
-        await this.load();
-        alert('Sugerencia eliminada con éxito');
-      } catch (err) {
-        console.error(err);
-        alert(err.message || 'Error al eliminar la sugerencia.');
-      }
+
+    openConfirm(message, action) {
+      this.confirmMessage = message;
+      this.confirmAction = action;
+      this.showConfirmModal = true;
     },
-    async deletePostConfirm(id) {
-      const confirmed = confirm('¿Seguro que querés eliminar esta publicación?');
-      if (!confirmed) return;
-      try {
-        await deletePost(id);
-        await this.load();
-        alert('Publicación eliminada con éxito');
-      } catch (err) {
-        console.error(err);
-        alert(err.message || 'Error al eliminar la publicación.');
-      }
+
+    deleteSuggestionConfirm(id) {
+      this.openConfirm(
+        "¿Seguro que querés eliminar esta sugerencia?",
+        async () => {
+          await deleteSuggestion(id);
+          await this.load();
+        }
+      );
+    },
+
+    deletePostConfirm(id) {
+      this.openConfirm(
+        "¿Seguro que querés eliminar esta publicación?",
+        async () => {
+          await deletePost(id);
+          await this.load();
+        }
+      );
     },
   }
 };
 </script>
+
 
 <template>
   <section class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-16 px-8 overflow-hidden">
@@ -99,10 +108,6 @@ export default {
     <img src="/icono7.png" class="absolute top-[20%] left-10 w-18 opacity-90 rotate-12" />
     <img src="/icono2.png" class="absolute bottom-16 right-20 w-20 opacity-100 -rotate-6" />
     <img src="/icono6.png" class="absolute bottom-22 left-20 w-24 opacity-100 -rotate-6" />
-
-
-
-
 
     <div class="relative z-10 max-w-5xl mx-auto">
 
@@ -209,6 +214,34 @@ export default {
 
     </div>
 
-   
+    <!-- confirmacion -->
+    <div
+      v-if="showConfirmModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+    >
+      <div class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-8 w-[90%] max-w-md shadow-xl text-center">
+        
+        <h3 class="text-xl font-bold text-[#3c490b] mb-4">Eliminar sugerencia</h3>
+        <p class="text-[#4e0d05]/80 mb-6">{{ confirmMessage }}</p>
+
+        <div class="flex justify-center gap-4">
+          <button
+            @click="showConfirmModal = false"
+            class="px-6 py-2 rounded-full border border-[#4e0d05]/40 text-[#3c490b] hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all"
+          >
+            Cancelar
+          </button>
+
+          <button
+            @click="confirmAction(); showConfirmModal = false;"
+            class="px-6 py-2 rounded-full bg-[#e099a8] text-[#3c490b] hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all"
+          >
+            Sí, eliminar
+          </button>
+        </div>
+
+      </div>
+    </div>
+
   </section>
 </template>

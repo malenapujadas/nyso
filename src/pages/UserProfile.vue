@@ -3,9 +3,11 @@
 import { getPreferencesForUser } from '../services/preferences.js';
 import { getUserProfileById } from '../services/user-profiles.js';
 import { supabase } from '../services/supabase.js';
+import AppLoader from '../components/AppLoader.vue';
 
 export default {
   name: 'UserProfile',
+  components: {AppLoader},
   data() {
     return {
       profile: null,
@@ -70,6 +72,7 @@ export default {
 </script>
 
 <template>
+  <template v-if="!loading">
   <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
     
     <img src="/icono1.png" class="absolute top-10 left-10 w-14 opacity-100 rotate-12" />
@@ -181,4 +184,12 @@ export default {
     </div>
 
   </section>
+  </template>
+
+  <template v-else>
+  <div class="w-full min-h-screen flex items-center justify-center">
+    <AppLoader />
+  </div>
+</template>
+
 </template>

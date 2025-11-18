@@ -163,14 +163,14 @@ export default {
             >
               Ver perfil ↗
             </router-link>
-              <button
-              v-if="user && user.id !== u.id"
+            <button
+              v-if="user && user.id && user.id !== u.id"
               @click="handleConnect(u.id)"
               class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm
-                     font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
-              >
-                + Conectar
-              </button>
+                    font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+            >
+              + Conectar
+            </button>
           </div>
         </li>
       </ul>

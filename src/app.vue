@@ -237,15 +237,8 @@ export default {
     <div class="flex flex-col items-center text-center">
       <img src="/logo.png" alt="Logo NYSO" class="w-20 md:w-28 mb-4" />
       <p class="text-xs md:text-sm leading-relaxed max-w-[220px] md:max-w-xs">
-        Descubrí, guardá y compartí tus vinos favoritos. <br />
-        Somos una comunidad donde el vino se disfruta.
+        Descubrí, guardá y compartí tus vinos favoritos.
       </p>
-      <div
-        class="mt-4 bg-[#e099a8] text-[#3c490b] font-semibold text-xs md:text-sm 
-               px-5 py-2 rounded-full border border-[#f6f6eb]/40"
-      >
-        info@nyso.com
-      </div>
     </div>
 
     <!-- Redes -->

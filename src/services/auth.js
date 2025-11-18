@@ -35,7 +35,7 @@ async function loadExtendedProfile(){
         await createUserProfile({
             id: user.id,
             email: user.email,
-            display_name: user.nombre ?? null,
+            display_name: profile?.display_name || user?.display_name || null,
             role: "user", // default
         });
 
@@ -56,8 +56,8 @@ export async function register(email, password, nombre) {
         email,
         password,
         options: {
-          data: { nombre }, 
-        },
+            data: { display_name: nombre },
+          },
       });
   
       if (error) {
@@ -74,8 +74,11 @@ export async function register(email, password, nombre) {
       await createUserProfile({
         id: data.user.id,
         email: data.user.email,
-        display_name: nombre,  
+        display_name: nombre,
       });
+      
+      await loadExtendedProfile();
+
     } catch (error) {
       console.error('[auth.js register] Error al registrar el usuario: ', error);
       throw new Error(error.message);
