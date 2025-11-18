@@ -21,8 +21,19 @@ export default {
     async handleSubmit() {
       this.errorMsg = '';
 
+      //validaciones
       if (!this.user.nacimiento) {
         this.errorMsg = 'Por favor, ingresá tu fecha de nacimiento.';
+        return;
+      }
+
+      if(!this.user.nombre || !this.user.email || !this.user.password) {
+        this.errorMsg = 'Por favor, completá todos los campos.';
+        return;
+      }
+
+      if(this.user.password.length < 6) {
+        this.errorMsg = 'La contraseña debe tener al menos 6 caracteres.';
         return;
       }
 

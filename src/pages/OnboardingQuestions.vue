@@ -18,7 +18,7 @@ export default {
         frecuencia: null,
         con_quien: null,
         temas: [],
-        temas_libre: "",
+        /* temas_libre: "", */
       },
 
       gustoOpc: opciones.gustoOpc,
@@ -78,7 +78,17 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
-        await savePreferencesForUser(user.id, { skipped: true });
+        /* guardo todo vacio por si aprieto "saltar" */
+        await savePreferencesForUser(user.id, {
+          gusto: null,
+          como: null,
+          intensidad: null,
+          sabores: [],
+          frecuencia: null,
+          con_quien: null,
+          temas: [],
+          /* temas_libre: "", */
+        });
 
         this.$router.push("/mi-perfil");
       } catch (err) {
@@ -96,16 +106,13 @@ export default {
     class="relative min-h-screen flex flex-col items-center px-6 py-20 bg-[#f6f6eb] "
   >
   <img src="/icono1.png" class="hidden md:block absolute top-8 left-2 md:left-10 w-10 md:w-14 opacity-100 rotate-12" />
-<img src="/icono2.png" class="hidden md:block absolute top-1/4 right-3 md:right-10 w-8 md:w-10 opacity-100 -rotate-6" />
-<img src="/icono3.png" class="hidden md:block absolute top-1/2 left-4 md:left-10 w-14 md:w-20 opacity-100 rotate-3" />
-<img src="/icono6.png" class="hidden md:block absolute top-[70%] right-4 md:right-16 w-12 md:w-18 opacity-100 rotate-6" />
-<img src="/icono1.png" class="hidden md:block absolute bottom-[10%] right-2 md:right-12 w-10 md:w-14 opacity-100 rotate-12" />
-<img src="/icono2.png" class="hidden md:block absolute top-[60%] left-4 md:left-10 w-6 md:w-10 opacity-100 rotate-6" />
-<img src="/icono6.png" class="hidden md:block absolute bottom-[40%] right-4 md:right-8 w-14 md:w-20 opacity-100 rotate-6" />
-<img src="/icono7.png" class="hidden md:block absolute top-[85%] left-2 md:left-10 w-12 md:w-18 opacity-100 rotate-3" />
-
-
-
+  <img src="/icono2.png" class="hidden md:block absolute top-1/4 right-3 md:right-10 w-8 md:w-10 opacity-100 -rotate-6" />
+  <img src="/icono3.png" class="hidden md:block absolute top-1/2 left-4 md:left-10 w-14 md:w-20 opacity-100 rotate-3" />
+  <img src="/icono6.png" class="hidden md:block absolute top-[70%] right-4 md:right-16 w-12 md:w-18 opacity-100 rotate-6" />
+  <img src="/icono1.png" class="hidden md:block absolute bottom-[10%] right-2 md:right-12 w-10 md:w-14 opacity-100 rotate-12" />
+  <img src="/icono2.png" class="hidden md:block absolute top-[60%] left-4 md:left-10 w-6 md:w-10 opacity-100 rotate-6" />
+  <img src="/icono6.png" class="hidden md:block absolute bottom-[40%] right-4 md:right-8 w-14 md:w-20 opacity-100 rotate-6" />
+  <img src="/icono7.png" class="hidden md:block absolute top-[85%] left-2 md:left-10 w-12 md:w-18 opacity-100 rotate-3" />
     <form
       @submit.prevent="saveAnswers"
       class="w-full max-w-3xl bg-[#ede8d7] border border-[#4e0d05]/25 rounded-[30px] shadow-xl pt-10 pb-12 px-0 md:px-0 z-10"

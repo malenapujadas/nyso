@@ -20,7 +20,7 @@ export default {
         frecuencia: '',
         con_quien: '',
         temas: [],
-        temas_libre: '',
+        /* temas_libre: '', */
       },
       loading: false,
       ...opciones,
@@ -80,7 +80,7 @@ export default {
           frecuencia: prefs.frecuencia ?? '',
           con_quien: prefs.con_quien ?? '',
           temas: Array.isArray(prefs.temas) ? prefs.temas : [],
-          temas_libre: prefs.temas_libre ?? '',
+          /* temas_libre: prefs.temas_libre ?? '', */
         };
       }
     }
@@ -183,13 +183,13 @@ export default {
               {{ opt.label }}
             </button>
           </div>
-          <input
+          <!-- <input
             v-model="answers.temas_libre"
             type="text"
             placeholder="Otro tema que te gustaría ver"
             class="w-full mt-2 rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none"
-          />
-        </div>
+          /> -->
+        </div> 
 
         <div class="flex justify-center pt-4">
           <button

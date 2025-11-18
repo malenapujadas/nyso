@@ -18,6 +18,18 @@ export default {
   methods: {
     async handleSubmit() {
       this.errorMsg = '';
+
+      //validaciones
+      if (!this.user.email || !this.user.password) {
+        this.errorMsg = 'Por favor, completa todos los campos.';
+        return;
+      }
+
+      if (this.user.password.length < 6) {
+        this.errorMsg = 'La contraseña debe tener al menos 6 caracteres.';
+        return;
+      }
+
       try {
         this.loading = true;
         await login(this.user.email, this.user.password);

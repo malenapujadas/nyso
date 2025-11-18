@@ -6,4 +6,8 @@ Turno: Noche
 Comisión: DWN4AP
 Apellido y Nombre: Dalmasso Julieta y Pujadas Malena
 Docente: Santiago Gallino
-Carácter de entrega: 1er parcial.
+Carácter de entrega: 2do parcial.
+
+Usuario para entrar al /admin
+user: administrador@admin.com 
+contraseña: administrador 

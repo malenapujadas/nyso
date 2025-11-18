@@ -1,5 +1,6 @@
 <script>
 import { fetchLastPost, submitSuggestion } from '../services/blog.js';
+import { RouterLink } from 'vue-router';
 
 export default {
   name: 'Blog',
@@ -166,6 +167,7 @@ export default {
   />
 
   <!-- TITULO -->
+
   <h2 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-4 text-center">
     ¿Querés que hablemos de algo?
   </h2>
@@ -175,8 +177,16 @@ export default {
     Si respondemos, lo publicaremos en el blog.
   </p>
 
+  <p v-if="!user || !user.token" class="text-center text-[#4e0d05]/80 italic mb-6">
+    <strong>Recordá:</strong> para enviar sugerencias debés 
+    <RouterLink to="/ingresar" class="text-[#e099a8] underline hover:text-[#3c490b]">
+      iniciar sesión
+    </RouterLink>
+  </p>
+
   <!-- form -->
   <form
+    v-else
     @submit.prevent="submitSugg"
     class="flex flex-col gap-5 w-full max-w-lg mx-auto"
   >
@@ -230,7 +240,5 @@ export default {
     </p>
   </form>
 </section>
-
-
-  </div>
+</div>
 </template>

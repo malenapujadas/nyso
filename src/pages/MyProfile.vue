@@ -204,12 +204,12 @@ export default {
               </p>
             </div>
 
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm col-span-full">
+            <!-- <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm col-span-full">
               <p class="text-sm text-[#4e0d05]/70">Otro tema</p>
               <p class="font-semibold">
                 {{ preferences.temas_libre || 'No respondido' }}
               </p>
-            </div>
+            </div> -->
 
           </div>
         </div>
