@@ -38,45 +38,43 @@ const routes = [
 
 
 const router = createRouter({
-    history: createWebHistory(),
-  
-    routes,
-  
- 
-    scrollBehavior(to, from, savedPosition) {
-      return { top: 0, behavior: 'smooth' };
-    },
-  });
-  
-  let user = {
-    id: null,
-    email: null,
-  };
+  history: createWebHistory(),
+  routes,
 
-subscribeToAuthChanges(userState => user = userState); 
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0, behavior: 'smooth' };
+  },
+});
 
-router.beforeEach((to, from)=> {
-  if(to.meta.requiresAuth && user.id === null){
-      return '/ingresar';
+let user = {
+  id: null,
+  email: null,
+};
+
+subscribeToAuthChanges(userState => (user = userState));
+
+router.beforeEach((to, from) => {
+  if (to.meta.requiresAuth && user.id === null) {
+    return '/ingresar';
   }
-  
 });
 
 router.beforeEach((to, from, next) => {
   const user = getAuthUser();
 
   // Si la ruta requiere admin
-  if (to.path === "/admin") {
+  if (to.path === '/admin') {
     if (!user?.id) {
       // No está logueado
-      return next("/ingresar");
+      return next('/ingresar');
     }
 
-    if (user.role !== "admin") {
+    if (user.role !== 'admin') {
       // Está logueado pero no es admin
-      return next("/ingresar"); 
-    }  
+      return next('/ingresar');
+    }
   }
+
   next();
 });
 

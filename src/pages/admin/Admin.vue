@@ -106,28 +106,29 @@ export default {
 
 <template>
   <section
-    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-16 px-8 overflow-hidden"
+    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8 overflow-hidden"
   >
-    <img src="/icono1.png" class="absolute top-10 left-10 w-16 opacity-90 rotate-12" />
-    <img src="/icono2.png" class="absolute top-16 right-20 w-20 opacity-100 -rotate-6" />
-    <img src="/icono3.png" class="absolute top-1/3 left-10 w-22 opacity-80 rotate-3" />
-    <img src="/icono4.png" class="absolute top-[40%] right-10 w-18 opacity-80 rotate-6" />
-    <img src="/icono5.png" class="absolute bottom-[25%] left-10 w-24 opacity-80 -rotate-6" />
-    <img src="/icono6.png" class="absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3" />
-    <img src="/icono7.png" class="absolute top-[20%] left-10 w-18 opacity-90 rotate-12" />
-    <img src="/icono2.png" class="absolute bottom-16 right-20 w-20 opacity-100 -rotate-6" />
-    <img src="/icono6.png" class="absolute bottom-22 left-20 w-24 opacity-100 -rotate-6" />
+    <!-- Ocultamos decoraciones en mobile -->
+    <img src="/icono1.png" class="hidden md:block absolute top-10 left-10 w-16 opacity-90 rotate-12" />
+    <img src="/icono2.png" class="hidden md:block absolute top-16 right-20 w-20 opacity-100 -rotate-6" />
+    <img src="/icono3.png" class="hidden md:block absolute top-1/3 left-10 w-22 opacity-80 rotate-3" />
+    <img src="/icono4.png" class="hidden md:block absolute top-[40%] right-10 w-18 opacity-80 rotate-6" />
+    <img src="/icono5.png" class="hidden md:block absolute bottom-[25%] left-10 w-24 opacity-80 -rotate-6" />
+    <img src="/icono6.png" class="hidden md:block absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3" />
+    <img src="/icono7.png" class="hidden md:block absolute top-[20%] left-10 w-18 opacity-90 rotate-12" />
+    <img src="/icono2.png" class="hidden md:block absolute bottom-16 right-20 w-20 opacity-100 -rotate-6" />
+    <img src="/icono6.png" class="hidden md:block absolute bottom-22 left-20 w-24 opacity-100 -rotate-6" />
 
     <div class="relative z-10 max-w-5xl mx-auto">
       <h1
-        class="text-4xl font-bold text-[#3c490b] mb-10 text-center tracking-wide"
+        class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-8 sm:mb-10 text-center tracking-wide"
       >
         Panel de administración
       </h1>
 
       <!-- sugerencias -->
-      <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-8 mb-12">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-6">Sugerencias del blog</h2>
+      <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-6 sm:p-8 mb-12">
+        <h2 class="text-xl sm:text-2xl font-semibold text-[#3c490b] mb-4 sm:mb-6">Sugerencias del blog</h2>
 
         <div v-if="loading" class="text-[#e099a8] text-center py-4">
           Cargando sugerencias...
@@ -145,10 +146,10 @@ export default {
           <div
             v-for="s in suggestions"
             :key="s.id"
-            class="mb-6 p-6 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl shadow-sm hover:shadow-md transition-all"
+            class="mb-6 p-4 sm:p-6 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl shadow-sm hover:shadow-md transition-all"
           >
-            <div class="flex justify-between items-start">
-              <div>
+            <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+              <div class="w-full">
                 <h3 class="font-semibold text-lg">{{ s.titulo }}</h3>
                 <p class="text-sm text-[#4e0d05]/80">{{ s.descripcion }}</p>
 
@@ -164,7 +165,7 @@ export default {
 
               <button
                 @click="deleteSuggestionConfirm(s.id)"
-                class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors"
+                class="self-end sm:self-start text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors"
               >
                 Eliminar ✕
               </button>
@@ -179,11 +180,11 @@ export default {
                 placeholder="Escribir respuesta..."
               ></textarea>
 
-              <div class="mt-3 flex gap-2">
+              <div class="mt-3 flex flex-col sm:flex-row gap-2">
                 <button
                   @click="reply(s)"
                   :disabled="sendingReply[s.id]"
-                  class="px-6 py-2 bg-[#e099a8] text-[#3c490b] rounded-full font-semibold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+                  class="px-6 py-2 bg-[#e099a8] text-[#3c490b] rounded-full font-semibold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300 w-full sm:w-auto"
                 >
                   <span v-if="sendingReply[s.id]">Enviando...</span>
                   <span v-else>Responder y publicar</span>
@@ -195,8 +196,8 @@ export default {
       </div>
 
       <!-- Publicaciones -->
-      <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-8">
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-6">
+      <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-6 sm:p-8">
+        <h2 class="text-xl sm:text-2xl font-semibold text-[#3c490b] mb-6">
           Publicaciones del blog
         </h2>
 
@@ -216,7 +217,7 @@ export default {
           <div
             v-for="p in posts"
             :key="p.id"
-            class="mb-4 p-5 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl flex justify-between items-start hover:shadow-md transition-all"
+            class="mb-4 p-4 sm:p-5 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:shadow-md transition-all"
           >
             <div>
               <h3 class="font-semibold text-lg text-[#4e0d05]">{{ p.titulo }}</h3>
@@ -227,7 +228,7 @@ export default {
 
             <button
               @click="deletePostConfirm(p.id)"
-              class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors ml-4"
+              class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors sm:ml-4 self-end sm:self-auto"
             >
               Eliminar ✕
             </button>
@@ -239,12 +240,12 @@ export default {
     <!-- confirmación -->
     <div
       v-if="showConfirmModal"
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
     >
       <div
-        class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-8 w-[90%] max-w-md shadow-xl text-center"
+        class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-xl text-center"
       >
-        <h3 class="text-xl font-bold text-[#3c490b] mb-4">
+        <h3 class="text-lg sm:text-xl font-bold text-[#3c490b] mb-4">
           Eliminar sugerencia
         </h3>
 
@@ -252,7 +253,7 @@ export default {
           {{ confirmMessage }}
         </p>
 
-        <div class="flex justify-center gap-4">
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
           <button
             @click="showConfirmModal = false"
             class="px-6 py-2 rounded-full border border-[#4e0d05]/40 text-[#3c490b] hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all"

@@ -8,7 +8,7 @@ export default {
     return {
       user: null,
       isAuthChecked: false,
-      menuOpen: false, //  para mobile
+      menuOpen: false, // p mobile
     };
   },
 
@@ -45,11 +45,9 @@ export default {
 
 <template>
   <div class="min-h-screen bg-[#f6f6eb] flex flex-col">
-
     <nav
       class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between relative"
     >
-
       <!-- Mobile-->
       <div class="flex md:hidden w-full items-center justify-between">
         <RouterLink to="/" @click="menuOpen = false">
@@ -61,8 +59,6 @@ export default {
         </button>
       </div>
 
-
-      
       <div class="hidden md:block w-40"></div>
 
       <!-- Menu desktop -->
@@ -114,12 +110,10 @@ export default {
             Panel Admin
           </RouterLink>
         </li>
-
       </ul>
 
-      <!--  usuario desktop -->
+      <!-- usuario desktop -->
       <div class="hidden md:flex items-center gap-4 w-56 justify-end">
-
         <template v-if="!isAuthChecked">
           <span class="text-[#4e0d05]/40 text-sm italic">...</span>
         </template>
@@ -168,6 +162,7 @@ export default {
         <RouterLink @click="menuOpen=false" to="/social">Vinos</RouterLink>
         <RouterLink @click="menuOpen=false" to="/blog">Blog</RouterLink>
         <RouterLink @click="menuOpen=false" to="/red-social">Red Social</RouterLink>
+        <RouterLink @click="menuOpen=false" to="/admin">Administrador</RouterLink>
       </ul>
 
       <div class="h-px bg-[#4e0d05]/20 my-3"></div>
@@ -202,7 +197,6 @@ export default {
           >
             Registrarme
           </RouterLink>
-
         </template>
       </div>
     </div>
@@ -211,67 +205,68 @@ export default {
       <RouterView />
     </main>
 
-
     <footer class="relative bg-[#f6f6eb] pt-16 flex flex-col items-center justify-center">
+      <!-- Contenido principal -->
+      <div class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-[40px] px-8 py-14 md:px-10 md:py-16 shadow-inner">
+        <div
+          class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start 
+                 justify-items-center text-center md:text-left"
+        >
+          <!-- Sobre nyso -->
+          <div class="flex flex-col items-center md:items-start">
+            <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
+              Sobre NYSO
+            </h3>
+            <ul class="space-y-2 text-sm md:text-base text-[#f6f6eb]">
+              <li><RouterLink to="/" class="hover:text-[#e099a8] transition-colors">Inicio</RouterLink></li>
+              <li><RouterLink to="/social" class="hover:text-[#e099a8] transition-colors">Vinos</RouterLink></li>
+              <li><RouterLink to="/blog" class="hover:text-[#e099a8] transition-colors">Blog</RouterLink></li>
+              <li><RouterLink to="/red-social" class="hover:text-[#e099a8] transition-colors">Red social</RouterLink></li>
+            </ul>
+          </div>
 
-<!-- Contenido principal -->
-<div class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-[40px] px-8 py-14 md:px-10 md:py-16 shadow-inner">
-  <div
-    class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start 
-           justify-items-center text-center md:text-left"
-  >
+          <div class="flex flex-col items-center text-center">
+            <img src="/logo.png" alt="Logo NYSO" class="w-20 md:w-28 mb-4" />
+            <p class="text-xs md:text-sm leading-relaxed max-w-[220px] md:max-w-xs">
+              Descubrí, guardá y compartí tus vinos favoritos.
+            </p>
+          </div>
 
-    <!-- Sobre nyso -->
-    <div class="flex flex-col items-center md:items-start">
-      <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
-        Sobre NYSO
-      </h3>
-      <ul class="space-y-2 text-sm md:text-base text-[#f6f6eb]">
-        <li><RouterLink to="/" class="hover:text-[#e099a8] transition-colors">Inicio</RouterLink></li>
-        <li><RouterLink to="/social" class="hover:text-[#e099a8] transition-colors">Vinos</RouterLink></li>
-        <li><RouterLink to="/blog" class="hover:text-[#e099a8] transition-colors">Blog</RouterLink></li>
-        <li><RouterLink to="/red-social" class="hover:text-[#e099a8] transition-colors">Red social</RouterLink></li>
-      </ul>
-    </div>
+          <!-- Redes -->
+          <div class="flex flex-col items-center md:items-end text-center md:text-right">
+            <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
+              Seguinos
+            </h3>
 
-    <div class="flex flex-col items-center text-center">
-      <img src="/logo.png" alt="Logo NYSO" class="w-20 md:w-28 mb-4" />
-      <p class="text-xs md:text-sm leading-relaxed max-w-[220px] md:max-w-xs">
-        Descubrí, guardá y compartí tus vinos favoritos.
-      </p>
-    </div>
+            <div class="flex justify-center md:justify-end gap-6 mb-4">
+              <a href="https://www.instagram.com/nyso_vinos/" target="_blank">
+                <img
+                  src="/ig.png"
+                  alt="Instagram"
+                  class="w-7 h-7 md:w-8 md:h-8 hover:scale-110 transition-transform duration-300"
+                />
+              </a>
 
-    <!-- Redes -->
-    <div class="flex flex-col items-center md:items-end text-center md:text-right">
-      <h3 class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]">
-        Seguinos
-      </h3>
+              <a href="#">
+                <img
+                  src="/tiktok.png"
+                  alt="TikTok"
+                  class="w-7 h-7 md:w-8 md:h-8 hover:scale-110 transition-transform duration-300"
+                />
+              </a>
+            </div>
 
-      <div class="flex justify-center md:justify-end gap-6 mb-4">
-        <a href="https://www.instagram.com/nyso_vinos/" target="_blank">
-          <img src="/ig.png" alt="Instagram"
-               class="w-7 h-7 md:w-8 md:h-8 hover:scale-110 transition-transform duration-300" />
-        </a>
-
-        <a href="#">
-          <img src="/tiktok.png" alt="TikTok"
-               class="w-7 h-7 md:w-8 md:h-8 hover:scale-110 transition-transform duration-300" />
-        </a>
+            <p class="text-[10px] md:text-xs text-[#f6f6eb]/80">#DescubríNYSO</p>
+          </div>
+        </div>
       </div>
 
-      <p class="text-[10px] md:text-xs text-[#f6f6eb]/80">#DescubríNYSO</p>
-    </div>
-  </div>
-</div>
-
-<div
-  class="w-full bg-[#2d3707] text-[#f6f6eb]/70 text-xs md:text-sm 
-         py-3 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8"
->
-  <p>© 2025 NYSO. Todos los derechos reservados.</p>
-</div>
-</footer>
-
-
+      <div
+        class="w-full bg-[#2d3707] text-[#f6f6eb]/70 text-xs md:text-sm 
+               py-3 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8"
+      >
+        <p>© 2025 NYSO. Todos los derechos reservados.</p>
+      </div>
+    </footer>
   </div>
 </template>

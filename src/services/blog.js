@@ -1,50 +1,51 @@
- import { supabase } from './supabase.js';
+import { supabase } from './supabase.js';
 
- export async function fetchLastPost(){
-    const { data, error } = await supabase
-            .from('blog')
-            .select();
-        
-    if(error){
-        console.error('[blog.js fetchLastPost] error al traer las ultimas publicaciones: ', error);
-        throw new Error(error.message);
-    }  
-    return data; 
- }
+export async function fetchLastPost() {
+  const { data, error } = await supabase
+    .from('blog')
+    .select();
 
-// funcion para las sugerencias de los usuarios
-export async function submitSuggestion(suggestion){
-   const { data, error } = await supabase
-       .from('blog_suggestions')
-       .insert([{
-           nombre: suggestion.nombre || null,
-           email: suggestion.email || null,
-           titulo: suggestion.titulo,
-           descripcion: suggestion.descripcion,
-           responded: false,
-       }]);
+  if (error) {
+    console.error('[blog.js fetchLastPost] error al traer las ultimas publicaciones: ', error);
+    throw new Error(error.message);
+  }
 
-   if(error){
-       console.error('[blog.js submitSuggestion] Error al enviar la sugerencia: ', error);
-       throw new Error(error.message);
-   }
-
-   return data;
-   /* return data && data[0]; */
+  return data;
 }
 
-export async function fetchSuggestions(){
-   const { data, error } = await supabase
-       .from('blog_suggestions')
-       .select('*')
-       .order('created_at', { ascending: false });
+// funcion para las sugerencias de los usuarios
+export async function submitSuggestion(suggestion) {
+  const { data, error } = await supabase
+    .from('blog_suggestions')
+    .insert([{
+      nombre: suggestion.nombre || null,
+      email: suggestion.email || null,
+      titulo: suggestion.titulo,
+      descripcion: suggestion.descripcion,
+      responded: false,
+    }]);
 
-   if(error){
-       console.error('[blog.js fetchSuggestions] Error al traer sugerencias: ', error);
-       throw new Error(error.message);
-   }
+  if (error) {
+    console.error('[blog.js submitSuggestion] Error al enviar la sugerencia: ', error);
+    throw new Error(error.message);
+  }
 
-   return data;
+  return data;
+  /* return data && data[0]; */
+}
+
+export async function fetchSuggestions() {
+  const { data, error } = await supabase
+    .from('blog_suggestions')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('[blog.js fetchSuggestions] Error al traer sugerencias: ', error);
+    throw new Error(error.message);
+  }
+
+  return data;
 }
 
 export async function getSuggestionById(id) {
@@ -61,7 +62,6 @@ export async function getSuggestionById(id) {
 
   return data;
 }
-
 
 export async function createBlogPostFromSuggestion(suggestion, responseText) {
   const titulo = suggestion.titulo || 'Pregunta del lector';
@@ -102,7 +102,7 @@ export async function markSuggestionAsResponded(id, responseText) {
   return data;
 }
 
-//funcion que coordina las 3 anteriores (leer sugerencia, crear post, marcar como respondida)
+// funcion que coordina las 3 anteriores (leer sugerencia, crear post, marcar como respondida)
 export async function respondSuggestion(suggestionId, responseText) {
   if (!responseText?.trim()) {
     throw new Error('Debe ingresar una respuesta antes de enviar.');
@@ -122,7 +122,7 @@ export async function respondSuggestion(suggestionId, responseText) {
   return { suggestion: updatedSuggestion, post: createdPost };
 }
 
-//eliminar sugerencia
+// eliminar sugerencia
 export async function deleteSuggestion(suggestionId) {
   const { error } = await supabase
     .from('blog_suggestions')
@@ -137,7 +137,7 @@ export async function deleteSuggestion(suggestionId) {
   return true;
 }
 
-//eliminar publicacion del blog
+// eliminar publicacion del blog
 export async function deletePost(postId) {
   const { error } = await supabase
     .from('blog')

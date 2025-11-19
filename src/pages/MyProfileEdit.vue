@@ -1,4 +1,3 @@
-
 <script>
 import AppH1 from '../components/AppH1.vue';
 import { getCurrentUser, updateAuthUserData } from '../services/auth.js';
@@ -50,13 +49,16 @@ export default {
         this.loading = true;
         const user = await getCurrentUser();
         if (!user) throw new Error('Usuario no encontrado');
+
         // Guardar preferencias
         await savePreferencesForUser(user.id, this.answers);
+
         // Guardar nombre de usuario
         if (this.display_name) {
           await updateUserProfile(user.id, { display_name: this.display_name });
           await updateAuthUserData({ display_name: this.display_name });
         }
+
         this.$router.push('/mi-perfil');
       } catch (error) {
         console.error('[MyProfileEdit] Error al editar datos:', error);
@@ -70,6 +72,7 @@ export default {
     if (user) {
       // Precargar nombre de usuario
       this.display_name = user.user_metadata?.display_name || user.display_name || '';
+
       // Cargar preferencias y asegurar valores por defecto
       const prefs = await getPreferencesForUser(user.id);
       if (prefs) {
@@ -90,7 +93,6 @@ export default {
 </script>
 
 <template>
-
   <div v-if="loading" class="min-h-screen flex items-center justify-center bg-[#f6f6eb]">
     <AppLoader />
   </div>
@@ -99,7 +101,6 @@ export default {
     v-else
     class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center justify-start px-6 pt-16 pb-20"
   >
-    
     <img src="/icono1.png" class="absolute top-10 left-12 w-14 rotate-12 opacity-100" />
     <img src="/icono2.png" class="absolute top-24 right-10 w-16 -rotate-6 opacity-100" />
     <img src="/icono6.png" class="absolute top-1/3 right-[12%] w-12 rotate-3 opacity-100" />
@@ -110,7 +111,6 @@ export default {
       class="relative z-10 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-10 w-full max-w-xl"
     >
       <div class="space-y-6">
-
         <div>
           <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="display_name">
             Nombre de usuario
@@ -126,18 +126,26 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué tipo de vino va más con vos?</h3>
           <div class="flex gap-2 flex-wrap">
-            <button type="button" v-for="opt in gustoOpc" :key="opt.value"
+            <button
+              type="button"
+              v-for="opt in gustoOpc"
+              :key="opt.value"
               @click="answers.gusto = opt.value"
-              :class="chipClass(answers.gusto === opt.value)">
+              :class="chipClass(answers.gusto === opt.value)"
+            >
               <span v-html="opt.label"></span>
             </button>
           </div>
 
           <h4 class="mt-4 font-semibold text-[#3c490b]">¿Cómo te gusta disfrutar el vino?</h4>
           <div class="flex gap-2 flex-wrap mt-2">
-            <button v-for="opt in comoOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in comoOpc"
+              :key="opt.value"
+              type="button"
               @click="answers.como = opt.value"
-              :class="chipClass(answers.como === opt.value)">
+              :class="chipClass(answers.como === opt.value)"
+            >
               {{ opt.label }}
             </button>
           </div>
@@ -146,18 +154,26 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">Si tu vino ideal fuera una persona, sería…</h3>
           <div class="flex gap-2 flex-wrap">
-            <button v-for="opt in intensidadOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in intensidadOpc"
+              :key="opt.value"
+              type="button"
               @click="answers.intensidad = opt.value"
-              :class="chipClass(answers.intensidad === opt.value)">
+              :class="chipClass(answers.intensidad === opt.value)"
+            >
               {{ opt.label }}
             </button>
           </div>
 
           <h4 class="mt-4 font-semibold text-[#3c490b]">¿Qué sabores te atraen más?</h4>
           <div class="flex gap-2 flex-wrap mt-2">
-            <button v-for="opt in saboresOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in saboresOpc"
+              :key="opt.value"
+              type="button"
               @click="toggleSabor(opt.value)"
-              :class="chipClass(answers.sabores.includes(opt.value))">
+              :class="chipClass(answers.sabores.includes(opt.value))"
+            >
               {{ opt.label }}
             </button>
           </div>
@@ -166,18 +182,26 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Cada cuánto tomás vino?</h3>
           <div class="flex gap-2 flex-wrap">
-            <button v-for="opt in frecuenciaOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in frecuenciaOpc"
+              :key="opt.value"
+              type="button"
               @click="answers.frecuencia = opt.value"
-              :class="chipClass(answers.frecuencia === opt.value)">
+              :class="chipClass(answers.frecuencia === opt.value)"
+            >
               {{ opt.label }}
             </button>
           </div>
 
           <h4 class="mt-4 font-semibold text-[#3c490b]">¿Con quién compartís más el vino?</h4>
           <div class="flex gap-2 flex-wrap mt-2">
-            <button v-for="opt in conQuienOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in conQuienOpc"
+              :key="opt.value"
+              type="button"
               @click="answers.con_quien = opt.value"
-              :class="chipClass(answers.con_quien === opt.value)">
+              :class="chipClass(answers.con_quien === opt.value)"
+            >
               {{ opt.label }}
             </button>
           </div>
@@ -186,13 +210,17 @@ export default {
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">¿Qué temas te interesan?</h3>
           <div class="flex gap-2 flex-wrap">
-            <button v-for="opt in temasOpc" :key="opt.value" type="button"
+            <button
+              v-for="opt in temasOpc"
+              :key="opt.value"
+              type="button"
               @click="toggleTema(opt.value)"
-              :class="chipClass(answers.temas.includes(opt.value))">
+              :class="chipClass(answers.temas.includes(opt.value))"
+            >
               {{ opt.label }}
             </button>
           </div>
-        </div> 
+        </div>
 
         <div class="flex justify-center pt-4">
           <button
@@ -203,9 +231,7 @@ export default {
             Guardar cambios
           </button>
         </div>
-
       </div>
     </form>
   </section>
-
 </template>

@@ -19,7 +19,7 @@ export default {
     async handleSubmit() {
       this.errorMsg = '';
 
-      //validaciones
+      // validaciones
       if (!this.user.email || !this.user.password) {
         this.errorMsg = 'Por favor, completa todos los campos.';
         return;
@@ -37,6 +37,7 @@ export default {
       } catch (error) {
         this.errorMsg = 'Credenciales inválidas';
       }
+
       this.loading = false;
     },
   },
@@ -48,13 +49,30 @@ export default {
     class="min-h-screen flex flex-col items-center justify-start 
            pt-12 md:pt-16 bg-[#f6f6eb] relative overflow-hidden"
   >
-    <img src="/icono1.png" class="absolute top-6 left-6 w-10 md:w-16 rotate-12 opacity-100" />
-    <img src="/icono6.png" class="absolute bottom-28 md:bottom-16 right-10 md:right-16 w-14 md:w-18 -rotate-6 opacity-100" />
-    <img src="/icono3.png" class="absolute top-24 md:top-1/3 left-6 md:left-[8%] w-10 md:w-14 rotate-6 opacity-100" />
-    <img src="/icono3.png" class="absolute top-36 md:top-1/3 right-10 md:right-16 w-12 md:w-18 rotate-6 opacity-100" />
-    <img src="/icono7.png" class="absolute bottom-[28%] md:bottom-[20%] left-[18%] md:left-[25%] w-12 md:w-16 opacity-100 -rotate-12" />
+    <img
+      src="/icono1.png"
+      class="absolute top-6 left-6 w-10 md:w-16 rotate-12 opacity-100"
+    />
+    <img
+      src="/icono6.png"
+      class="absolute bottom-28 md:bottom-16 right-10 md:right-16 w-14 md:w-18 -rotate-6 opacity-100"
+    />
+    <img
+      src="/icono3.png"
+      class="absolute top-24 md:top-1/3 left-6 md:left-[8%] w-10 md:w-14 rotate-6 opacity-100"
+    />
+    <img
+      src="/icono3.png"
+      class="absolute top-36 md:top-1/3 right-10 md:right-16 w-12 md:w-18 rotate-6 opacity-100"
+    />
+    <img
+      src="/icono7.png"
+      class="absolute bottom-[28%] md:bottom-[20%] left-[18%] md:left-[25%] w-12 md:w-16 opacity-100 -rotate-12"
+    />
 
-    <AppH1 class="text-[#3c490b] text-lg md:text-1xl mb-6 z-10 text-center px-6">
+    <AppH1
+      class="text-[#3c490b] text-lg md:text-1xl mb-6 z-10 text-center px-6"
+    >
       Ingresar a mi cuenta
     </AppH1>
 
@@ -73,7 +91,10 @@ export default {
       </div>
 
       <div>
-        <label for="email" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
+        <label
+          for="email"
+          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
+        >
           Email
         </label>
 
@@ -88,7 +109,10 @@ export default {
       </div>
 
       <div>
-        <label for="password" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
+        <label
+          for="password"
+          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
+        >
           Contraseña
         </label>
 
@@ -101,9 +125,11 @@ export default {
                  text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
+
       <RouterLink 
         class="text-left text-xs md:text-sm text-[#3c490b]/70 font-bold hover:text-[#e099a8] transition-colors"
-        to="/recuperar-contrasena">
+        to="/recuperar-contrasena"
+      >
         ¿Olvidaste tu contraseña?
       </RouterLink>
 
@@ -117,7 +143,9 @@ export default {
         {{ loading ? 'Ingresando...' : 'Ingresar' }}
       </button>
 
-      <p class="text-center text-xs md:text-sm text-[#4e0d05]/70 mt-1 md:mt-3">
+      <p
+        class="text-center text-xs md:text-sm text-[#4e0d05]/70 mt-1 md:mt-3"
+      >
         ¿Todavía no tenés cuenta?
         <RouterLink
           to="/crear-cuenta"

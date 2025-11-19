@@ -96,27 +96,24 @@ export default {
 
 <template>
   <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16">
-
-  <!-- Iconos mobile  -->
-  <div class="relative w-full h-0 lg:hidden">
-    <img src="/icono1.png" class="absolute top-[-40px] left-8 w-12 opacity-100 rotate-12" />
-
-    <img src="/icono3.png" class="absolute top-[-10px] right-3 w-10 opacity-100 rotate-3" />
-
-    <img src="/icono7.png" class="absolute top-[30px] left-16 w-6 opacity-100 -rotate-12" />
-  </div>
-
-  <!-- Iconos escritorio  -->
-  <img src="/icono1.png" class="hidden lg:block absolute top-30 left-98 w-14 opacity-100 rotate-12" />
-  <img src="/icono6.png" class="hidden lg:block absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
-  <img src="/icono1.png" class="hidden lg:block absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
-  <img src="/icono3.png" class="hidden lg:block absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3" />
-  <img src="/icono7.png" class="hidden lg:block absolute bottom-[18%] left-[4%] w-25 opacity-100 -rotate-12" />
-  <img src="/icono6.png" class="hidden lg:block absolute bottom-40 right-12 w-22 opacity-100 -rotate-6" />
-  <img src="/icono1.png" class="hidden lg:block absolute bottom-[60%] left-20 w-14 opacity-100 rotate-12" />
-  <img src="/icono7.png" class="hidden lg:block absolute bottom-[40%] left-[4%] w-14 opacity-100 -rotate-12" />
-
     
+    <!-- Iconos mobile  -->
+    <div class="relative w-full h-0 lg:hidden">
+      <img src="/icono1.png" class="absolute top-[-40px] left-8 w-12 opacity-100 rotate-12" />
+      <img src="/icono3.png" class="absolute top-[-10px] right-3 w-10 opacity-100 rotate-3" />
+      <img src="/icono7.png" class="absolute top-[30px] left-16 w-6 opacity-100 -rotate-12" />
+    </div>
+
+    <!-- iconos escritorio  -->
+    <img src="/icono1.png" class="hidden lg:block absolute top-30 left-98 w-14 opacity-100 rotate-12" />
+    <img src="/icono6.png" class="hidden lg:block absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
+    <img src="/icono1.png" class="hidden lg:block absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
+    <img src="/icono3.png" class="hidden lg:block absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3" />
+    <img src="/icono7.png" class="hidden lg:block absolute bottom-[18%] left-[4%] w-25 opacity-100 -rotate-12" />
+    <img src="/icono6.png" class="hidden lg:block absolute bottom-40 right-12 w-22 opacity-100 -rotate-6" />
+    <img src="/icono1.png" class="hidden lg:block absolute bottom-[60%] left-20 w-14 opacity-100 rotate-12" />
+    <img src="/icono7.png" class="hidden lg:block absolute bottom-[40%] left-[4%] w-14 opacity-100 -rotate-12" />
+
     <div class="text-center mb-12">
       <h1 class="text-4xl font-bold text-[#3c490b] mb-2">Mi perfil</h1>
       <p class="text-[#4e0d05]/70 text-lg">Bienvenido a tu espacio personal.</p>
@@ -125,7 +122,7 @@ export default {
     <div class="w-full max-w-4xl space-y-10 relative z-10">
 
       <div class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10">
-
+        
         <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
           Información de usuario
         </h2>
@@ -137,7 +134,7 @@ export default {
 
         <div class="w-full border-t border-[#3c490b]/20 my-6"></div>
 
-          <!-- preferencias -->
+        <!-- preferencias -->
         <div v-if="preferences" class="mt-6">
           <h3 class="font-semibold text-xl text-[#3c490b] mb-3">Tus preferencias</h3>
 
@@ -206,17 +203,17 @@ export default {
 
           </div>
         </div>
+
         <RouterLink
           to="/mi-perfil/editar"
           class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
         >
-          Editar perfil 
+          Editar perfil
         </RouterLink>
       </div>
 
-
       <!-- Favoritos -->
-       <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
         <h2 class="text-xl font-bold text-[#3c490b] mb-4">Favoritos</h2>
 
         <div v-if="favorites.length" class="grid grid-cols-1 gap-6">
@@ -251,8 +248,8 @@ export default {
         <p v-else class="text-[#4e0d05]/60 italic">Aún no tenés vinos favoritos.</p>
       </div>
 
-    <!-- Historial -->
-           <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+      <!-- Historial -->
+      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
         <h2 class="text-xl font-bold text-[#3c490b] mb-4">Historial</h2>
 
         <div v-if="history.length" class="grid grid-cols-1 gap-6">
@@ -286,77 +283,61 @@ export default {
 
         <p v-else class="text-[#4e0d05]/60 italic">No hay vinos en tu historial.</p>
       </div>
-<!--     <div>
-      <h2
-        class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2"
-      >
-        Historial
-      </h2>
 
-      <div v-if="history.length">
-        <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
-          <li
-            v-for="v in history"
-            :key="v.id"
-            class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
-          >
-            <span class="font-medium">{{ v.nombre }}</span>
-            <button
-              @click="handleRemoveHistory(v.id)"
-              class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
-            >
-              Eliminar ✕
-            </button>
-          </li>
-        </ul>
-      </div>
+      <!-- Amigos -->
+      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+        <h2 class="text-2xl font-bold text-[#3c490b] mb-4">Mis amigos</h2>
 
-      <p v-else class="text-[#4e0d05]/60 italic">
-        No tienes vinos en tu historial.
-      </p>
-    </div> -->
+        <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic mb-4">
+          No tienes amigos aún.
+        </div>
 
-    <!-- Amigos -->
-    <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
-      <h2 class="text-2xl font-bold text-[#3c490b] mb-4">Mis amigos</h2>
-
-      <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic mb-4">No tienes amigos aún.</div>
-
-      <div v-for="f in friends" :key="f.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
-        <span class="font-semibold text-[#3c490b]">
-          {{ f.display_name || f.email || f.id }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Solicitudes -->
-    <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
-      <h2 class="text-xl font-bold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
-
-      <div v-if="pendingRequests.length === 0" class="text-[#4e0d05]/60 italic mb-4">No hay solicitudes pendientes.</div>
-
-      <div v-for="r in pendingRequests" :key="r.id" class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center">
-        <span class="font-semibold text-[#3c490b]">
-          {{ r?.requester?.display_name || r?.requester?.email || r.requester_id }}
-        </span>
-
-        <div class="flex gap-2">
-          <button
-            @click="handleResponse(r.id, 'accepted')"
-            class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
-          >
-            Aceptar
-          </button>
-
-          <button
-            @click="handleResponse(r.id, 'rejected')"
-            class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
-          >
-            Rechazar
-          </button>
+        <div
+          v-for="f in friends"
+          :key="f.id"
+          class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center"
+        >
+          <span class="font-semibold text-[#3c490b]">
+            {{ f.display_name || f.email || f.id }}
+          </span>
         </div>
       </div>
-    </div>
+
+      <!-- Solicitudes -->
+      <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">
+        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
+
+        <div v-if="pendingRequests.length === 0" class="text-[#4e0d05]/60 italic mb-4">
+          No hay solicitudes pendientes.
+        </div>
+
+        <div
+          v-for="r in pendingRequests"
+          :key="r.id"
+          class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center"
+        >
+          <span class="font-semibold text-[#3c490b]">
+            {{ r?.requester?.display_name || r?.requester?.email || r.requester_id }}
+          </span>
+
+          <div class="flex gap-2">
+            <button
+              @click="handleResponse(r.id, 'accepted')"
+              class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
+            >
+              Aceptar
+            </button>
+
+            <button
+              @click="handleResponse(r.id, 'rejected')"
+              class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
+            >
+              Rechazar
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 </template>

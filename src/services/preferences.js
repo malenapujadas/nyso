@@ -14,7 +14,6 @@ export async function savePreferencesForUser(userId, answers) {
   };
 
   // upsert: user_id debe ser PK o unique
-
   const { data, error } = await supabase
     .from('user_preferences')
     .upsert(payload, { returning: 'representation' });
@@ -37,7 +36,7 @@ export async function getPreferencesForUser(userId) {
     .eq('user_id', userId)
     .maybeSingle();
 
-    if (error) {
+  if (error) {
     console.warn('[preferences.js getPreferencesForUser] No se pudieron cargar preferencias:', error);
     return null;
   }

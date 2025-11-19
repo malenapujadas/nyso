@@ -15,7 +15,7 @@ export async function recoverPassword(email) {
 
   // enviar mail de Supabase
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'http://localhost:5173/reset-password' //esto es lo q yo asigne en supabase, tiene que coincidir con la ruta de redireccion den routes
+    redirectTo: 'http://localhost:5173/reset-password' // esto es lo q yo asigne en supabase, tiene que coincidir con la ruta de redireccion den routes
   });
 
   if (error) {
@@ -45,3 +45,4 @@ export async function updatePassword(newPassword) {
     ok: true,
   };
 }
+

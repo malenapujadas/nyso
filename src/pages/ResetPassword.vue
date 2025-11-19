@@ -5,6 +5,7 @@ import AppH1 from '../components/AppH1.vue';
 export default {
   name: 'ResetPassword',
   components: { AppH1 },
+
   data() {
     return {
       password: '',
@@ -40,13 +41,13 @@ export default {
       }
 
       this.status = 'success';
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
-    <section
+  <section
     class="min-h-screen flex flex-col items-center justify-start 
            pt-12 md:pt-16 bg-[#f6f6eb] relative overflow-hidden"
   >
@@ -62,98 +63,69 @@ export default {
 
     <form
       @submit.prevent="actualizarPassword"
-      class="relative z-10 w-[90%] max-w-md bg-[#ede8d7] border border-[#4e0d05]/20 
-             rounded-2xl md:rounded-3xl shadow-md p-6 md:p-8 
-             flex flex-col gap-6 text-left"
+      class="relative z-10 w-[90%] max-w-[400px] mx-auto bg-[#ede8d7] 
+            border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl shadow-md 
+            p-6 md:p-8 flex flex-col gap-6 text-left"
     >
 
       <div>
-        <label for="password" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
-        Nueva Contraseña
+        <label
+          for="password"
+          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
+        >
+          Nueva Contraseña
         </label>
+
         <input
-        id="password"
-        v-model="password"
-        class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
-                text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
-        type="password"
-        placeholder="Nueva contraseña"
-        required
+          id="password"
+          v-model="password"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
+                 text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          type="password"
+          placeholder="Nueva contraseña"
+          required
         />
       </div>
 
       <div>
-        <label for="confirm" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
+        <label
+          for="confirm"
+          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
+        >
           Confirmar Contraseña
         </label>
+
         <input
-            id="confirm"
-            v-model="confirm"
-            class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
-                    text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
-            type="password"
-            placeholder="Confirmar contraseña"
-            required
+          id="confirm"
+          v-model="confirm"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
+                 text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          type="password"
+          placeholder="Confirmar contraseña"
+          required
         />
       </div>
 
-      <button 
+      <button
         type="submit"
         class="w-full rounded-full bg-[#e099a8] text-[#3c490b] font-semibold 
-        py-2.5 text-sm md:text-base mt-2 shadow-md hover:bg-[#3c490b] 
-        hover:text-[#f6f6eb] transition-all duration-300"
-        :disabled="status === 'loading'">
+               py-2.5 text-sm md:text-base mt-2 shadow-md hover:bg-[#3c490b] 
+               hover:text-[#f6f6eb] transition-all duration-300"
+        :disabled="status === 'loading'"
+      >
         {{ status === 'loading' ? 'Actualizando...' : 'Actualizar contraseña' }}
       </button>
-
     </form>
 
-    <p v-if="status === 'success'" class="success">
+    <p v-if="status === 'success'"
+      class="text-green-600 text-center mt-6">
       ¡Contraseña actualizada! Ya podés iniciar sesión.
     </p>
 
-    <p v-if="status === 'error'" class="error">
+    <p v-if="status === 'error'"
+      class="text-red-600 text-center mt-6">
       {{ errorMessage }}
     </p>
+
   </section>
-  <!-- <div class="page page-form">
-    <h1>Restablecer contraseña</h1>
-
-    <form @submit.prevent="actualizarPassword">
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Nueva contraseña"
-        required
-      />
-
-      <input
-        v-model="confirm"
-        type="password"
-        placeholder="Confirmar contraseña"
-        required
-      />
-
-      <button :disabled="status === 'loading'">
-        {{ status === 'loading' ? 'Actualizando...' : 'Actualizar contraseña' }}
-      </button>
-    </form>
-
-    <p v-if="status === 'success'" class="success">
-      ¡Contraseña actualizada! Ya podés iniciar sesión.
-    </p>
-
-    <p v-if="status === 'error'" class="error">
-      {{ errorMessage }}
-    </p>
-  </div> -->
 </template>
-
-<style scoped>
-.page-form {
-  max-width: 400px;
-  margin: 0 auto;
-}
-.success { color: green; }
-.error { color: red; }
-</style>

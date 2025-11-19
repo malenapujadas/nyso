@@ -3,7 +3,7 @@ import { supabase } from './supabase.js';
 // Trae todos los vinos
 export async function getVinos() {
   const { data, error } = await supabase
-    .from('wines') 
+    .from('wines')
     .select('*')
     .order('nombre', { ascending: true });
 

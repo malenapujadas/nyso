@@ -8,11 +8,11 @@ export async function sendConnectionRequest(requesterId, receiverId) {
       {
         requester_id: requesterId,
         receiver_id: receiverId,
-        status: 'pending', 
+        status: 'pending',
       },
     ])
-    //AGREGUE ESTO A VER SI FUNCIONA
-    .select("*")  
+    // AGREGUE ESTO A VER SI FUNCIONA
+    .select("*")
     .single();
 
   if (error) {
@@ -23,7 +23,6 @@ export async function sendConnectionRequest(requesterId, receiverId) {
   console.log('[connections.js] Solicitud creada correctamente:', data);
   return data;
 }
-
 
 // Obtener solicitudes recibidas
 export async function getReceivedConnections(userId) {
@@ -61,7 +60,7 @@ export async function getFriends(userId) {
       receiver:receiver_id(id, display_name, email)
     `)
     .or(`requester_id.eq.${userId},receiver_id.eq.${userId}`)
-    .eq('status', 'accepted'); 
+    .eq('status', 'accepted');
 
   if (error) {
     console.error('[connections.js] Error al obtener amigos:', error);
@@ -72,30 +71,19 @@ export async function getFriends(userId) {
     conn.requester_id === userId ? conn.receiver : conn.requester
   );
 }
-/* export async function getFriends(userId) {
+
+export async function getPendingRequests(userId) {
+  // traer las solicitudes pendientes incluyendo datos del requester
   const { data, error } = await supabase
     .from('connections')
-    .select('*')
-    .or(`requester_id.eq.${userId},receiver_id.eq.${userId}`)
-    .eq('status', 'accepted');
+    .select(`*, requester:requester_id(id, display_name, email)`)
+    .eq('receiver_id', userId)
+    .eq('status', 'pending');
 
-  if (error) throw error;
-  return data || [];
-} */
-
-  export async function getPendingRequests(userId) {
-      // traer las solicitudes pendientes incluyendo datos del requester
-      const { data, error } = await supabase
-        .from('connections')
-        .select(`*, requester:requester_id(id, display_name, email)`)
-        .eq('receiver_id', userId)
-        .eq('status', 'pending');
-  
-    if (error) {
-      console.error('[connections.js] Error al traer pendientes:', error);
-      return [];
-    }
-
-    return data
+  if (error) {
+    console.error('[connections.js] Error al traer pendientes:', error);
+    return [];
   }
-  
+
+  return data;
+}

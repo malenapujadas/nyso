@@ -3,8 +3,6 @@ import AppH1 from '../components/AppH1.vue';
 import { getVinos } from '../services/wines.js';
 import { matchesSearch, matchesFilters, matchesPrice } from '../utils/wineFilters.js';
 
-
-
 export default {
   name: 'Vinos',
   components: { AppH1 },
@@ -58,6 +56,7 @@ export default {
       );
     },
   },
+
   methods: {
     uniqueValues(key) {
       // Si la lista está vacía o no es un array, devolvemos un array vacío
@@ -65,17 +64,19 @@ export default {
       // Extraemos los valores únicos y eliminamos vacíos o null
       return [...new Set(this.vinosList.map(v => v[key]))].filter(Boolean);
     },
+
     resetFilters() {
       this.searchQuery = '';
       this.filters = { tipo: '', uva: '', region: '', dulzor: '', cuerpo: '', año: '' };
       this.selectedMinPrice = null;
       this.selectedMaxPrice = null;
     },
+
     getOptions(key) {
       const map = {
         tipo: this.tipos,
         uva: this.uvas,
-        region: this.regiones, 
+        region: this.regiones,
         cuerpo: this.cuerpos,
         año: this.años,
       };
@@ -85,17 +86,16 @@ export default {
 
   async mounted() {
     try {
-     const data = await getVinos();
-     this.vinosList = data || [];
-     this.selectedMinPrice = this.priceMin;
-     this.selectedMaxPrice = this.priceMax;
+      const data = await getVinos();
+      this.vinosList = data || [];
+      this.selectedMinPrice = this.priceMin;
+      this.selectedMaxPrice = this.priceMax;
     } catch (error) {
       console.error('[Social.vue] Error al cargar vinos desde Supabase:', error);
     }
   }
 };
 </script>
-
 
 <template>
   <section class="relative w-full min-h-screen bg-[#f6f6eb] flex flex-col lg:flex-row gap-10 px-8 py-12 overflow-visible">
@@ -123,7 +123,7 @@ export default {
         />
       </div>
 
-      <!--Filtros -->
+      <!-- Filtros -->
       <button
         class="w-full bg-[#e099a8] text-[#3c490b] font-semibold py-2 rounded-full mb-6 lg:hidden"
         @click="showMobileFilters = !showMobileFilters"
@@ -135,7 +135,6 @@ export default {
         v-if="showMobileFilters"
         class="w-full bg-white/70 border border-[#4e0d05]/20 p-4 rounded-2xl space-y-4 lg:hidden"
       >
-
         <details
           v-for="(label, key) in { tipo: 'Tipo', uva: 'Uva', region: 'Región', cuerpo: 'Cuerpo', año: 'Año' }"
           :key="key"
@@ -150,7 +149,9 @@ export default {
             class="mt-3 block w-full border border-[#4e0d05]/40 text-[#4e0d05] bg-transparent p-2 focus:ring-1 focus:ring-[#e099a8] outline-none"
           >
             <option value="">Todos</option>
-            <option v-for="valor in getOptions(key)" :key="valor" :value="valor">{{ valor }}</option>
+            <option v-for="valor in getOptions(key)" :key="valor" :value="valor">
+              {{ valor }}
+            </option>
           </select>
         </details>
 
@@ -222,7 +223,7 @@ export default {
               :to="{ name: 'detalle', params: { id: vino.id } }"
               class="mt-4 inline-block text-[#e099a8] text-sm font-semibold hover:text-[#3c490b] transition-all"
             >
-              Ver detalle 
+              Ver detalle
             </RouterLink>
           </div>
         </div>
@@ -252,11 +253,7 @@ export default {
           class="mt-3 block w-full border border-[#4e0d05]/40 text-[#4e0d05] bg-transparent p-2 focus:ring-1 focus:ring-[#e099a8] outline-none"
         >
           <option value="">Todos</option>
-          <option 
-            v-for="valor in getOptions(key)" 
-            :key="valor" 
-            :value="valor"
-          >
+          <option v-for="valor in getOptions(key)" :key="valor" :value="valor">
             {{ valor }}
           </option>
         </select>
@@ -282,9 +279,9 @@ export default {
         </summary>
         <div class="flex flex-col gap-3 mt-3">
           <label class="text-sm font-medium">Mínimo</label>
-          <input v-model.number="selectedMinPrice" type="number" class="border border-[#4e0d05]/40 text-[#4e0d05] p-2 bg-transparent">
+          <input v-model.number="selectedMinPrice" type="number" class="border border-[#4e0d05]/40 text-[#4e0d05] p-2 bg-transparent" />
           <label class="text-sm font-medium">Máximo</label>
-          <input v-model.number="selectedMaxPrice" type="number" class="border border-[#4e0d05]/40 text-[#4e0d05] p-2 bg-transparent"> 
+          <input v-model.number="selectedMaxPrice" type="number" class="border border-[#4e0d05]/40 text-[#4e0d05] p-2 bg-transparent" />
         </div>
       </details>
 

@@ -5,10 +5,11 @@ import { register } from '../services/auth.js';
 export default {
   name: 'Register',
   components: { AppH1 },
+
   data() {
     return {
       user: {
-        nombre:'',
+        nombre: '',
         email: '',
         password: '',
         nacimiento: '',
@@ -17,22 +18,23 @@ export default {
       errorMsg: '',
     };
   },
+
   methods: {
     async handleSubmit() {
       this.errorMsg = '';
 
-      //validaciones
+      // validaciones
       if (!this.user.nacimiento) {
         this.errorMsg = 'Por favor, ingresá tu fecha de nacimiento.';
         return;
       }
 
-      if(!this.user.nombre || !this.user.email || !this.user.password) {
+      if (!this.user.nombre || !this.user.email || !this.user.password) {
         this.errorMsg = 'Por favor, completá todos los campos.';
         return;
       }
 
-      if(this.user.password.length < 6) {
+      if (this.user.password.length < 6) {
         this.errorMsg = 'La contraseña debe tener al menos 6 caracteres.';
         return;
       }
@@ -58,6 +60,7 @@ export default {
       } catch (error) {
         this.errorMsg = 'No se pudo crear la cuenta';
       }
+
       this.loading = false;
     },
   },
@@ -97,6 +100,7 @@ export default {
         <label for="email" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
           Email
         </label>
+
         <input
           id="email"
           type="email"
@@ -112,6 +116,7 @@ export default {
         <label class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1" for="nombre">
           Nombre
         </label>
+
         <input 
           id="nombre" 
           type="text" 
@@ -127,6 +132,7 @@ export default {
         <label for="nacimiento" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
           Fecha de nacimiento
         </label>
+
         <input
           id="nacimiento"
           type="date"
@@ -141,6 +147,7 @@ export default {
         <label for="password" class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1">
           Contraseña
         </label>
+
         <input
           id="password"
           type="password"
