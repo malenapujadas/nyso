@@ -161,7 +161,7 @@ export default {
               class="text-[#e099a8] border border-[#e099a8] rounded-full px-4 py-1.5 text-sm
                      font-medium hover:bg-[#e099a8] hover:text-[#f6f6eb] transition-all duration-300"
             >
-              Ver perfil ↗
+              Ver perfil 
             </router-link>
             <button
               v-if="user && user.id && user.id !== u.id"

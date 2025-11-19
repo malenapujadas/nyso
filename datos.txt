@@ -11,3 +11,4 @@ Carácter de entrega: 2do parcial.
 Usuario para entrar al /admin
 user: administrador@admin.com 
 contraseña: administrador 
+

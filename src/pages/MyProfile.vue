@@ -204,20 +204,13 @@ export default {
               </p>
             </div>
 
-            <!-- <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm col-span-full">
-              <p class="text-sm text-[#4e0d05]/70">Otro tema</p>
-              <p class="font-semibold">
-                {{ preferences.temas_libre || 'No respondido' }}
-              </p>
-            </div> -->
-
           </div>
         </div>
         <RouterLink
           to="/mi-perfil/editar"
           class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
         >
-          Editar perfil ↗
+          Editar perfil 
         </RouterLink>
       </div>
 
@@ -257,31 +250,6 @@ export default {
 
         <p v-else class="text-[#4e0d05]/60 italic">Aún no tenés vinos favoritos.</p>
       </div>
-<!--       <div>
-        <h2 class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2">
-           Favoritos
-        </h2>
-        <div v-if="favorites.length">
-          <ul class="divide-y divide-[#4e0d05]/10 text-[#4e0d05]">
-            <li
-              v-for="v in favorites"
-              :key="v.id"
-              class="flex justify-between items-center py-3 hover:bg-[#e099a8]/10 rounded-lg transition-all"
-            >
-              <span class="font-medium">{{ v.nombre }}</span>
-              <button
-                @click="handleRemoveFavorite(v.id)"
-                class="text-sm text-[#e099a8] hover:text-[#3c490b] transition-colors px-3"
-              >
-                Eliminar ✕
-              </button>
-            </li>
-          </ul>
-        </div>
-        <p v-else class="text-[#4e0d05]/60 italic">No tienes vinos favoritos aún.</p>
-      </div> -->
-
-
 
     <!-- Historial -->
            <div class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full">

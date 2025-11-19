@@ -217,7 +217,7 @@ export default {
               class="text-[#e099a8] font-medium text-sm sm:text-base hover:text-[#3c490b]
                      transition-colors"
             >
-              Volver al listado ↗
+              Volver al listado 
             </RouterLink>
           </div>
         </div>

@@ -222,7 +222,7 @@ export default {
               :to="{ name: 'detalle', params: { id: vino.id } }"
               class="mt-4 inline-block text-[#e099a8] text-sm font-semibold hover:text-[#3c490b] transition-all"
             >
-              Ver detalle ↗
+              Ver detalle 
             </RouterLink>
           </div>
         </div>
