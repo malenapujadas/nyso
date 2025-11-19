@@ -1,16 +1,20 @@
 <script>
 import { fetchLastPost, submitSuggestion } from '../services/blog.js';
+import { getCurrentUser } from "../services/auth.js";
+import AppH1 from '../components/AppH1.vue';
 import { RouterLink } from 'vue-router';
 
 export default {
   name: 'Blog',
-
+  components: { AppH1, RouterLink },
   data() {
     return {
+      user: null,
       posts: [],
       loading: true,
       error: null,
-      openPost: null,
+      openPost: null, //ID del post que está abierto en el acordeón
+      //sugerencias de usuarios
       sugg: {
         nombre: '',
         email: '',
@@ -24,6 +28,7 @@ export default {
 
   async mounted() {
     try {
+      this.user = await getCurrentUser();
       this.posts = await fetchLastPost() || [];
     } catch (err) {
       console.error('Error cargando posts:', err);
@@ -34,10 +39,11 @@ export default {
   },
 
   methods: {
+    //acordeon
     togglePost(id) {
       this.openPost = this.openPost === id ? null : id;
     },
-
+    //enviar sugerencia
     async submitSugg() {
       this.suggestionMessage = '';
 
@@ -94,9 +100,9 @@ export default {
 
       <!-- texto -->
       <div class="max-w-xs md:max-w-lg text-left z-10 ml-3 md:ml-0">
-        <h1 class="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4">
+        <AppH1 class="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4">
           ¡Hola de nuevo!
-        </h1>
+        </AppH1>
 
         <p class="text-sm md:text-lg font-medium leading-snug md:leading-relaxed">
           Acá vas a encontrar notas, tips y curiosidades del mundo del vino.
@@ -111,9 +117,9 @@ export default {
 
     <!-- Publicaciones -->
     <section class="relative w-full max-w-[1200px] py-12 px-6 space-y-8 text-left">
-      <h1 class="text-2xl md:text-3xl font-bold text-[#3c490b] mb-3">
+      <h2 class="text-2xl md:text-3xl font-bold text-[#3c490b] mb-3">
         Últimas Publicaciones
-      </h1>
+      </h2>
 
       <div v-if="loading" class="text-lg">
         Cargando publicaciones...

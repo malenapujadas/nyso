@@ -20,7 +20,6 @@ export default {
         frecuencia: '',
         con_quien: '',
         temas: [],
-        /* temas_libre: '', */
       },
       loading: false,
       ...opciones,

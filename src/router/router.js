@@ -33,7 +33,7 @@ const routes = [
   {path: '/admin',                        component: AdminSuggestions},
   {path: '/recuperar-contrasena',         component: RecuperarContrasena, },
   {path: '/reset-password',               component: ResetPassword, },
-  {path: '/usuario/:id',                  component: UserProfile, name: 'UserProfile', props: true },
+  {path: '/usuario/:id',                  component: UserProfile, name: 'UserProfile', props: true }, //el props permite usar el id sin usar el $route.params.id
 ];
 
 
@@ -46,6 +46,7 @@ const router = createRouter({
   },
 });
 
+//para saber si el usuario esta logueado 
 let user = {
   id: null,
   email: null,
@@ -53,12 +54,15 @@ let user = {
 
 subscribeToAuthChanges(userState => (user = userState));
 
+
+//proteccion de ruta gral 
 router.beforeEach((to, from) => {
   if (to.meta.requiresAuth && user.id === null) {
     return '/ingresar';
   }
 });
 
+//proteccion de ruta para el admin
 router.beforeEach((to, from, next) => {
   const user = getAuthUser();
 

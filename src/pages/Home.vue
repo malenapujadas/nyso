@@ -1,7 +1,7 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-import { subscribeToAuthChanges, logout } from '../services/auth.js';
-import { RouterLink } from 'vue-router';
+/* import { subscribeToAuthChanges, logout } from '../services/auth.js'; */
+/* import { RouterLink } from 'vue-router'; */
 import logo from '../assets/logo.png';
 
 export default {
@@ -11,14 +11,14 @@ export default {
   data() {
     return {
       logo,
-      user: {
+/*       user: {
         id: null,
         email: null
-      }
+      } */
     };
   },
 
-  methods: {
+  /* methods: {
     handleLogOut() {
       logout();
       this.$router.push('/ingresar');
@@ -27,7 +27,7 @@ export default {
 
   mounted() {
     subscribeToAuthChanges(userState => (this.user = userState));
-  }
+  } */
 };
 </script>
 
@@ -42,7 +42,7 @@ export default {
 
     <img src="/logo.png" alt="Logo NYSO" class="w-40 md:w-72 mb-8 relative z-10" />
 
-    <h2
+    <AppH1
       class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl uppercase tracking-tight font-[Poppins] relative z-10 px-4"
     >
       DESCUBRIR,
@@ -51,7 +51,7 @@ export default {
       <span class="text-[#e099a8]">VINOS</span>
       DE UNA FORMA SIMPLE Y CERCANA, SIN NECESIDAD DE SER UN
       <span class="text-[#e099a8]">EXPERTO.</span>
-    </h2>
+    </AppH1>
   </section>
 
   <section class="relative bg-[#f6f6eb] w-full h-16 md:h-20">

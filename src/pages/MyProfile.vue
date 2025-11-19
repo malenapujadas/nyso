@@ -1,24 +1,24 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-
 import { subscribeToAuthChanges } from '../services/auth.js';
 import { getFavorites, removeFavorite } from '../services/favorites.js';
 import { getHistory, clearHistory } from '../services/history.js';
 import { getPreferencesForUser } from '../services/preferences.js';
 import * as opciones from '../data/preferences-options.js';
 import { getFriends, getPendingRequests, updateConnectionStatus } from '../services/connections.js';
-import vinos from '../vinos.json';
+import { getVinos } from '../services/wines.js';
+import ProfilePreferences from '../components/ProfilePreferences.vue';
+
 
 export default {
   name: 'MyProfile',
-  components: { AppH1 },
+  components: { AppH1, ProfilePreferences },
   data() {
     return {
       user: { 
         id: null, 
         email: null, 
         display_name: null, 
-        vino: null 
       },
       favorites: [],
       history: [],
@@ -31,9 +31,9 @@ export default {
   mounted() {
     subscribeToAuthChanges(async (userState) => {
       this.user = userState;
-
+      const vinosDB = await getVinos();
       if (this.user && this.user.id) {
-        const [favIds, hisIds, friends, pending] = await Promise.all([
+        const [favIds, hisIds, friends, pending] = await Promise.all([//el promise carga todo al mismo tiempo 
           getFavorites(this.user.id),
           getHistory(this.user.id),
           getFriends(this.user.id),
@@ -43,11 +43,11 @@ export default {
         this.friends = friends;
         this.pendingRequests = pending;
 
-        this.favorites = vinos.filter(v =>
+        this.favorites = vinosDB.filter(v =>
           favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
         );
 
-        this.history = vinos.filter(v =>
+        this.history = vinosDB.filter(v =>
           hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
         );
 
@@ -137,71 +137,9 @@ export default {
         <!-- preferencias -->
         <div v-if="preferences" class="mt-6">
           <h3 class="font-semibold text-xl text-[#3c490b] mb-3">Tus preferencias</h3>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">Preferencia de vino</p>
-              <p class="font-semibold">
-                {{ gustoOpc.find(opt => opt.value === preferences.gusto)?.label || 'No respondido' }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">¿Cómo lo tomás?</p>
-              <p class="font-semibold">
-                {{ comoOpc.find(opt => opt.value === preferences.como)?.label || 'No respondido' }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">Intensidad</p>
-              <p class="font-semibold">
-                {{ intensidadOpc.find(opt => opt.value === preferences.intensidad)?.label || 'No respondido' }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">Sabores preferidos</p>
-              <p class="font-semibold">
-                {{
-                  Array.isArray(preferences.sabores) && preferences.sabores.length
-                    ? preferences.sabores
-                        .map(s => saboresOpc.find(opt => opt.value === s)?.label || s)
-                        .join(', ')
-                    : 'No respondido'
-                }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">Frecuencia</p>
-              <p class="font-semibold">
-                {{ frecuenciaOpc.find(opt => opt.value === preferences.frecuencia)?.label || 'No respondido' }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm">
-              <p class="text-sm text-[#4e0d05]/70">Con quién</p>
-              <p class="font-semibold">
-                {{ conQuienOpc.find(opt => opt.value === preferences.con_quien)?.label || 'No respondido' }}
-              </p>
-            </div>
-
-            <div class="p-4 rounded-xl bg-[#f0eadb] border border-[#4e0d05]/10 shadow-sm col-span-full">
-              <p class="text-sm text-[#4e0d05]/70">Temas que te interesan</p>
-              <p class="font-semibold">
-                {{
-                  Array.isArray(preferences.temas) && preferences.temas.length
-                    ? preferences.temas
-                        .map(t => temasOpc.find(opt => opt.value === t)?.label || t)
-                        .join(', ')
-                    : 'No respondido'
-                }}
-              </p>
-            </div>
-
-          </div>
+          <ProfilePreferences
+            :preferences="preferences"
+          />
         </div>
 
         <RouterLink

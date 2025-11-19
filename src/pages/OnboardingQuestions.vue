@@ -10,7 +10,7 @@ export default {
 
   data() {
     return {
-      answers: {
+      answers: { //rtas del usuario
         gusto: null,
         como: null,
         intensidad: null,
@@ -18,9 +18,8 @@ export default {
         frecuencia: null,
         con_quien: null,
         temas: [],
-        /* temas_libre: "", */
       },
-
+      //opciones
       gustoOpc: opciones.gustoOpc,
       comoOpc: opciones.comoOpc,
       intensidadOpc: opciones.intensidadOpc,
