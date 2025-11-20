@@ -86,7 +86,6 @@ export default {
           frecuencia: null,
           con_quien: null,
           temas: [],
-          /* temas_libre: "", */
         });
 
         this.$router.push("/mi-perfil");

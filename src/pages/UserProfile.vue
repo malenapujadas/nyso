@@ -2,24 +2,17 @@
 import { getPreferencesForUser } from '../services/preferences.js';
 import { getUserProfileById } from '../services/user-profiles.js';
 import AppLoader from '../components/AppLoader.vue';
-import * as opciones from '../data/preferences-options.js';
+import ProfilePreferences from '../components/ProfilePreferences.vue';
 
 export default {
   name: 'UserProfile',
-  components: { AppLoader },
+  components: { AppLoader, ProfilePreferences },
 
   data() {
     return {
       profile: null,
       preferences: null,
       loading: true,
-      gustoOpc: opciones.gustoOpc,
-      comoOpc: opciones.comoOpc,
-      intensidadOpc: opciones.intensidadOpc,
-      saboresOpc: opciones.saboresOpc,
-      frecuenciaOpc: opciones.frecuenciaOpc,
-      conQuienOpc: opciones.conQuienOpc,
-      temasOpc: opciones.temasOpc,
     };
   },
 
@@ -34,19 +27,6 @@ export default {
       this.loading = false;
     }
   },
-
-  methods: {
-    findLabel(options, value) {
-      return options.find(o => o.value === value)?.label || "No respondido";
-    },
-
-    findMultipleLabels(options, values) {
-      if (!Array.isArray(values) || values.length === 0) return "No respondido";
-      return values
-        .map(v => options.find(o => o.value === v)?.label || v)
-        .join(", ");
-    }
-  }
 };
 </script>
 
@@ -95,78 +75,11 @@ export default {
             v-if="preferences"
             class="rounded-2xl p-6 shadow-sm border border-[#4e0d05]/10 bg-[#ede8d7]/70"
           >
-            <h3 class="text-xl font-semibold text-[#3c490b] mb-6 text-center">
-              Preferencias personales
-            </h3>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-              <!-- Tipo -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Tipo de vino</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findLabel(gustoOpc, preferences.gusto) }}
-                </p>
-              </div>
-
-              <!-- Como lo toma -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Cómo lo toma</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findLabel(comoOpc, preferences.como) }}
-                </p>
-              </div>
-
-              <!-- Intensidad -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Intensidad</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findLabel(intensidadOpc, preferences.intensidad) }}
-                </p>
-              </div>
-
-              <!-- Sabores -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Sabores</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findMultipleLabels(saboresOpc, preferences.sabores) }}
-                </p>
-              </div>
-
-              <!-- Frecuencia -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Frecuencia</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findLabel(frecuenciaOpc, preferences.frecuencia) }}
-                </p>
-              </div>
-
-              <!-- Con quién -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm">
-                <p class="text-sm text-[#4e0d05]/70">Con quién</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findLabel(conQuienOpc, preferences.con_quien) }}
-                </p>
-              </div>
-
-              <!-- Temas interés -->
-              <div class="p-4 bg-[#f0eadb] rounded-xl border border-[#4e0d05]/10 shadow-sm sm:col-span-2">
-                <p class="text-sm text-[#4e0d05]/70">Temas de interés</p>
-                <p class="font-semibold text-[#4e0d05]">
-                  {{ findMultipleLabels(temasOpc, preferences.temas) }}
-                </p>
-              </div>
-
-            </div>
+            <h3 class="text-xl font-semibold text-[#3c490b] mb-6 text-center"> Preferencias personales </h3>
+            <ProfilePreferences :preferences="preferences" />
           </div>
-
-          <div v-else class="text-center text-[#4e0d05]/60 italic">
-            Este usuario aún no completó sus preferencias.
-          </div>
-
         </div>
       </div>
-
     </section>
   </template>
 

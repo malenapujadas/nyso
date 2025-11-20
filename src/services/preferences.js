@@ -1,19 +1,14 @@
-// src/services/preferences.js
 import { supabase } from './supabase.js';
 
 export async function savePreferencesForUser(userId, answers) {
-  // asegúrate que preferences sea POJO, no Proxy (Vue reactive)
-  /* const plainPrefs = JSON.parse(JSON.stringify(preferences || {}));  */ 
-
   const payload = {
     user_id: userId,
     ...answers,
-    // Convertir arrays a texto JSON antes de guardar
+    // convertir arrays a texto JSON antes de guardar
     sabores: JSON.stringify(answers.sabores || []),
     temas: JSON.stringify(answers.temas || []),
   };
 
-  // upsert: user_id debe ser PK o unique
   const { data, error } = await supabase
     .from('user_preferences')
     .upsert(payload, { returning: 'representation' });
@@ -26,9 +21,7 @@ export async function savePreferencesForUser(userId, answers) {
   return data;
 }
 
-/**
- * Obtiene las preferencias (si existen) desde user_preferences
- */
+//obtiene las preferencias (si existen) desde user_preferences
 export async function getPreferencesForUser(userId) {
   const { data, error } = await supabase
     .from('user_preferences')
@@ -50,15 +43,13 @@ export async function getPreferencesForUser(userId) {
   return data;
 }
 
-// Trae user_preferences y los datos de auth.user
+// trae user_preferences y los datos de auth.user
 export async function getUserProfileAndPreferences(userId) {
   const { data: userPrefs, error: prefsError } = await supabase
     .from('user_preferences')
     .select('*')
     .eq('user_id', userId)
     .single();
-
-  /* if (prefsError && prefsError.code !== 'PGRST116') throw prefsError;  */
 
   const { data: user, error: userError } = await supabase.auth.getUser();
   if (userError) throw userError;

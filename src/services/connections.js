@@ -1,6 +1,6 @@
 import { supabase } from './supabase.js';
 
-// Enviar solicitud de conexión
+// enviar solicitud de conexión
 export async function sendConnectionRequest(requesterId, receiverId) {
   const { data, error } = await supabase
     .from('connections')
@@ -11,7 +11,6 @@ export async function sendConnectionRequest(requesterId, receiverId) {
         status: 'pending',
       },
     ])
-    // AGREGUE ESTO A VER SI FUNCIONA
     .select("*")
     .single();
 
@@ -24,7 +23,7 @@ export async function sendConnectionRequest(requesterId, receiverId) {
   return data;
 }
 
-// Obtener solicitudes recibidas
+// obtener solicitudes recibidas
 export async function getReceivedConnections(userId) {
   const { data, error } = await supabase
     .from('connections')
@@ -36,7 +35,7 @@ export async function getReceivedConnections(userId) {
   return data || [];
 }
 
-// Aceptar o rechazar una solicitud
+// aceptar o rechazar solicitud
 export async function updateConnectionStatus(connectionId, status) {
   const { data, error } = await supabase
     .from('connections')
@@ -47,7 +46,7 @@ export async function updateConnectionStatus(connectionId, status) {
   return data;
 }
 
-// Obtener amigos aceptados
+// obtener amigos aceptados
 export async function getFriends(userId) {
   const { data, error } = await supabase
     .from('connections')

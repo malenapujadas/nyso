@@ -1,7 +1,5 @@
 <script>
 import AppH1 from '../components/AppH1.vue';
-/* import { subscribeToAuthChanges, logout } from '../services/auth.js'; */
-/* import { RouterLink } from 'vue-router'; */
 import logo from '../assets/logo.png';
 
 export default {
@@ -11,23 +9,8 @@ export default {
   data() {
     return {
       logo,
-/*       user: {
-        id: null,
-        email: null
-      } */
     };
   },
-
-  /* methods: {
-    handleLogOut() {
-      logout();
-      this.$router.push('/ingresar');
-    }
-  },
-
-  mounted() {
-    subscribeToAuthChanges(userState => (this.user = userState));
-  } */
 };
 </script>
 

@@ -31,7 +31,6 @@ export async function submitSuggestion(suggestion) {
   }
 
   return data;
-  /* return data && data[0]; */
 }
 
 export async function fetchSuggestions() {

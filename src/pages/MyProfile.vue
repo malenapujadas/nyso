@@ -87,7 +87,6 @@ export default {
         }
       } catch (error) {
         console.error('[MyProfile.vue handleResponse] Error actualizando solicitud: ', error);
-      /*alert('No se pudo procesar la solicitud'); */
       }
     },
   },

@@ -1,7 +1,5 @@
 // Archivo que contiene todas las listas de opciones
 // usadas en el formulario de preferencias de vino.
-
-
 export const gustoOpc = [
   { value: "tinto", label: "Tinto " },
   { value: "blanco", label: "Blanco " },

@@ -1,6 +1,6 @@
 import { supabase } from './supabase.js';
 
-// Trae todos los vinos
+// trae todos los vinos
 export async function getVinos() {
   const { data, error } = await supabase
     .from('wines')
@@ -15,7 +15,7 @@ export async function getVinos() {
   return data;
 }
 
-// Trae un vino por ID
+// trae un vino por ID
 export async function getVinoById(id) {
   const { data, error } = await supabase
     .from('wines')

@@ -7,10 +7,11 @@ import {
   deletePost
 } from '../../services/blog.js';
 import { subscribeToAuthChanges } from '../../services/auth.js';
+import AppH1 from '../../components/AppH1.vue';
 
 export default {
   name: 'AdminSuggestions',
-
+  components: { AppH1 },
   data() {
     return {
       suggestions: [],
@@ -30,6 +31,11 @@ export default {
 
   async mounted() {
     subscribeToAuthChanges(user => (this.user = user || { id: null }));
+
+    if (!this.user || this.user.role !== 'admin') {
+      return this.$router.push('/');
+    }
+
     await this.load();
   },
 
@@ -120,11 +126,11 @@ export default {
     <img src="/icono6.png" class="hidden md:block absolute bottom-22 left-20 w-24 opacity-100 -rotate-6" />
 
     <div class="relative z-10 max-w-5xl mx-auto">
-      <h1
+      <AppH1
         class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-8 sm:mb-10 text-center tracking-wide"
       >
         Panel de administración
-      </h1>
+      </AppH1>
 
       <!-- sugerencias -->
       <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-6 sm:p-8 mb-12">
@@ -144,7 +150,7 @@ export default {
           </p>
 
           <div
-            v-for="s in suggestions"
+            v-for="s in suggestions.filter(s => !s.responded)"
             :key="s.id"
             class="mb-6 p-4 sm:p-6 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl shadow-sm hover:shadow-md transition-all"
           >
@@ -170,6 +176,7 @@ export default {
                 Eliminar ✕
               </button>
             </div>
+            
 
             <!-- Responder -->
             <div class="mt-4">

@@ -268,8 +268,6 @@ export default {
       >
         Limpiar filtros
       </button>
-
     </aside>
-
   </section>
 </template>

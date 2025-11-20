@@ -1,6 +1,6 @@
 <script>
 import { fetchLastPost, submitSuggestion } from '../services/blog.js';
-import { getCurrentUser } from "../services/auth.js";
+import { getCurrentUser, subscribeToAuthChanges } from '../services/auth.js';
 import AppH1 from '../components/AppH1.vue';
 import { RouterLink } from 'vue-router';
 
@@ -29,6 +29,7 @@ export default {
   async mounted() {
     try {
       this.user = await getCurrentUser();
+      subscribeToAuthChanges(u => this.user = u);
       this.posts = await fetchLastPost() || [];
     } catch (err) {
       console.error('Error cargando posts:', err);
@@ -200,7 +201,7 @@ export default {
         Si respondemos, lo publicaremos en el blog.
       </p>
 
-      <p v-if="!user || !user.token" class="text-center text-[#4e0d05]/80 italic mb-6">
+      <p v-if="!user || !user.id" class="text-center text-[#4e0d05]/80 italic mb-6">
         <strong>Recordá:</strong> para enviar sugerencias debés
         <RouterLink
           to="/ingresar"
