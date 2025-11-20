@@ -2,7 +2,6 @@
 import { logout, subscribeToAuthChanges } from '../services/auth.js';
 import { RouterLink } from 'vue-router';
 
-
 export default {
   name: 'NavBar',
   components: { RouterLink },

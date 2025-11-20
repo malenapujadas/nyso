@@ -1,9 +1,7 @@
 <template>
     <div class="loader"></div>
 <span class="sr-only"> Cargando...</span>
-
 </template>
-
 
 <style scoped>
     .loader {
