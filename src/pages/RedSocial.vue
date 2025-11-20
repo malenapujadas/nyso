@@ -15,6 +15,7 @@ export default {
       searchQuery: '',
       user: null,
       message: '',
+      sentRequests: [],  // ← NUEVO
     };
   },
 
@@ -39,6 +40,10 @@ export default {
 
       try {
         await sendConnectionRequest(this.user.id, receiverId);
+
+        // marcar localmente para ocultar el botón
+        this.sentRequests.push(receiverId);   // ← NUEVO
+
         this.message = 'Solicitud de amistad enviada!';
         setTimeout(() => (this.message = ''), 3000);
       } catch (err) {
@@ -49,18 +54,15 @@ export default {
 
   async mounted() {
     try {
-      // cargo todos los usuarios
       this.users = await getAllUsers();
-
-      // usuario actual
       this.user = await getCurrentUser();
       console.log('[RedSocial.vue] Usuario inicial:', this.user);
 
-      // por si cambia la sesion 
       subscribeToAuthChanges((userState) => {
         this.user = userState;
         console.log('[AuthChange] Usuario actualizado:', this.user);
       });
+
     } catch (err) {
       console.error('[RedSocial.vue] Error cargando usuarios:', err);
       this.users = [];
@@ -70,6 +72,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden">
@@ -180,13 +183,20 @@ export default {
             </router-link>
 
             <button
-              v-if="user && user.id && user.id !== u.id"
+              v-if="user && user.id && user.id !== u.id && !sentRequests.includes(u.id)"
               @click="handleConnect(u.id)"
               class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm
                      font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
             >
               + Conectar
             </button>
+
+            <span
+              v-else-if="sentRequests.includes(u.id)"
+              class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm font-medium"
+            >
+              Solicitud enviada
+            </span>
           </div>
         </li>
       </ul>

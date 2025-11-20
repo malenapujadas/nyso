@@ -71,7 +71,7 @@ export default {
     />
 
     <AppH1
-      class="text-[#3c490b] text-lg md:text-1xl mb-6 z-10 text-center px-6"
+      class="text-[#3c490b] text-lg md:text-3xl mb-6 z-10 text-center px-6"
     >
       Ingresar a mi cuenta
     </AppH1>
