@@ -3,10 +3,11 @@ import AppH1 from '../components/AppH1.vue';
 import { getAllUsers } from '../services/user-profiles.js';
 import { getCurrentUser, subscribeToAuthChanges } from '../services/auth.js';
 import { sendConnectionRequest } from '../services/connections.js';
+import AppLoader from '../components/AppLoader.vue';
 
 export default {
   name: 'RedSocial',
-  components: { AppH1 },
+  components: { AppH1, AppLoader },
 
   data() {
     return {
@@ -42,7 +43,7 @@ export default {
         await sendConnectionRequest(this.user.id, receiverId);
 
         // marcar localmente para ocultar el botón
-        this.sentRequests.push(receiverId);   // ← NUEVO
+        this.sentRequests.push(receiverId);   
 
         this.message = 'Solicitud de amistad enviada!';
         setTimeout(() => (this.message = ''), 3000);
@@ -53,6 +54,9 @@ export default {
   },
 
   async mounted() {
+    this.loading = true;
+    this.error = null;
+
     try {
       this.users = await getAllUsers();
       this.user = await getCurrentUser();
@@ -66,9 +70,10 @@ export default {
     } catch (err) {
       console.error('[RedSocial.vue] Error cargando usuarios:', err);
       this.users = [];
-    } finally {
-      this.loading = false;
+      this.error = 'Ocurrió un error al cargar los usuarios.';
     }
+
+    this.loading = false;
   },
 };
 </script>
@@ -76,6 +81,7 @@ export default {
 
 <template>
   <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden">
+
 
     <!-- Banner -->
     <section
@@ -85,11 +91,13 @@ export default {
     >
       <img
         src="/icono3.png"
+        alt=""
         class="absolute top-6 right-10 w-10 md:w-16 opacity-80 rotate-6 pointer-events-none"
       />
 
       <img
         src="/icono6.png"
+        alt=""
         class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
       />
 
@@ -151,9 +159,15 @@ export default {
     <!-- Lista de usuarios -->
     <section class="w-[92%] max-w-[1000px] py-10 px-4 md:px-10 text-left">
 
-      <div v-if="loading" class="text-[#e099a8] text-center text-lg">
-        Cargando usuarios...
-      </div>
+    <!-- Estado de carga-->
+    <div v-if="loading" class="w-full flex items-center justify-center min-h-[200px]">
+      <AppLoader />
+    </div>
+
+    <div v-else-if="error" class="w-full text-center text-red-600 mt-6">
+      {{ error }}
+    </div>
+
 
       <ul v-else class="space-y-4">
         <li
@@ -212,6 +226,7 @@ export default {
     <div class="w-full mt-10 md:mt-16">
       <img
         src="/lineacuadros.png"
+        alt=""
         class="w-full h-auto object-cover block"
       />
     </div>

@@ -19,9 +19,10 @@ export default {
     class="relative flex flex-col justify-center items-center text-center py-32 bg-[#f6f6eb] overflow-hidden"
   >
     <!-- iconos en mobile-->
-    <img src="/icono1.png" class="absolute top-6 left-4 w-20 md:w-40 opacity-100" />
-    <img src="/icono2.png" class="absolute bottom-2 left-10 w-16 md:w-32 opacity-100" />
-    <img src="/icono3.png" class="absolute top-10 right-10 w-14 md:w-20 opacity-100" />
+    <img src="/icono1.png" alt="" class="absolute top-6 left-4 w-20 md:w-40 opacity-100" />
+    <img src="/icono2.png" alt="" class="absolute bottom-2 left-10 w-16 md:w-32 opacity-100" />
+    <img src="/icono3.png" alt="" class="absolute top-10 right-10 w-14 md:w-20 opacity-100" />
+
 
     <img src="/logo.png" alt="Logo NYSO" class="w-40 md:w-72 mb-8 relative z-10" />
 
@@ -38,7 +39,7 @@ export default {
   </section>
 
   <section class="relative bg-[#f6f6eb] w-full h-16 md:h-20">
-    <img src="/lineacuadros.png" class="absolute -top-[1px] left-0 w-full block" />
+    <img src="/lineacuadros.png" alt="" class="absolute -top-[1px] left-0 w-full block" />
   </section>
 
   <!-- Nysito -->
@@ -48,12 +49,12 @@ export default {
            flex flex-row items-center justify-center 
            gap-6 md:gap-10 overflow-hidden rounded-b-4xl"
   >
-    <img src="/icono1.png" class="absolute top-4 left-3 w-10 md:w-28 opacity-100" />
-    <img src="/icono2.png" class="absolute bottom-2 right-4 w-12 md:w-32 opacity-100 rotate-12" />
-    <img src="/icono4.png" class="absolute top-5 right-6 w-12 md:w-16 rotate-12 opacity-100" />
-    <img src="/icono7.png" class="absolute bottom-2 left-1/2 w-10 md:w-28 opacity-100 rotate-12" />
+    <img src="/icono1.png" alt="" class="absolute top-4 left-3 w-10 md:w-28 opacity-100" />
+    <img src="/icono2.png" alt="" class="absolute bottom-2 right-4 w-12 md:w-32 opacity-100 rotate-12" />
+    <img src="/icono4.png" alt="" class="absolute top-5 right-6 w-12 md:w-16 rotate-12 opacity-100" />
+    <img src="/icono7.png" alt="" class="absolute bottom-2 left-1/2 w-10 md:w-28 opacity-100 rotate-12" />
 
-    <img src="/nysito.png" class="w-28 md:w-56 z-10 flex-shrink-0" />
+    <img src="/nysito.png" alt="Nysito" class="w-28 md:w-56 z-10 flex-shrink-0" />
 
     <div class="text-left max-w-xs md:max-w-md z-10">
       <h2 class="text-2xl md:text-3xl font-extrabold mb-2 md:mb-3">
@@ -77,10 +78,10 @@ export default {
            flex flex-col md:flex-row items-center justify-center 
            gap-10 overflow-hidden rounded-4xl"
   >
-    <img src="/icono4.png" class="absolute top-2 right-6 w-10 md:w-16 rotate-12 opacity-100" />
-    <img src="/icono4.png" class="absolute bottom-6 right-6 w-16 md:w-24 opacity-100" />
-    <img src="/icono6.png" class="absolute bottom-10 left-1/4 w-16 md:w-28 opacity-100 -rotate-6" />
-    <img src="/icono7.png" class="absolute bottom-2 left-1/3 w-16 md:w-28 opacity-100 rotate-12" />
+    <img src="/icono4.png" alt="" class="absolute top-2 right-6 w-10 md:w-16 rotate-12 opacity-100" />
+    <img src="/icono4.png" alt="" class="absolute bottom-6 right-6 w-16 md:w-24 opacity-100" />
+    <img src="/icono6.png" alt="" class="absolute bottom-10 left-1/4 w-16 md:w-28 opacity-100 -rotate-6" />
+    <img src="/icono7.png" alt="" class="absolute bottom-2 left-1/3 w-16 md:w-28 opacity-100 rotate-12" />
 
     <div class="w-full max-w-md z-10 text-center md:text-right">
       <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
@@ -108,10 +109,10 @@ export default {
            flex flex-col md:flex-row items-center justify-center 
            gap-10 overflow-hidden"
   >
-    <img src="/icono1.png" class="absolute top-8 left-6 w-14 md:w-32 rotate-12 opacity-100" />
-    <img src="/icono2.png" class="absolute bottom-6 right-6 w-20 md:w-36 opacity-100" />
-    <img src="/icono3.png" class="absolute top-1/3 left-1/3 w-16 md:w-28 opacity-100 rotate-6" />
-    <img src="/icono6.png" class="absolute bottom-10 left-1/4 w-20 md:w-32 opacity-100 -rotate-6" />
+    <img src="/icono1.png" alt="" class="absolute top-8 left-6 w-14 md:w-32 rotate-12 opacity-100" />
+    <img src="/icono2.png" alt="" class="absolute bottom-6 right-6 w-20 md:w-36 opacity-100" />
+    <img src="/icono3.png" alt="" class="absolute top-1/3 left-1/3 w-16 md:w-28 opacity-100 rotate-6" />
+    <img src="/icono6.png" alt="" class="absolute bottom-10 left-1/4 w-20 md:w-32 opacity-100 -rotate-6" />
 
     <img src="/foto2.png" alt="Perfil de usuario NYSO" class="w-52 md:w-[380px] z-10" />
 
@@ -135,12 +136,12 @@ export default {
   <!-- Banner -->
   <section class="w-full mb-0 pb-0">
     <!-- desktop -->
-    <img src="/KITMENS.png" class="hidden md:block w-full h-auto object-cover" />
+    <img src="/KITMENS.png" alt="KITMENS" class="hidden md:block w-full h-auto object-cover" />
     <!-- mobile -->
-    <img src="/KITMENS-mobile.png" class="block md:hidden w-full h-auto object-cover" />
+    <img src="/KITMENS-mobile.png" alt="KITMENS" class="block md:hidden w-full h-auto object-cover" />
   </section>
 
   <section class="relative w-full h-16 md:h-20 bg-[#f6f6eb] mt-[-12px] overflow-hidden">
-    <img src="/lineacuadros.png" class="absolute top-0 left-0 w-full block" />
+    <img src="/lineacuadros.png" alt="" class="absolute top-0 left-0 w-full block" />
   </section>
 </template>

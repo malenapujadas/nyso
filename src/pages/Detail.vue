@@ -1,101 +1,114 @@
 <script>
-import AppH1 from '../components/AppH1.vue';
-import { getVinoById } from '../services/wines.js';
-import { getCurrentUser } from '../services/auth.js';
-import { addFavorite, getFavorites } from '../services/favorites.js';
-import { addHistory } from '../services/history.js';
-
-export default {
-  name: 'Detail',
-  components: { AppH1 },
-
-  data() {
-    return {
-      vino: null,
-      id: null,
-      user: null,
-      message: null,
-      messageType: null,
-      isFavorite: false
-    };
-  },
-
-  async mounted() {
-    this.id = this.$route.params.id;
-
-    if (this.id) {
+  import AppH1 from '../components/AppH1.vue';
+  import { getVinoById } from '../services/wines.js';
+  import { getCurrentUser } from '../services/auth.js';
+  import { addFavorite, getFavorites } from '../services/favorites.js';
+  import { addHistory } from '../services/history.js';
+  import AppLoader from '../components/AppLoader.vue';
+  
+  export default {
+    name: 'Detail',
+    components: { AppH1, AppLoader },
+  
+    data() {
+      return {
+        vino: null,
+        id: null,
+        user: null,
+        message: null,
+        messageType: null,
+        isFavorite: false,
+  
+        loading: true,
+        error: null,
+      };
+    },
+  
+    async mounted() {
+      this.loading = true;
+      this.error = null;
+  
       try {
-        this.vino = await getVinoById(this.id);
-
-        if (this.vino && typeof this.vino.maridaje === 'string') {
-          this.vino.maridaje = this.vino.maridaje
-            .split(',')
-            .map(item => item.trim());
+        this.id = this.$route.params.id;
+  
+        if (this.id) {
+          this.vino = await getVinoById(this.id);
+  
+          if (this.vino && typeof this.vino.maridaje === 'string') {
+            this.vino.maridaje = this.vino.maridaje
+              .split(',')
+              .map(item => item.trim());
+          }
         }
+  
+        const user = await getCurrentUser();
+        this.user = user;
+  
+        if (this.user && this.vino) {
+          const favIds = await getFavorites(this.user.id);
+          this.isFavorite =
+            favIds.includes(Number(this.vino.id)) ||
+            favIds.includes(String(this.vino.id));
+        }
+  
       } catch (error) {
         console.error('[Detail.vue] Error al cargar detalle de vino:', error);
+        this.error = 'Ocurrió un error al cargar el vino. Intentá nuevamente.';
+  
       }
-    }
-
-    const user = await getCurrentUser();
-    this.user = user;
-
-    if (this.user && this.vino) {
-      const favIds = await getFavorites(this.user.id);
-      this.isFavorite =
-        favIds.includes(Number(this.vino.id)) ||
-        favIds.includes(String(this.vino.id));
-    }
-  },
-
-  methods: {
-    // Agregar a favoritos
-    async handleAddFavorite() {
-      if (!this.user) {
-        this.message = 'Debes iniciar sesión para agregar a favoritos';
-        this.messageType = 'fav';
-        setTimeout(() => (this.message = null), 3000);
-        return;
-      }
-
-      try {
-        if (!this.isFavorite) {
-          await addFavorite(this.user.id, this.vino.id);
-          this.isFavorite = true;
-          this.message = 'Agregado a favoritos ';
+  
+      this.loading = false;
+    },
+  
+    methods: {
+      // Agregar a favoritos
+      async handleAddFavorite() {
+        if (!this.user) {
+          this.message = 'Debes iniciar sesión para agregar a favoritos';
           this.messageType = 'fav';
-        } else {
-          this.message = 'Ya está en favoritos';
+          setTimeout(() => (this.message = null), 3000);
+          return;
+        }
+  
+        try {
+          if (!this.isFavorite) {
+            await addFavorite(this.user.id, this.vino.id);
+            this.isFavorite = true;
+            this.message = 'Agregado a favoritos ';
+            this.messageType = 'fav';
+          } else {
+            this.message = 'Ya está en favoritos';
+            this.messageType = 'fav';
+          }
+        } catch (e) {
+          console.error(e);
+          this.message = 'Error al agregar a favoritos';
           this.messageType = 'fav';
         }
-      } catch (e) {
-        console.error(e);
-        this.message = 'Error al agregar a favoritos';
-        this.messageType = 'fav';
-      }
-    },
-
-    async handleAddHistory() {
-      if (!this.user) {
-        this.message = 'Debes iniciar sesión para agregar al historial';
-        this.messageType = 'history';
-        setTimeout(() => (this.message = null), 3000);
-        return;
-      }
-
-      try {
-        await addHistory(this.user.id, this.vino.id);
-        this.message = 'Agregado al historial';
-        this.messageType = 'history';
-      } catch (e) {
-        console.error(e);
-        this.message = 'Error al agregar al historial';
-        this.messageType = 'history';
+      },
+  
+      async handleAddHistory() {
+        if (!this.user) {
+          this.message = 'Debes iniciar sesión para agregar al historial';
+          this.messageType = 'history';
+          setTimeout(() => (this.message = null), 3000);
+          return;
+        }
+  
+        try {
+          await addHistory(this.user.id, this.vino.id);
+          this.message = 'Agregado al historial';
+          this.messageType = 'history';
+        } catch (e) {
+          console.error(e);
+          this.message = 'Error al agregar al historial';
+          this.messageType = 'history';
+        }
       }
     }
-  }
-};
-</script>
+  };
+  </script>
+  
 
 <template>
   <section
@@ -105,27 +118,41 @@ export default {
     <div class="absolute top-0 left-0 right-0 h-[60%] pointer-events-none overflow-hidden">
       <img
         src="/icono1.png"
+         alt=""
         class="hidden md:block absolute top-16 left-12 w-14 rotate-12 opacity-100"
       />
       <img
         src="/icono6.png"
+         alt=""
         class="hidden md:block absolute top-[50%] right-10 w-16 -rotate-6 opacity-100"
       />
       <img
         src="/icono7.png"
+         alt=""
         class="hidden md:block absolute top-[55%] left-[15%] w-14 opacity-100 -rotate-12"
       />
     </div>
 
     <div class="relative z-10 w-full px-5 md:px-10">
+
+    <!-- Estado de carga-->
+
+    <div v-if="loading" class="w-full flex items-center justify-center min-h-[200px]">
+      <AppLoader />
+    </div>
+
+    <div v-else-if="error" class="w-full text-center text-red-600 mt-6">
+      {{ error }}
+    </div>
+
       <div
         v-if="vino"
         class="w-full max-w-7xl flex flex-col md:flex-row gap-8 md:gap-10 mx-auto"
       >
         <div class="flex justify-center md:items-start">
           <img
-            :src="vino.imagen"
-            :alt="vino.nombre"
+            src="vino.imagen"
+            alt="vino.nombre"
             class="w-60 sm:w-72 md:w-[420px] object-contain rounded-lg
                    border border-[#4e0d05]/20 bg-[#f6f6eb]"
           />
@@ -235,7 +262,7 @@ export default {
     <div class="w-full mt-16 md:mt-24">
       <img
         src="/lineacuadros.png"
-        alt="Decoración NYSO"
+         alt=""
         class="w-full h-auto object-cover block"
       />
     </div>

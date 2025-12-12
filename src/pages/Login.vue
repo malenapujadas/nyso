@@ -51,22 +51,27 @@ export default {
   >
     <img
       src="/icono1.png"
+      alt=""
       class="absolute top-6 left-6 w-10 md:w-16 rotate-12 opacity-100"
     />
     <img
       src="/icono6.png"
+      alt=""
       class="absolute bottom-28 md:bottom-16 right-10 md:right-16 w-14 md:w-18 -rotate-6 opacity-100"
     />
     <img
       src="/icono3.png"
+      alt=""
       class="absolute top-24 md:top-1/3 left-6 md:left-[8%] w-10 md:w-14 rotate-6 opacity-100"
     />
     <img
       src="/icono3.png"
+      alt=""
       class="absolute top-36 md:top-1/3 right-10 md:right-16 w-12 md:w-18 rotate-6 opacity-100"
     />
     <img
       src="/icono7.png"
+      alt=""
       class="absolute bottom-[28%] md:bottom-[20%] left-[18%] md:left-[25%] w-12 md:w-16 opacity-100 -rotate-12"
     />
 

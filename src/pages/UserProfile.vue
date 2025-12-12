@@ -34,11 +34,11 @@ export default {
   <template v-if="!loading">
     <section class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden">
 
-      <img src="/icono1.png" class="absolute top-10 left-10 w-14 opacity-100 rotate-12" />
-      <img src="/icono6.png" class="absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
-      <img src="/icono1.png" class="absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
-      <img src="/icono3.png" class="absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3" />
-      <img src="/icono7.png" class="absolute bottom-[18%] left-[15%] w-25 opacity-100 -rotate-12" />
+      <img src="/icono1.png" alt="" class="absolute top-10 left-10 w-14 opacity-100 rotate-12" />
+      <img src="/icono6.png" alt="" class="absolute bottom-20 right-12 w-22 opacity-100 -rotate-6" />
+      <img src="/icono1.png" alt="" class="absolute top-1/5 right-20 w-14 opacity-100 rotate-12" />
+      <img src="/icono3.png" alt="" class="absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3" />
+      <img src="/icono7.png" alt="" class="absolute bottom-[18%] left-[15%] w-25 opacity-100 -rotate-12" />
 
       <div class="w-full max-w-3xl z-10 bg-[#ede8d7] rounded-3xl shadow-lg p-8 border border-[#4e0d05]/20">
         <h1 class="text-3xl font-extrabold text-[#3c490b] mb-6 text-center">
@@ -59,7 +59,7 @@ export default {
             <div class="flex flex-col items-center text-center">
               <img
                 src="/nysito2.png"
-                alt="Avatar"
+                alt="MYSITO"
                 class="w-28 h-28 rounded-full object-cover border-4 border-[#e099a8]/70 mb-4 bg-white"
               />
               <h2 class="text-2xl font-bold text-[#4e0d05] mb-1">

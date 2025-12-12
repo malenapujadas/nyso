@@ -3,10 +3,12 @@ import { fetchLastPost, submitSuggestion } from '../services/blog.js';
 import { getCurrentUser, subscribeToAuthChanges } from '../services/auth.js';
 import AppH1 from '../components/AppH1.vue';
 import { RouterLink } from 'vue-router';
+import AppLoader from '../components/AppLoader.vue';
+
 
 export default {
   name: 'Blog',
-  components: { AppH1, RouterLink },
+  components: { AppH1, AppLoader, RouterLink },
   data() {
     return {
       user: null,
@@ -89,15 +91,17 @@ export default {
     >
       <img
         src="/icono3.png"
+         alt=""
         class="absolute top-4 md:top-10 right-4 md:right-20 w-10 md:w-14 rotate-6 opacity-100"
       />
 
       <img
         src="/icono6.png"
+         alt=""
         class="absolute bottom-4 md:bottom-10 left-4 md:left-20 w-12 md:w-16 -rotate-6 opacity-100"
       />
 
-      <img src="/nysito2.png" class="w-28 md:w-56 z-10" />
+      <img src="/nysito2.png"  alt="NYSITO" class="w-28 md:w-56 z-10" />
 
       <!-- texto -->
       <div class="max-w-xs md:max-w-lg text-left z-10 ml-3 md:ml-0">
@@ -119,18 +123,23 @@ export default {
     <!-- Publicaciones -->
     <section class="relative w-full max-w-[1200px] py-12 px-6 space-y-8 text-left">
       <h2 class="text-2xl md:text-3xl font-bold text-[#3c490b] mb-3">
-        Últimas Publicaciones
+        Últimas publicaciones
       </h2>
 
-      <div v-if="loading" class="text-lg">
-        Cargando publicaciones...
+      <!-- Estado de carga -->
+      <div
+        v-if="loading"
+        class="min-h-[120px] flex items-center justify-center"
+      >
+        <AppLoader />
       </div>
 
+      <!-- error -->
       <div v-else-if="error" class="text-lg text-red-600">
         {{ error }}
       </div>
 
-      <div v-else>
+        <div v-else>
         <div v-if="posts.length === 0" class="text-lg">
           No hay publicaciones.
         </div>
@@ -149,9 +158,9 @@ export default {
           >
             <!-- Título -->
             <div class="flex justify-between items-center px-5 md:px-8 py-4 md:py-5">
-              <h2 class="text-lg md:text-xl font-bold">
+              <h3 class="text-lg md:text-xl font-bold">
                 {{ post.titulo }}
-              </h2>
+              </h3>
 
               <span
                 class="text-xl md:text-2xl transform transition-transform duration-300"
@@ -184,17 +193,19 @@ export default {
       <!-- Mobile -->
       <img
         src="/icono1.png"
+        alt=""
         class="hidden md:block absolute top-10 left-20 w-16 opacity-100 rotate-12"
       />
 
       <img
         src="/icono6.png"
+        alt=""
         class="hidden md:block absolute bottom-10 right-20 w-20 opacity-100 -rotate-6"
       />
 
-      <h2 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-4 text-center">
+      <h3 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-4 text-center">
         ¿Querés que hablemos de algo?
-      </h2>
+      </h3>
 
       <p class="text-[#4e0d05]/80 text-center mb-10 text-base max-w-xl mx-auto px-2">
         Enviá tu pregunta o tema y el equipo lo evaluará.
@@ -217,36 +228,57 @@ export default {
         @submit.prevent="submitSugg"
         class="flex flex-col gap-5 w-full max-w-lg mx-auto"
       >
-        <div class="flex flex-col sm:flex-row gap-4 w-full">
-          <input
-            v-model="sugg.nombre"
-            placeholder="Tu nombre (opcional)"
-            class="flex-1 p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8]
-                   outline-none bg-[#f6f6eb] text-[#4e0d05]"
-          />
+      <div class="flex flex-col sm:flex-row gap-4 w-full">
+          <div class="flex-1">
+            <label for="sugg-nombre" class="block mb-1 text-sm font-medium text-[#4e0d05]">
+              Nombre (opcional)
+            </label>
+            <input
+              id="sugg-nombre"
+              v-model="sugg.nombre"
+              placeholder="Tu nombre (opcional)"
+              class="flex-1 p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8]
+                     outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
+            />
+          </div>
 
-          <input
-            v-model="sugg.email"
-            placeholder="Tu email (opcional)"
-            class="flex-1 p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8]
-                   outline-none bg-[#f6f6eb] text-[#4e0d05]"
-          />
+          <div class="flex-1">
+            <label for="sugg-email" class="block mb-1 text-sm font-medium text-[#4e0d05]">
+              Email (opcional)
+            </label>
+            <input
+              id="sugg-email"
+              v-model="sugg.email"
+              placeholder="Tu email (opcional)"
+              class="flex-1 p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8]
+                     outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
+            />
+          </div>
         </div>
 
+        <label for="sugg-titulo" class="block mb-1 text-sm font-medium text-[#4e0d05]">
+          Título / tema
+        </label>
         <input
+          id="sugg-titulo"
           v-model="sugg.titulo"
           placeholder="Título / tema"
           class="p-3 rounded-full border border-[#e099a8]/40 focus:border-[#e099a8]
                  outline-none bg-[#f6f6eb] text-[#4e0d05] w-full"
         />
 
+        <label for="sugg-descripcion" class="block mb-1 text-sm font-medium text-[#4e0d05]">
+          Descripción / pregunta
+        </label>
         <textarea
+          id="sugg-descripcion"
           v-model="sugg.descripcion"
           rows="4"
           placeholder="Descripción / pregunta"
           class="p-3 rounded-3xl border border-[#e099a8]/40 focus:border-[#e099a8]
                  outline-none bg-[#f6f6eb] text-[#4e0d05] resize-none w-full"
         ></textarea>
+
 
         <div class="flex justify-center mt-4">
           <button

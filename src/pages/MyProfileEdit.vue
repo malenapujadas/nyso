@@ -100,10 +100,10 @@ export default {
     v-else
     class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center justify-start px-6 pt-16 pb-20"
   >
-    <img src="/icono1.png" class="absolute top-10 left-12 w-14 rotate-12 opacity-100" />
-    <img src="/icono2.png" class="absolute top-24 right-10 w-16 -rotate-6 opacity-100" />
-    <img src="/icono6.png" class="absolute top-1/3 right-[12%] w-12 rotate-3 opacity-100" />
-    <img src="/icono7.png" class="absolute bottom-[15%] left-[18%] w-14 opacity-100 -rotate-12" />
+    <img src="/icono1.png" alt="" class="absolute top-10 left-12 w-14 rotate-12 opacity-100" />
+    <img src="/icono2.png" alt="" class="absolute top-24 right-10 w-16 -rotate-6 opacity-100" />
+    <img src="/icono6.png" alt="" class="absolute top-1/3 right-[12%] w-12 rotate-3 opacity-100" />
+    <img src="/icono7.png" alt="" class="absolute bottom-[15%] left-[18%] w-14 opacity-100 -rotate-12" />
 
     <form
       @submit.prevent="handleSubmit"
