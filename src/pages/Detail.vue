@@ -151,8 +151,8 @@
       >
         <div class="flex justify-center md:items-start">
           <img
-            src="vino.imagen"
-            alt="vino.nombre"
+            :src="vino.imagen"
+            :alt="vino.nombre"
             class="w-60 sm:w-72 md:w-[420px] object-contain rounded-lg
                    border border-[#4e0d05]/20 bg-[#f6f6eb]"
           />
