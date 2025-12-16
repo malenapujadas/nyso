@@ -47,22 +47,22 @@ export default {
   <nav
     class="w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between relative"
   >
-    <!-- Mobile -->
-    <div class="flex md:hidden w-full items-center justify-between">
-      <RouterLink to="/" @click="menuOpen = false">
-        <img src="/logo.png" alt="NYSO" class="w-24" />
-      </RouterLink>
+    <!-- Logo -->
+    <RouterLink to="/" class="flex items-center">
+      <img src="/logo.png" alt="NYSO" class="w-22 md:w-26" />
+    </RouterLink>
 
-      <button @click="menuOpen = !menuOpen" class="text-3xl text-[#4e0d05]">
-        ☰
-      </button>
-    </div>
+    <!-- Mobile botón menú -->
+    <button
+      @click="menuOpen = !menuOpen"
+      class="text-3xl text-[#4e0d05] md:hidden"
+    >
+      ☰
+    </button>
 
-    <div class="hidden md:block w-40"></div>
-
-    <!-- Menu desktop -->
+    <!-- Menu escritorio -->
     <ul
-      class="hidden md:flex absolute left-1/2 -translate-x-1/2 flex justify-center gap-10 text-base font-medium"
+      class="hidden md:flex absolute left-1/2 -translate-x-1/2 justify-center gap-10 text-base font-medium"
     >
       <li>
         <RouterLink
@@ -113,8 +113,8 @@ export default {
       </li>
     </ul>
 
-    <!-- usuario desktop -->
-    <div class="hidden md:flex items-center gap-4 w-56 justify-end">
+    <!-- Usuario -->
+    <div class="hidden md:flex items-center gap-4">
       <template v-if="!isAuthChecked">
         <span class="text-[#4e0d05]/40 text-sm italic">...</span>
       </template>
@@ -165,7 +165,10 @@ export default {
       <RouterLink @click="menuOpen = false" to="/red-social"
         >Red Social</RouterLink
       >
-      <RouterLink @click="menuOpen = false" to="/admin"
+      <RouterLink
+        v-if="user && user.role === 'admin'"
+        @click="menuOpen = false"
+        to="/admin"
         >Administrador</RouterLink
       >
     </ul>

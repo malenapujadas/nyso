@@ -216,7 +216,7 @@ export default {
       <div
         class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
       >
-        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Favoritos</h2>
+        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Wishlist</h2>
 
         <div v-if="favorites.length" class="grid grid-cols-1 gap-6">
           <div
