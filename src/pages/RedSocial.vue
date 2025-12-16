@@ -1,41 +1,41 @@
 <script>
-import AppH1 from '../components/AppH1.vue';
-import { getAllUsers } from '../services/user-profiles.js';
-import { getCurrentUser, subscribeToAuthChanges } from '../services/auth.js';
-import { sendConnectionRequest } from '../services/connections.js';
-import AppLoader from '../components/AppLoader.vue';
+import AppH1 from "../components/AppH1.vue";
+import { getAllUsers } from "../services/user-profiles.js";
+import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
+import { sendConnectionRequest } from "../services/connections.js";
+import AppLoader from "../components/AppLoader.vue";
 
 export default {
-  name: 'RedSocial',
+  name: "RedSocial",
   components: { AppH1, AppLoader },
 
   data() {
     return {
       users: [],
       loading: true,
-      searchQuery: '',
+      searchQuery: "",
       user: null,
-      message: '',
-      sentRequests: [],  // ← NUEVO
+      message: "",
+      sentRequests: [], // ← NUEVO
     };
   },
 
   computed: {
     filteredUsers() {
       const q = this.searchQuery.toLowerCase();
-      return this.users.filter(u =>
-        (u.display_name || '').toLowerCase().includes(q)
+      return this.users.filter((u) =>
+        (u.display_name || "").toLowerCase().includes(q)
       );
     },
   },
 
   methods: {
     async handleConnect(receiverId) {
-      console.log('Intentando conectar con', receiverId);
+      console.log("Intentando conectar con", receiverId);
 
       if (!this.user) {
-        this.message = 'Debes iniciar sesión para conectar con alguien.';
-        setTimeout(() => (this.message = ''), 3000);
+        this.message = "Debes iniciar sesión para conectar con alguien.";
+        setTimeout(() => (this.message = ""), 3000);
         return;
       }
 
@@ -43,14 +43,14 @@ export default {
         await sendConnectionRequest(this.user.id, receiverId);
 
         // marcar localmente para ocultar el botón
-        this.sentRequests.push(receiverId);   
+        this.sentRequests.push(receiverId);
 
-        this.message = 'Solicitud de amistad enviada!';
-        setTimeout(() => (this.message = ''), 3000);
+        this.message = "Solicitud de amistad enviada!";
+        setTimeout(() => (this.message = ""), 3000);
       } catch (err) {
-        console.error('Error enviando solicitud de conexión:', err);
+        console.error("Error enviando solicitud de conexión:", err);
       }
-    }
+    },
   },
 
   async mounted() {
@@ -60,17 +60,16 @@ export default {
     try {
       this.users = await getAllUsers();
       this.user = await getCurrentUser();
-      console.log('[RedSocial.vue] Usuario inicial:', this.user);
+      console.log("[RedSocial.vue] Usuario inicial:", this.user);
 
       subscribeToAuthChanges((userState) => {
         this.user = userState;
-        console.log('[AuthChange] Usuario actualizado:', this.user);
+        console.log("[AuthChange] Usuario actualizado:", this.user);
       });
-
     } catch (err) {
-      console.error('[RedSocial.vue] Error cargando usuarios:', err);
+      console.error("[RedSocial.vue] Error cargando usuarios:", err);
       this.users = [];
-      this.error = 'Ocurrió un error al cargar los usuarios.';
+      this.error = "Ocurrió un error al cargar los usuarios.";
     }
 
     this.loading = false;
@@ -78,16 +77,13 @@ export default {
 };
 </script>
 
-
 <template>
-  <div class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden">
-
-
+  <div
+    class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden"
+  >
     <!-- Banner -->
     <section
-      class="w-full bg-[#e099a8] text-[#f6f6eb] 
-             flex flex-row items-center justify-center
-             gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
     >
       <img
         src="/icono3.png"
@@ -102,11 +98,7 @@ export default {
       />
 
       <div class="flex justify-center w-[40%] md:w-auto z-10">
-        <img
-          src="/nysito3.png"
-          alt="Nysito"
-          class="w-28 sm:w-32 md:w-56"
-        />
+        <img src="/nysito3.png" alt="Nysito" class="w-28 sm:w-32 md:w-56" />
       </div>
 
       <div class="max-w-[60%] md:max-w-lg text-left z-10 leading-snug">
@@ -144,8 +136,7 @@ export default {
         v-model="searchQuery"
         type="search"
         placeholder="Buscar usuario por nombre..."
-        class="w-full border border-[#e099a8] rounded-full p-3 pl-12 text-[#4e0d05] bg-[#f6f6eb]
-               focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
+        class="w-full border border-[#e099a8] rounded-full p-3 pl-12 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
       />
     </div>
 
@@ -158,28 +149,27 @@ export default {
 
     <!-- Lista de usuarios -->
     <section class="w-[92%] max-w-[1000px] py-10 px-4 md:px-10 text-left">
+      <!-- Estado de carga-->
+      <div
+        v-if="loading"
+        class="w-full flex items-center justify-center min-h-[200px]"
+      >
+        <AppLoader />
+      </div>
 
-    <!-- Estado de carga-->
-    <div v-if="loading" class="w-full flex items-center justify-center min-h-[200px]">
-      <AppLoader />
-    </div>
-
-    <div v-else-if="error" class="w-full text-center text-red-600 mt-6">
-      {{ error }}
-    </div>
-
+      <div v-else-if="error" class="w-full text-center text-red-600 mt-6">
+        {{ error }}
+      </div>
 
       <ul v-else class="space-y-4">
         <li
           v-for="u in filteredUsers"
           :key="u.id"
-          class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl
-                 p-4 md:p-5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between
-                 hover:shadow-md hover:scale-[1.01] transition-all duration-300"
+          class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between hover:shadow-md hover:scale-[1.01] transition-all duration-300"
         >
           <div class="text-[#4e0d05] mb-2 md:mb-0">
             <p class="font-semibold text-lg md:text-xl">
-              {{ u.display_name || 'Sin nombre' }}
+              {{ u.display_name || "Sin nombre" }}
             </p>
 
             <p class="text-sm text-[#4e0d05]/70">
@@ -187,20 +177,25 @@ export default {
             </p>
           </div>
 
-          <div class="flex gap-2 md:gap-3 mt-3 md:mt-0 items-center md:justify-end">
+          <div
+            class="flex gap-2 md:gap-3 mt-3 md:mt-0 items-center md:justify-end"
+          >
             <router-link
               :to="`/usuario/${u.id}`"
-              class="text-[#e099a8] border border-[#e099a8] rounded-full px-4 py-1.5 text-sm
-                     font-medium hover:bg-[#e099a8] hover:text-[#f6f6eb] transition-all duration-300"
+              class="text-[#e099a8] border border-[#e099a8] rounded-full px-4 py-1.5 text-sm font-medium hover:bg-[#e099a8] hover:text-[#f6f6eb] transition-all duration-300"
             >
               Ver perfil
             </router-link>
 
             <button
-              v-if="user && user.id && user.id !== u.id && !sentRequests.includes(u.id)"
+              v-if="
+                user &&
+                user.id &&
+                user.id !== u.id &&
+                !sentRequests.includes(u.id)
+              "
               @click="handleConnect(u.id)"
-              class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm
-                     font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+              class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
             >
               + Conectar
             </button>

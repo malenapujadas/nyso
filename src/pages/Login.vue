@@ -1,41 +1,41 @@
 <script>
-import AppH1 from '../components/AppH1.vue';
-import { login } from '../services/auth.js';
+import AppH1 from "../components/AppH1.vue";
+import { login } from "../services/auth.js";
 
 export default {
-  name: 'Login',
+  name: "Login",
   components: { AppH1 },
   data() {
     return {
       user: {
-        email: '',
-        password: '',
+        email: "",
+        password: "",
       },
       loading: false,
-      errorMsg: '',
+      errorMsg: "",
     };
   },
   methods: {
     async handleSubmit() {
-      this.errorMsg = '';
+      this.errorMsg = "";
 
       // validaciones
       if (!this.user.email || !this.user.password) {
-        this.errorMsg = 'Por favor, completa todos los campos.';
+        this.errorMsg = "Por favor, completa todos los campos.";
         return;
       }
 
       if (this.user.password.length < 6) {
-        this.errorMsg = 'La contraseña debe tener al menos 6 caracteres.';
+        this.errorMsg = "La contraseña debe tener al menos 6 caracteres.";
         return;
       }
 
       try {
         this.loading = true;
         await login(this.user.email, this.user.password);
-        this.$router.push('/mi-perfil');
+        this.$router.push("/mi-perfil");
       } catch (error) {
-        this.errorMsg = 'Credenciales inválidas';
+        this.errorMsg = "Credenciales inválidas";
       }
 
       this.loading = false;
@@ -46,8 +46,7 @@ export default {
 
 <template>
   <section
-    class="min-h-screen flex flex-col items-center justify-start 
-           pt-12 md:pt-16 bg-[#f6f6eb] relative overflow-hidden"
+    class="min-h-screen flex flex-col items-center justify-start pt-12 md:pt-16 bg-[#f6f6eb] relative overflow-hidden"
   >
     <img
       src="/icono1.png"
@@ -83,14 +82,11 @@ export default {
 
     <form
       @submit.prevent="handleSubmit"
-      class="relative z-10 w-[90%] max-w-md bg-[#ede8d7] border border-[#4e0d05]/20 
-             rounded-2xl md:rounded-3xl shadow-md p-6 md:p-8 
-             flex flex-col gap-6 text-left"
+      class="relative z-10 w-[90%] max-w-md bg-[#ede8d7] border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl shadow-md p-6 md:p-8 flex flex-col gap-6 text-left"
     >
       <div
         v-if="errorMsg"
-        class="text-center text-[#4e0d05] font-semibold bg-[#e099a8]/20 border border-[#e099a8]
-               rounded-full py-2 text-sm md:text-base"
+        class="text-center text-[#4e0d05] font-semibold bg-[#e099a8]/20 border border-[#e099a8] rounded-full py-2 text-sm md:text-base"
       >
         {{ errorMsg }}
       </div>
@@ -108,8 +104,7 @@ export default {
           type="email"
           placeholder="mail@gmail.com"
           v-model="user.email"
-          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
-                 text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
 
@@ -126,12 +121,11 @@ export default {
           type="password"
           placeholder="••••••••"
           v-model="user.password"
-          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base 
-                 text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
 
-      <RouterLink 
+      <RouterLink
         class="text-left text-xs md:text-sm text-[#3c490b]/70 font-bold hover:text-[#e099a8] transition-colors"
         to="/recuperar-contrasena"
       >
@@ -141,16 +135,12 @@ export default {
       <button
         type="submit"
         :disabled="loading"
-        class="w-full rounded-full bg-[#e099a8] text-[#3c490b] font-semibold 
-               py-2.5 text-sm md:text-base mt-2 shadow-md hover:bg-[#3c490b] 
-               hover:text-[#f6f6eb] transition-all duration-300"
+        class="w-full rounded-full bg-[#e099a8] text-[#3c490b] font-semibold py-2.5 text-sm md:text-base mt-2 shadow-md hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
       >
-        {{ loading ? 'Ingresando...' : 'Ingresar' }}
+        {{ loading ? "Ingresando..." : "Ingresar" }}
       </button>
 
-      <p
-        class="text-center text-xs md:text-sm text-[#4e0d05]/70 mt-1 md:mt-3"
-      >
+      <p class="text-center text-xs md:text-sm text-[#4e0d05]/70 mt-1 md:mt-3">
         ¿Todavía no tenés cuenta?
         <RouterLink
           to="/crear-cuenta"

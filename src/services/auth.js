@@ -1,5 +1,9 @@
-import { supabase } from './supabase.js';
-import { createUserProfile, getUserProfileById, updateUserProfile } from './user-profiles.js';
+import { supabase } from "./supabase.js";
+import {
+  createUserProfile,
+  getUserProfileById,
+  updateUserProfile,
+} from "./user-profiles.js";
 
 let user = {
   id: null,
@@ -14,7 +18,7 @@ loadUserCurrentAuthState();
 async function loadUserCurrentAuthState() {
   const { data, error } = await supabase.auth.getUser();
 
-  if (error) return console.warn('[auth.js] No hay usuario autenticado');
+  if (error) return console.warn("[auth.js] No hay usuario autenticado");
 
   setAuthUserState({
     id: data.user.id,
@@ -33,13 +37,13 @@ async function loadExtendedProfile() {
 
   // Si el perfil no existe, lo crea
   if (!profile) {
-    console.log('[auth] No existe perfil → Creándolo…');
+    console.log("[auth] No existe perfil → Creándolo…");
 
     await createUserProfile({
       id: user.id,
       email: user.email,
       display_name: profile?.display_name || user?.display_name || null,
-      role: 'user', // default
+      role: "user", // default
     });
 
     // volver a cargar el perfil recién creado
@@ -63,7 +67,10 @@ export async function register(email, password, nombre) {
     });
 
     if (error) {
-      console.error('[auth.js register] Error al registrar el usuario: ', error);
+      console.error(
+        "[auth.js register] Error al registrar el usuario: ",
+        error
+      );
       throw new Error(error.message);
     }
 
@@ -81,7 +88,7 @@ export async function register(email, password, nombre) {
 
     await loadExtendedProfile();
   } catch (error) {
-    console.error('[auth.js register] Error al registrar el usuario: ', error);
+    console.error("[auth.js register] Error al registrar el usuario: ", error);
     throw new Error(error.message);
   }
 }
@@ -93,7 +100,7 @@ export async function login(email, password) {
   });
 
   if (error) {
-    console.error('[auth.js login] Error al autenticar  el usuario: ', error);
+    console.error("[auth.js login] Error al autenticar  el usuario: ", error);
     throw new Error(error.message);
   }
 
@@ -118,7 +125,10 @@ export async function updateAuthUserData(data) {
     await updateUserProfile(user.id, data);
     setAuthUserState(data);
   } catch (error) {
-    console.error('[auth.js updateAuthUserData] Error al actualizar usuario:', error);
+    console.error(
+      "[auth.js updateAuthUserData] Error al actualizar usuario:",
+      error
+    );
     throw new Error(error.message);
   }
 }
@@ -138,7 +148,7 @@ function notify(callback) {
 }
 
 function notifyAll() {
-  observers.forEach(obs => notify(obs));
+  observers.forEach((obs) => notify(obs));
 }
 
 function setAuthUserState(newData) {

@@ -1,51 +1,50 @@
 <script>
-import { recoverPassword } from '../services/auth.recovery.js';
-import AppH1 from '../components/AppH1.vue';
+import { recoverPassword } from "../services/auth.recovery.js";
+import AppH1 from "../components/AppH1.vue";
 
 export default {
-  name: 'RecuperarContrasena',
+  name: "RecuperarContrasena",
   components: { AppH1 },
 
   data() {
     return {
-      email: '',
-      status: 'idle',
+      email: "",
+      status: "idle",
       errorMessage: null,
     };
   },
 
   methods: {
     async enviarCorreo() {
-      this.status = 'loading';
+      this.status = "loading";
       this.errorMessage = null;
 
       const result = await recoverPassword(this.email);
 
       if (!result.ok) {
-        if (result.reason === 'not_registered') {
-          this.errorMessage = 'No estás registrado. Creá tu cuenta.';
-          this.status = 'error';
-          setTimeout(() => this.$router.push('/ingresar'), 5000);
+        if (result.reason === "not_registered") {
+          this.errorMessage = "No estás registrado. Creá tu cuenta.";
+          this.status = "error";
+          setTimeout(() => this.$router.push("/ingresar"), 5000);
           return;
         }
 
-        if (result.reason === 'supabase_error') {
+        if (result.reason === "supabase_error") {
           this.errorMessage = result.message;
-          this.status = 'error';
+          this.status = "error";
           return;
         }
       }
 
-      this.status = 'success';
-    }
-  }
+      this.status = "success";
+    },
+  },
 };
 </script>
 
 <template>
   <section
-    class="min-h-screen flex flex-col items-center justify-start 
-           pt-16 md:pt-20 bg-[#f6f6eb] relative overflow-hidden"
+    class="min-h-screen flex flex-col items-center justify-start pt-16 md:pt-20 bg-[#f6f6eb] relative overflow-hidden"
   >
     <img
       src="/icono1.png"
@@ -82,14 +81,13 @@ export default {
     <p
       class="pb-4 px-6 text-sm md:text-base text-[#3c490b]/70 font-bold text-center max-w-md"
     >
-      Ingresá tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
+      Ingresá tu correo electrónico y te enviaremos un enlace para restablecer
+      tu contraseña.
     </p>
 
     <form
       @submit.prevent="enviarCorreo"
-      class="relative z-10 w-[92%] max-w-md bg-[#ede8d7] border border-[#4e0d05]/20 
-             rounded-2xl md:rounded-3xl shadow-md p-6 md:p-8 
-             flex flex-col gap-6 text-left mt-4"
+      class="relative z-10 w-[92%] max-w-md bg-[#ede8d7] border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl shadow-md p-6 md:p-8 flex flex-col gap-6 text-left mt-4"
     >
       <div>
         <label
@@ -105,21 +103,16 @@ export default {
           type="email"
           placeholder="mail@gmail.com"
           required
-          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base
-                 text-[#4e0d05] placeholder-[#4e0d05]/60 
-                 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
 
       <button
         type="submit"
-        class="w-full rounded-full bg-[#e099a8] text-[#3c490b] font-semibold 
-               py-2.5 text-sm md:text-base mt-2 shadow-md 
-               hover:bg-[#3c490b] hover:text-[#f6f6eb] 
-               transition-all duration-300"
+        class="w-full rounded-full bg-[#e099a8] text-[#3c490b] font-semibold py-2.5 text-sm md:text-base mt-2 shadow-md hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
         :disabled="status === 'loading'"
       >
-        {{ status === 'loading' ? 'Enviando...' : 'Enviar mail' }}
+        {{ status === "loading" ? "Enviando..." : "Enviar mail" }}
       </button>
     </form>
 

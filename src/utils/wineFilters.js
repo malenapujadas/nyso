@@ -1,7 +1,9 @@
 // buscar texto
 export function matchesSearch(vino, query) {
   if (!query) return true;
-  const texto = `${vino.nombre || ''} ${vino.bodega || ''} ${vino.descripcion || ''}`.toLowerCase();
+  const texto = `${vino.nombre || ""} ${vino.bodega || ""} ${
+    vino.descripcion || ""
+  }`.toLowerCase();
   return texto.includes(query);
 }
 
@@ -13,7 +15,7 @@ export function matchesFilters(vino, filters) {
   if (region && vino.region !== region) return false;
   if (dulzor && vino.dulzor !== dulzor) return false;
   if (cuerpo && vino.cuerpo !== cuerpo) return false;
-  if (año && String(vino['año']) !== String(año)) return false;
+  if (año && String(vino["año"]) !== String(año)) return false;
   return true;
 }
 

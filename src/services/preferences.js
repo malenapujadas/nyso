@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { supabase } from "./supabase.js";
 
 export async function savePreferencesForUser(userId, answers) {
   const payload = {
@@ -10,11 +10,14 @@ export async function savePreferencesForUser(userId, answers) {
   };
 
   const { data, error } = await supabase
-    .from('user_preferences')
-    .upsert(payload, { returning: 'representation' });
+    .from("user_preferences")
+    .upsert(payload, { returning: "representation" });
 
   if (error) {
-    console.error('[preferences.js savePreferencesForUser] Error al guardar:', error);
+    console.error(
+      "[preferences.js savePreferencesForUser] Error al guardar:",
+      error
+    );
     throw new Error(error.message);
   }
 
@@ -24,20 +27,29 @@ export async function savePreferencesForUser(userId, answers) {
 //obtiene las preferencias (si existen) desde user_preferences
 export async function getPreferencesForUser(userId) {
   const { data, error } = await supabase
-    .from('user_preferences')
-    .select('*')
-    .eq('user_id', userId)
+    .from("user_preferences")
+    .select("*")
+    .eq("user_id", userId)
     .maybeSingle();
 
   if (error) {
-    console.warn('[preferences.js getPreferencesForUser] No se pudieron cargar preferencias:', error);
+    console.warn(
+      "[preferences.js getPreferencesForUser] No se pudieron cargar preferencias:",
+      error
+    );
     return null;
   }
 
   if (data) {
     // convertir de texto JSON a arrays reales
-    data.sabores = typeof data.sabores === 'string' ? JSON.parse(data.sabores) : data.sabores || [];
-    data.temas = typeof data.temas === 'string' ? JSON.parse(data.temas) : data.temas || [];
+    data.sabores =
+      typeof data.sabores === "string"
+        ? JSON.parse(data.sabores)
+        : data.sabores || [];
+    data.temas =
+      typeof data.temas === "string"
+        ? JSON.parse(data.temas)
+        : data.temas || [];
   }
 
   return data;
@@ -46,9 +58,9 @@ export async function getPreferencesForUser(userId) {
 // trae user_preferences y los datos de auth.user
 export async function getUserProfileAndPreferences(userId) {
   const { data: userPrefs, error: prefsError } = await supabase
-    .from('user_preferences')
-    .select('*')
-    .eq('user_id', userId)
+    .from("user_preferences")
+    .select("*")
+    .eq("user_id", userId)
     .single();
 
   const { data: user, error: userError } = await supabase.auth.getUser();

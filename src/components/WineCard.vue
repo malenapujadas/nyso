@@ -4,9 +4,9 @@ export default {
   props: {
     vino: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -14,11 +14,17 @@ export default {
   <div
     class="border border-[#4e0d05]/60 bg-[#f6f6eb] p-4 flex flex-col justify-between items-center text-center hover:shadow-lg transition-all duration-300 min-h-[520px]"
   >
-    <img :src="vino.imagen" :alt="vino.nombre" class="w-full h-60 object-contain mb-4" />
+    <img
+      :src="vino.imagen"
+      :alt="vino.nombre"
+      class="w-full h-60 object-contain mb-4"
+    />
 
     <div class="flex flex-col flex-grow justify-between items-center w-full">
       <div>
-        <h2 class="text-xl font-bold text-[#4e0d05] mb-1 h-[52px] flex items-center justify-center leading-tight">
+        <h2
+          class="text-xl font-bold text-[#4e0d05] mb-1 h-[52px] flex items-center justify-center leading-tight"
+        >
           {{ vino.nombre }}
         </h2>
         <p class="text-[#4e0d05]/80 mb-1">

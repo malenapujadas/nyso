@@ -10,7 +10,8 @@ export default {
 
   data() {
     return {
-      answers: { //rtas del usuario
+      answers: {
+        //rtas del usuario
         gusto: null,
         como: null,
         intensidad: null,
@@ -100,7 +101,9 @@ export default {
 </script>
 
 <template>
-  <section class="relative min-h-screen flex flex-col items-center px-6 py-20 bg-[#f6f6eb]">
+  <section
+    class="relative min-h-screen flex flex-col items-center px-6 py-20 bg-[#f6f6eb]"
+  >
     <img
       src="/icono1.png"
       alt=""
@@ -285,22 +288,20 @@ export default {
       </div>
 
       <!-- Botones -->
-      <div class="px-8 md:px-10 mt-12 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div
+        class="px-8 md:px-10 mt-12 flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
         <button
           type="button"
           @click="skip"
-          class="w-full sm:w-auto px-6 py-2 rounded-full border border-[#4e0d05] 
-                 text-[#4e0d05] hover:bg-[#4e0d05] hover:text-[#f6f6eb] 
-                 transition-all font-medium text-center"
-        > 
+          class="w-full sm:w-auto px-6 py-2 rounded-full border border-[#4e0d05] text-[#4e0d05] hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all font-medium text-center"
+        >
           Saltar
         </button>
 
         <button
           type="submit"
-          class="w-full sm:w-auto px-6 py-2 rounded-full bg-[#e099a8] text-[#3c490b] 
-                 font-bold hover:bg-[#3c490b] hover:text-[#f6f6f6] transition-all 
-                 text-center shadow-sm"
+          class="w-full sm:w-auto px-6 py-2 rounded-full bg-[#e099a8] text-[#3c490b] font-bold hover:bg-[#3c490b] hover:text-[#f6f6f6] transition-all text-center shadow-sm"
         >
           Guardar y continuar
         </button>
