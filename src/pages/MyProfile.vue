@@ -51,9 +51,21 @@ export default {
           (v) => favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
         );
 
-        this.history = vinosDB.filter(
+        /* this.history = vinosDB.filter(
           (v) => hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
-        );
+        ); */
+        //nuevo para agregar la nota
+        this.history = vinosDB
+          .map((v) => {
+            const match = hisIds.find(
+              (h) => String(h.vino_id) === String(v.id)
+            );
+            if (match) {
+              return { ...v, note: match.note };
+            }
+            return null;
+          })
+          .filter(Boolean);
 
         this.preferences = await getPreferencesForUser(this.user.id);
       }
@@ -278,6 +290,10 @@ export default {
             <h3 class="text-lg font-semibold text-[#3c490b]">{{ v.nombre }}</h3>
             <p class="text-sm text-[#4e0d05]/70">
               {{ v.bodega }} — {{ v.tipo }}
+            </p>
+
+            <p v-if="v.note" class="text-sm text-[#4e0d05]/70 italic mt-1">
+              <strong>Nota:</strong> {{ v.note }}
             </p>
 
             <div class="flex justify-center gap-3 mt-4">

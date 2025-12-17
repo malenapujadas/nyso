@@ -157,7 +157,10 @@ export async function deleteSuggestion(suggestionId) {
 
 // eliminar publicacion del blog
 export async function deletePost(postId) {
-  const { error } = await supabase.from("blog").delete().eq("id", postId);
+  const { error } = await supabase
+    .from("blog")
+    .delete()
+    .eq("id", postId);
 
   if (error) {
     console.error("[blog.js deletePost] Error al eliminar post:", error);

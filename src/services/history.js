@@ -6,10 +6,10 @@ function handleError(context, error) {
   throw new Error(error.message);
 }
 
-export async function addHistory(userId, vinoId) {
+export async function addHistory(userId, vinoId, note = null) {
   const { error } = await supabase
     .from("history")
-    .insert([{ user_id: userId, vino_id: vinoId }]);
+    .insert([{ user_id: userId, vino_id: vinoId, note }]);
 
   if (error) handleError("addHistory", error);
   return true;
@@ -18,11 +18,12 @@ export async function addHistory(userId, vinoId) {
 export async function getHistory(userId) {
   const { data, error } = await supabase
     .from("history")
-    .select("vino_id")
+    .select("vino_id, note")
     .eq("user_id", userId);
 
   if (error) handleError("getHistory", error);
-  return data.map((h) => h.vino_id);
+  return data || [];
+  /* return data.map((h) => h.vino_id); */
 }
 
 export async function clearHistory(userId) {
