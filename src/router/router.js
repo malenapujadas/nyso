@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
@@ -45,7 +45,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  /* history: createWebHistory(), */
+  history: createWebHashHistory(),
   routes,
 
   scrollBehavior(to, from, savedPosition) {
