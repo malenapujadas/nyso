@@ -16,7 +16,7 @@ export default {
       searchQuery: "",
       user: null,
       message: "",
-      sentRequests: [], // ← NUEVO
+      sentRequests: [], 
     };
   },
 
@@ -149,7 +149,7 @@ export default {
 
     <!-- Lista de usuarios -->
     <section class="w-[92%] max-w-[1000px] py-10 px-4 md:px-10 text-left">
-      <!-- Estado de carga-->
+      <!-- estado de carga-->
       <div
         v-if="loading"
         class="w-full flex items-center justify-center min-h-[200px]"

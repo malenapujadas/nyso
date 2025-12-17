@@ -1,7 +1,9 @@
 import { supabase } from "./supabase.js";
 
 export async function fetchLastPost() {
-  const { data, error } = await supabase.from("blog").select();
+  const { data, error } = await supabase
+    .from("blog")
+    .select();
 
   if (error) {
     console.error(
@@ -16,7 +18,9 @@ export async function fetchLastPost() {
 
 // funcion para las sugerencias de los usuarios
 export async function submitSuggestion(suggestion) {
-  const { data, error } = await supabase.from("blog_suggestions").insert([
+  const { data, error } = await supabase
+    .from("blog_suggestions")
+    .insert([
     {
       nombre: suggestion.nombre || null,
       email: suggestion.email || null,

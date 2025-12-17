@@ -21,17 +21,17 @@ export default {
     <!-- iconos en mobile-->
     <img
       src="/icono1.png"
-      alt=""
+      alt="Icono Decorativo 1"
       class="absolute top-6 left-4 w-20 md:w-40 opacity-100"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="Icono Decorativo 2"
       class="absolute bottom-2 left-10 w-16 md:w-32 opacity-100"
     />
     <img
       src="/icono3.png"
-      alt=""
+      alt="Icono Decorativo 3"
       class="absolute top-10 right-10 w-14 md:w-20 opacity-100"
     />
 
@@ -55,7 +55,7 @@ export default {
   <section class="relative bg-[#f6f6eb] w-full h-16 md:h-20">
     <img
       src="/lineacuadros.png"
-      alt=""
+      alt="Línea de cuadros decorativa"
       class="absolute -top-[1px] left-0 w-full block"
     />
   </section>
@@ -66,22 +66,22 @@ export default {
   >
     <img
       src="/icono1.png"
-      alt=""
+      alt="Icono Decorativo 1"
       class="absolute top-4 left-3 w-10 md:w-28 opacity-100"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="Icono Decorativo 2"
       class="absolute bottom-2 right-4 w-12 md:w-32 opacity-100 rotate-12"
     />
     <img
       src="/icono4.png"
-      alt=""
+      alt="Icono Decorativo 4"
       class="absolute top-5 right-6 w-12 md:w-16 rotate-12 opacity-100"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="Icono Decorativo 7"
       class="absolute bottom-2 left-1/2 w-10 md:w-28 opacity-100 rotate-12"
     />
 
@@ -113,22 +113,22 @@ export default {
   >
     <img
       src="/icono4.png"
-      alt=""
+      alt="Icono Decorativo 4"
       class="absolute top-2 right-6 w-10 md:w-16 rotate-12 opacity-100"
     />
     <img
       src="/icono4.png"
-      alt=""
+      alt="Icono Decorativo 4"
       class="absolute bottom-6 right-6 w-16 md:w-24 opacity-100"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="Icono Decorativo 6"
       class="absolute bottom-10 left-1/4 w-16 md:w-28 opacity-100 -rotate-6"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="Icono Decorativo 7"
       class="absolute bottom-2 left-1/3 w-16 md:w-28 opacity-100 rotate-12"
     />
 
@@ -159,22 +159,22 @@ export default {
   >
     <img
       src="/icono1.png"
-      alt=""
+      alt="Icono Decorativo 1"
       class="absolute top-8 left-6 w-14 md:w-32 rotate-12 opacity-100"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="Icono Decorativo 2"
       class="absolute bottom-6 right-6 w-20 md:w-36 opacity-100"
     />
     <img
       src="/icono3.png"
-      alt=""
+      alt="Icono Decorativo 3"
       class="absolute top-1/3 left-1/3 w-16 md:w-28 opacity-100 rotate-6"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="Icono Decorativo 6"
       class="absolute bottom-10 left-1/4 w-20 md:w-32 opacity-100 -rotate-6"
     />
 
@@ -220,7 +220,7 @@ export default {
   >
     <img
       src="/lineacuadros.png"
-      alt=""
+      alt="Línea de cuadros decorativa"
       class="absolute top-0 left-0 w-full block"
     />
   </section>

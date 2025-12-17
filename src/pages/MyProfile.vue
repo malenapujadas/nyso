@@ -51,9 +51,6 @@ export default {
           (v) => favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
         );
 
-        /* this.history = vinosDB.filter(
-          (v) => hisIds.includes(Number(v.id)) || hisIds.includes(String(v.id))
-        ); */
         //nuevo para agregar la nota
         this.history = vinosDB
           .map((v) => {

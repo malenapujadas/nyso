@@ -23,7 +23,6 @@ export async function getHistory(userId) {
 
   if (error) handleError("getHistory", error);
   return data || [];
-  /* return data.map((h) => h.vino_id); */
 }
 
 export async function clearHistory(userId) {

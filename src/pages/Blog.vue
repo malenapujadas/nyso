@@ -89,13 +89,13 @@ export default {
     >
       <img
         src="/icono3.png"
-        alt=""
+        alt="Imagen decorativa 3"
         class="absolute top-4 md:top-10 right-4 md:right-20 w-10 md:w-14 rotate-6 opacity-100"
       />
 
       <img
         src="/icono6.png"
-        alt=""
+        alt="Imagen decorativa 6"
         class="absolute bottom-4 md:bottom-10 left-4 md:left-20 w-12 md:w-16 -rotate-6 opacity-100"
       />
 
@@ -195,13 +195,13 @@ export default {
       <!-- Mobile -->
       <img
         src="/icono1.png"
-        alt=""
+        alt="Icono decorativo 1"
         class="hidden md:block absolute top-10 left-20 w-16 opacity-100 rotate-12"
       />
 
       <img
         src="/icono6.png"
-        alt=""
+        alt="Icono decorativo 6"
         class="hidden md:block absolute bottom-10 right-20 w-20 opacity-100 -rotate-6"
       />
 
