@@ -109,22 +109,22 @@ export default {
   >
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="absolute top-10 left-12 w-14 rotate-12 opacity-100"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="icono"
       class="absolute top-24 right-10 w-16 -rotate-6 opacity-100"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="absolute top-1/3 right-[12%] w-12 rotate-3 opacity-100"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="icono"
       class="absolute bottom-[15%] left-[18%] w-14 opacity-100 -rotate-12"
     />
 

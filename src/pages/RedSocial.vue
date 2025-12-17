@@ -87,13 +87,13 @@ export default {
     >
       <img
         src="/icono3.png"
-        alt=""
+        alt="icono"
         class="absolute top-6 right-10 w-10 md:w-16 opacity-80 rotate-6 pointer-events-none"
       />
 
       <img
         src="/icono6.png"
-        alt=""
+        alt="icono"
         class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
       />
 
@@ -221,7 +221,7 @@ export default {
     <div class="w-full mt-10 md:mt-16">
       <img
         src="/lineacuadros.png"
-        alt=""
+        alt="linea"
         class="w-full h-auto object-cover block"
       />
     </div>

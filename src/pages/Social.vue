@@ -137,17 +137,17 @@ export default {
     >
       <img
         src="/icono1.png"
-        alt="Imagen decorativa 1"
+        alt="icono"
         class="absolute top-[-50px] left-[60%] w-10 opacity-100 rotate-12"
       />
       <img
         src="/icono2.png"
-        alt="Imagen decorativa 2"
+        alt="icono"
         class="absolute top-[-40px] right-[80%] w-10 opacity-100 -rotate-6"
       />
       <img
         src="/icono6.png"
-        alt="Imagen decorativa 6"
+        alt="icono"
         class="absolute top-[120px] right-[20%] w-20 opacity-100 rotate-6"
       />
 

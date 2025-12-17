@@ -106,42 +106,42 @@ export default {
   >
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-8 left-2 md:left-10 w-10 md:w-14 opacity-100 rotate-12"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-1/4 right-3 md:right-10 w-8 md:w-10 opacity-100 -rotate-6"
     />
     <img
       src="/icono3.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-1/2 left-4 md:left-10 w-14 md:w-20 opacity-100 rotate-3"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-[70%] right-4 md:right-16 w-12 md:w-18 opacity-100 rotate-6"
     />
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-[10%] right-2 md:right-12 w-10 md:w-14 opacity-100 rotate-12"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-[60%] left-4 md:left-10 w-6 md:w-10 opacity-100 rotate-6"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-[40%] right-4 md:right-8 w-14 md:w-20 opacity-100 rotate-6"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-[85%] left-2 md:left-10 w-12 md:w-18 opacity-100 rotate-3"
     />
 
@@ -186,7 +186,7 @@ export default {
         </div>
       </div>
 
-      <img src="/lineacuadros.png" alt="" class="w-full block my-10" />
+      <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
       <!-- Sección 2 -->
       <div class="px-8 md:px-10 space-y-12">
@@ -225,7 +225,7 @@ export default {
         </div>
       </div>
 
-      <img src="/lineacuadros.png" alt="" class="w-full block my-10" />
+      <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
       <!-- Sección 3 -->
       <div class="px-8 md:px-10 space-y-12">
@@ -264,7 +264,7 @@ export default {
         </div>
       </div>
 
-      <img src="/lineacuadros.png" alt="" class="w-full block my-10" />
+      <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
       <!-- Sección 4 -->
       <div class="px-8 md:px-10 space-y-12">

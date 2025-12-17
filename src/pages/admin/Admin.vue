@@ -121,47 +121,47 @@ export default {
     <!-- Ocultar decoraciones en mobile -->
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-10 left-10 w-16 opacity-90 rotate-12"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-16 right-20 w-20 opacity-100 -rotate-6"
     />
     <img
       src="/icono3.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-1/3 left-10 w-22 opacity-80 rotate-3"
     />
     <img
       src="/icono4.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-[40%] right-10 w-18 opacity-80 rotate-6"
     />
     <img
       src="/icono5.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-[25%] left-10 w-24 opacity-80 -rotate-6"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute top-[20%] left-10 w-18 opacity-90 rotate-12"
     />
     <img
       src="/icono2.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-16 right-20 w-20 opacity-100 -rotate-6"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden md:block absolute bottom-22 left-20 w-24 opacity-100 -rotate-6"
     />
 

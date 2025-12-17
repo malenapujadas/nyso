@@ -37,27 +37,27 @@ export default {
     >
       <img
         src="/icono1.png"
-        alt=""
+        alt="icono"
         class="absolute top-10 left-10 w-14 opacity-100 rotate-12"
       />
       <img
         src="/icono6.png"
-        alt=""
+        alt="icono"
         class="absolute bottom-20 right-12 w-22 opacity-100 -rotate-6"
       />
       <img
         src="/icono1.png"
-        alt=""
+        alt="icono"
         class="absolute top-1/5 right-20 w-14 opacity-100 rotate-12"
       />
       <img
         src="/icono3.png"
-        alt=""
+        alt="icono"
         class="absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3"
       />
       <img
         src="/icono7.png"
-        alt=""
+        alt="icono"
         class="absolute bottom-[18%] left-[15%] w-25 opacity-100 -rotate-12"
       />
 

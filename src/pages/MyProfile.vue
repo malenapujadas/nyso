@@ -123,17 +123,17 @@ export default {
     <div class="relative w-full h-0 lg:hidden">
       <img
         src="/icono1.png"
-        alt=""
+        alt="icono"
         class="absolute top-[-40px] left-8 w-12 opacity-100 rotate-12"
       />
       <img
         src="/icono3.png"
-        alt=""
+        alt="icono"
         class="absolute top-[-10px] right-3 w-10 opacity-100 rotate-3"
       />
       <img
         src="/icono7.png"
-        alt=""
+        alt="icono"
         class="absolute top-[30px] left-16 w-6 opacity-100 -rotate-12"
       />
     </div>
@@ -141,42 +141,42 @@ export default {
     <!-- iconos escritorio  -->
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute top-30 left-98 w-14 opacity-100 rotate-12"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute bottom-20 right-12 w-22 opacity-100 -rotate-6"
     />
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute top-1/5 right-20 w-14 opacity-100 rotate-12"
     />
     <img
       src="/icono3.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute bottom-[18%] left-[4%] w-25 opacity-100 -rotate-12"
     />
     <img
       src="/icono6.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute bottom-40 right-12 w-22 opacity-100 -rotate-6"
     />
     <img
       src="/icono1.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute bottom-[60%] left-20 w-14 opacity-100 rotate-12"
     />
     <img
       src="/icono7.png"
-      alt=""
+      alt="icono"
       class="hidden lg:block absolute bottom-[40%] left-[4%] w-14 opacity-100 -rotate-12"
     />
 
