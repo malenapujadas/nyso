@@ -16,7 +16,11 @@ export default {
       searchQuery: "",
       user: null,
       message: "",
-      sentRequests: [], 
+      sentRequests: [],
+
+      // paginacion
+      currentPage: 1,
+      perPage: 12,
     };
   },
 
@@ -26,6 +30,28 @@ export default {
       return this.users.filter((u) =>
         (u.display_name || "").toLowerCase().includes(q)
       );
+    },
+
+    // paginacion
+    totalPages() {
+      return Math.max(1, Math.ceil(this.filteredUsers.length / this.perPage));
+    },
+    paginatedUsers() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.filteredUsers.slice(start, end);
+    },
+  },
+
+  watch: {
+    //paginacion
+    searchQuery() {
+      this.currentPage = 1;
+    },
+
+    // paginacion
+    totalPages() {
+      if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
     },
   },
 
@@ -50,6 +76,25 @@ export default {
       } catch (err) {
         console.error("Error enviando solicitud de conexión:", err);
       }
+    },
+
+    // paginacion
+    goToPage(p) {
+      const page = Number(p);
+      if (!Number.isFinite(page)) return;
+
+      if (page < 1) this.currentPage = 1;
+      else if (page > this.totalPages) this.currentPage = this.totalPages;
+      else this.currentPage = page;
+
+      // subir al inicio cuando cambio de página
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    nextPage() {
+      this.goToPage(this.currentPage + 1);
+    },
+    prevPage() {
+      this.goToPage(this.currentPage - 1);
     },
   },
 
@@ -163,7 +208,7 @@ export default {
 
       <ul v-else class="space-y-4">
         <li
-          v-for="u in filteredUsers"
+          v-for="u in paginatedUsers"
           :key="u.id"
           class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-2xl md:rounded-3xl p-4 md:p-5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between hover:shadow-md hover:scale-[1.01] transition-all duration-300"
         >
@@ -210,6 +255,53 @@ export default {
         </li>
       </ul>
 
+      <!-- paginacion mobile -->
+      <div
+        v-if="!loading && !error && filteredUsers.length > 0 && totalPages > 1"
+        class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+      >
+        <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+          Página {{ currentPage }} de {{ totalPages }}
+        </p>
+
+        <div
+        class="flex flex-nowrap items-center justify-center lg:justify-end gap-2"
+        >
+          <button
+            type="button"
+            @click="prevPage"
+            :disabled="currentPage === 1"
+            class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+          >
+            Anterior
+          </button>
+
+          <button
+            v-for="p in totalPages"
+            :key="p"
+            type="button"
+            @click="goToPage(p)"
+            :class="[
+              'w-10 h-10 rounded-full border text-sm font-semibold transition',
+              p === currentPage
+                ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+            ]"
+          >
+            {{ p }}
+          </button>
+
+          <button
+            type="button"
+            @click="nextPage"
+            :disabled="currentPage === totalPages"
+            class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
+
       <p
         v-if="!loading && users.length === 0"
         class="text-[#4e0d05]/60 italic text-center mt-8"
@@ -217,13 +309,6 @@ export default {
         No hay usuarios registrados todavía.
       </p>
     </section>
-
-    <div class="w-full mt-10 md:mt-16">
-      <img
-        src="/lineacuadros.png"
-        alt="linea"
-        class="w-full h-auto object-cover block"
-      />
-    </div>
   </div>
 </template>
+

@@ -8,9 +8,16 @@ export default {
 </script>
 
 <template>
-  <footer
-    class="relative bg-[#f6f6eb] pt-16 flex flex-col items-center justify-center"
-  >
+  <footer class="relative bg-[#f6f6eb] flex flex-col items-center justify-center">
+    <!-- Línea decorativa ANTES del contenido del footer -->
+    <div class="w-full h-16 md:h-20 overflow-hidden">
+      <img
+        src="/lineacuadros.png"
+        alt="Línea de cuadros decorativa"
+        class="w-full h-full object-cover block"
+      />
+    </div>
+
     <!-- Contenido principal -->
     <div
       class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-[40px] px-8 py-14 md:px-10 md:py-16 shadow-inner"

@@ -218,10 +218,6 @@ export default {
   <section
     class="relative w-full h-16 md:h-20 bg-[#f6f6eb] mt-[-12px] overflow-hidden"
   >
-    <img
-      src="/lineacuadros.png"
-      alt="Línea de cuadros decorativa"
-      class="absolute top-0 left-0 w-full block"
-    />
+  
   </section>
 </template>

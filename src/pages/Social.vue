@@ -29,6 +29,10 @@ export default {
       selectedMaxPrice: null,
       showMobileFilters: false,
 
+      // PAGINACIÓN
+      currentPage: 1,
+      perPage: 12,
+
       loading: true,
       error: null,
     };
@@ -75,6 +79,42 @@ export default {
           matchesPrice(vino, this.selectedMinPrice, this.selectedMaxPrice)
       );
     },
+
+    // paginacion
+    totalPages() {
+      return Math.max(1, Math.ceil(this.filteredVinos.length / this.perPage));
+    },
+    paginatedVinos() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.filteredVinos.slice(start, end);
+    },
+  },
+
+  watch: {
+    // volvemos a página 1
+    searchQuery() {
+      this.currentPage = 1;
+    },
+    filters: {
+      deep: true,
+      handler() {
+        this.currentPage = 1;
+      },
+    },
+    selectedMinPrice() {
+      this.currentPage = 1;
+    },
+    selectedMaxPrice() {
+      this.currentPage = 1;
+    },
+
+    // si quedaste en una página que ya no existe
+    totalPages() {
+      if (this.currentPage > this.totalPages) {
+        this.currentPage = this.totalPages;
+      }
+    },
   },
 
   methods: {
@@ -95,6 +135,9 @@ export default {
       };
       this.selectedMinPrice = null;
       this.selectedMaxPrice = null;
+
+      //  paginacion
+      this.currentPage = 1;
     },
 
     getOptions(key) {
@@ -106,6 +149,24 @@ export default {
         año: this.años,
       };
       return map[key] || [];
+    },
+
+    // paginacion + scroll arriba
+    goToPage(p) {
+      const page = Number(p);
+      if (!Number.isFinite(page)) return;
+
+      if (page < 1) this.currentPage = 1;
+      else if (page > this.totalPages) this.currentPage = this.totalPages;
+      else this.currentPage = page;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    nextPage() {
+      this.goToPage(this.currentPage + 1);
+    },
+    prevPage() {
+      this.goToPage(this.currentPage - 1);
     },
   },
 
@@ -316,12 +377,62 @@ export default {
 
         <!-- Contador -->
         <p class="mb-6 text-sm text-[#4e0d05]/70">
-          Mostrando {{ filteredVinos.length }} de {{ vinosList.length }} vinos
+          Mostrando {{ paginatedVinos.length }} de {{ filteredVinos.length }} vinos
         </p>
 
         <!-- Vinos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-          <WineCard v-for="vino in filteredVinos" :key="vino.id" :vino="vino" />
+          <WineCard
+            v-for="vino in paginatedVinos"
+            :key="vino.id"
+            :vino="vino"
+          />
+        </div>
+
+        <!--  Paginación  -->
+        <div
+        v-if="filteredVinos.length > 0 && totalPages > 1"
+        class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+      >
+
+      <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+        Página {{ currentPage }} de {{ totalPages }}
+      </p>
+
+          <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
+            <button
+              type="button"
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+            >
+              Anterior
+            </button>
+
+            <button
+              v-for="p in totalPages"
+              :key="p"
+              type="button"
+              @click="goToPage(p)"
+              :class="[
+                'w-10 h-10 rounded-full border text-sm font-semibold transition',
+                p === currentPage
+                  ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                  : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+              ]"
+            >
+              {{ p }}
+            </button>
+
+            <button
+              type="button"
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
 
         <p

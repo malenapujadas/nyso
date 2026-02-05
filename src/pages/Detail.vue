@@ -271,14 +271,6 @@
         </div>
       </div>
   
-      <div class="w-full mt-16 md:mt-24">
-        <img
-          src="/lineacuadros.png"
-          alt="linea"
-          class="w-full h-auto object-cover block"
-        />
-      </div>
-  
       <!-- modal de la nota al agregar a historial -->
       <div
         v-if="showModal"
