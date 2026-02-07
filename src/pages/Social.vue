@@ -89,6 +89,7 @@ export default {
       const end = start + this.perPage;
       return this.filteredVinos.slice(start, end);
     },
+
   },
 
   watch: {

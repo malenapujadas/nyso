@@ -19,6 +19,9 @@ export default {
       if (!this.user) return null;
       return this.user.user_metadata?.nombre || this.user.email || null;
     },
+    isAdmin() {
+      return this.user && this.user.role === "admin";
+    },
   },
 
   methods: {
@@ -121,7 +124,7 @@ export default {
 
       <template v-else-if="user">
         <RouterLink
-          to="/mi-perfil"
+          :to="isAdmin ? '/admin/perfil' : '/mi-perfil'"
           class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8]"
         >
           Mi perfil

@@ -10,7 +10,7 @@ import { subscribeToAuthChanges } from "../../services/auth.js";
 import AppH1 from "../../components/AppH1.vue";
 
 export default {
-  name: "AdminSuggestions",
+  name: "AdminBlog",
   components: { AppH1 },
   data() {
     return {
@@ -169,8 +169,10 @@ export default {
       <AppH1
         class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-8 sm:mb-10 text-center tracking-wide"
       >
-        Panel de administración
+        Gestión del Blog
       </AppH1>
+
+      <p class="text-[#4e0d05]/60">Administrá las sugerencias y publicaciones activas.</p>
 
       <!-- sugerencias -->
       <div

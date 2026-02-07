@@ -1,9 +1,10 @@
 <script>
 import AppH1 from "../components/AppH1.vue";
 import { getVinoById } from "../services/wines.js";
-import { getCurrentUser } from "../services/auth.js";
+import { getCurrentUser, getAuthUser } from "../services/auth.js";
 import { addFavorite, getFavorites } from "../services/favorites.js";
 import { addHistory } from "../services/history.js";
+import { addReview, getReviewsByWineId } from "../services/reviews.js";
 import AppLoader from "../components/AppLoader.vue";
 
 export default {
@@ -24,6 +25,13 @@ export default {
 
       showModal: false,
       noteText: "",
+
+      reviews: [], // lista de reseñas
+      newReview: {
+        rating: 0,
+        comment: "",
+      },
+      reviewMessage: null, // mensaje de exito/error específico para reseñas
     };
   },
 
@@ -35,7 +43,11 @@ export default {
       this.id = this.$route.params.id;
 
       if (this.id) {
+        // cargo el vino
         this.vino = await getVinoById(this.id);
+
+        // cargo reseñas de ese vino
+        this.reviews = await getReviewsByWineId(this.id);
 
         if (this.vino && typeof this.vino.maridaje === "string") {
           this.vino.maridaje = this.vino.maridaje
@@ -118,6 +130,59 @@ export default {
       this.showModal = false;
       this.noteText = "";
     },
+
+    // metodo para estrellas
+    setRating(star) {
+      this.newReview.rating = star;
+    },
+
+    async handleAddReview() {
+      if (!this.user) return;
+
+      //validacion
+      if (this.newReview.rating === 0) {
+        this.reviewMessage = "¡Por favor elegí una puntuación!";
+        setTimeout(() => (this.reviewMessage = null), 3000);
+        return;
+      }
+
+      try {
+        // nombre de usuario o uno x default
+        const fullProfile = getAuthUser();
+        const userName =
+          fullProfile.display_name ||
+          fullProfile.nombre ||
+          this.user.email.split("@")[0] ||
+          "Usuario";
+
+        // guardo
+        const savedReview = await addReview(
+          this.user.id,
+          this.vino.id,
+          userName,
+          this.newReview.rating,
+          this.newReview.comment,
+        );
+
+        // agrego reseña a la lista local
+        this.reviews.unshift(savedReview);
+
+        // limpio
+        this.newReview.rating = 0;
+        this.newReview.comment = "";
+        this.reviewMessage = "¡Gracias por tu reseña!";
+
+        setTimeout(() => (this.reviewMessage = null), 3000);
+      } catch (e) {
+        console.error(e);
+        this.reviewMessage = "Error al guardar la reseña.";
+      }
+    },
+  },
+  computed: {
+    isAdmin() {
+      return this.user && this.user.role === "admin";
+    },
   },
 };
 </script>
@@ -189,11 +254,9 @@ export default {
 
             <div class="flex gap-3 items-center">
               <button
+                v-if="!isAdmin"
                 @click="handleAddFavorite"
-                class="text-xs sm:text-sm md:text-sm font-medium rounded-full px-4 py-2
-                       border border-[#e099a8] text-[#4e0d05]
-                       hover:bg-[#e099a8] hover:text-white
-                       transition-all duration-300"
+                class="text-xs sm:text-sm md:text-sm font-medium rounded-full px-4 py-2 border border-[#e099a8] text-[#4e0d05] hover:bg-[#e099a8] hover:text-white transition-all duration-300"
                 :class="{ 'bg-[#e099a8] text-white': isFavorite }"
               >
                 +Wishlist
@@ -212,8 +275,7 @@ export default {
 
           <!-- datos -->
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1
-                   text-[#4e0d05] text-sm sm:text-base md:text-base"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1 text-[#4e0d05] text-sm sm:text-base md:text-base"
           >
             <p><strong>Bodega:</strong> {{ vino.bodega }}</p>
             <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
@@ -237,9 +299,7 @@ export default {
               <span
                 v-for="(m, i) in vino.maridaje"
                 :key="i"
-                class="px-3 py-1 rounded-full bg-[#e099a8]/25
-                       border border-[#e099a8]/40 text-[#4e0d05]
-                       text-xs sm:text-sm md:text-sm"
+                class="px-3 py-1 rounded-full bg-[#e099a8]/25 border border-[#e099a8]/40 text-[#4e0d05] text-xs sm:text-sm md:text-sm"
               >
                 {{ m }}
               </span>
@@ -248,23 +308,16 @@ export default {
             <!-- registrar consumo -->
             <div class="mt-6">
               <button
+                v-if="!isAdmin"
                 @click="handleAddHistory"
-                class="w-full sm:w-auto
-                       inline-flex items-center justify-center gap-2
-                       px-5 py-3 rounded-xl
-                       border border-[#3c490b]/40
-                       bg-[#3c490b]/5
-                       text-[#3c490b] font-semibold text-sm sm:text-base
-                       hover:bg-[#3c490b]/10 hover:border-[#3c490b]
-                       transition-all duration-300"
+                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#3c490b]/40 bg-[#3c490b]/5 text-[#3c490b] font-semibold text-sm sm:text-base hover:bg-[#3c490b]/10 hover:border-[#3c490b] transition-all duration-300"
               >
                 Registrar consumo
                 <span aria-hidden="true">↗</span>
               </button>
 
               <p
-                class="text-xs sm:text-sm text-[#4e0d05]/60 mt-2
-                       text-center sm:text-left"
+                class="text-xs sm:text-sm text-[#4e0d05]/60 mt-2 text-center sm:text-left"
               >
                 Agregá una nota para recordar cuándo y cómo lo tomaste.
               </p>
@@ -274,8 +327,7 @@ export default {
           <!-- mensaje -->
           <p
             v-if="message"
-            class="mt-3 rounded-full px-4 py-2 text-xs sm:text-sm md:text-sm
-                   text-center border transition-all duration-300"
+            class="mt-3 rounded-full px-4 py-2 text-xs sm:text-sm md:text-sm text-center border transition-all duration-300"
             :class="
               messageType === 'history'
                 ? 'bg-[#3c490b10] border-[#3c490b40] text-[#3c490b]'
@@ -289,8 +341,7 @@ export default {
           <div class="flex justify-center md:justify-end pt-4">
             <RouterLink
               to="/social"
-              class="text-[#e099a8] font-medium text-sm sm:text-base
-                     hover:text-[#3c490b] transition-colors"
+              class="text-[#e099a8] font-medium text-sm sm:text-base hover:text-[#3c490b] transition-colors"
             >
               Volver al listado
             </RouterLink>
@@ -301,23 +352,111 @@ export default {
       <!-- no encontrado -->
       <div
         v-else
-        class="px-6 py-10 max-w-lg mx-auto bg-[#ede8d7]
-               border border-[#4e0d05]/20 rounded-3xl
-               text-center text-[#4e0d05]"
+        class="px-6 py-10 max-w-lg mx-auto bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl text-center text-[#4e0d05]"
       >
         <p>No se encontró el vino solicitado.</p>
+      </div>
+
+      <!-- reseñas -->
+      <div class="w-full">
+        <h3
+          class="text-lg sm:text-xl md:text-xl font-semibold text-[#3c490b] mb-6"
+        >
+          Reseñas de la comunidad
+        </h3>
+
+        <div
+          v-if="user"
+          class="bg-[#e099a8]/10 p-5 rounded-xl border border-[#e099a8]/30 mb-8"
+        >
+          <p class="text-[#4e0d05] font-medium mb-3">Dejá tu opinión:</p>
+
+          <div class="flex gap-2 mb-3">
+            <button
+              v-for="star in 5"
+              :key="star"
+              @click="setRating(star)"
+              type="button"
+              class="text-2xl transition-transform hover:scale-110 focus:outline-none"
+              :class="
+                star <= newReview.rating
+                  ? 'text-[#e099a8]'
+                  : 'text-[#4e0d05]/20'
+              "
+            >
+              ★
+            </button>
+          </div>
+
+          <textarea
+            v-model="newReview.comment"
+            rows="2"
+            placeholder="¿Qué te pareció este vino?"
+            class="w-full border border-[#e099a8]/50 rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none text-sm"
+          ></textarea>
+
+          <div class="flex items-center justify-between mt-3">
+            <span
+              v-if="reviewMessage"
+              class="text-xs text-[#3c490b] font-medium"
+              >{{ reviewMessage }}</span
+            >
+            <span v-else></span>
+            <button
+              @click="handleAddReview"
+              class="px-4 py-2 rounded-full bg-[#4e0d05] text-[#f6f6eb] text-sm font-medium hover:bg-[#3c490b] transition-colors"
+            >
+              Publicar reseña
+            </button>
+          </div>
+        </div>
+
+        <div v-else class="text-center py-4 bg-[#e099a8]/10 rounded-xl mb-8">
+          <p class="text-[#4e0d05] text-sm">
+            Iniciá sesión para dejar tu reseña.
+          </p>
+        </div>
+
+        <div v-if="reviews.length > 0" class="space-y-4">
+          <div
+            v-for="review in reviews"
+            :key="review.id"
+            class="border-b border-[#4e0d05]/10 pb-4 last:border-0"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-bold text-[#4e0d05] text-sm">
+                  {{ review.user_name }}
+                </h4>
+                <div class="flex text-[#e099a8] text-sm my-1">
+                  <span v-for="n in 5" :key="n">
+                    {{ n <= review.rating ? "★" : "☆" }}
+                  </span>
+                </div>
+              </div>
+              <span class="text-xs text-[#4e0d05]/50">
+                {{ new Date(review.created_at).toLocaleDateString() }}
+              </span>
+            </div>
+            <p class="text-[#4e0d05]/80 text-sm mt-1 leading-snug">
+              {{ review.comment }}
+            </p>
+          </div>
+        </div>
+
+        <div v-else class="text-center text-[#4e0d05]/50 py-4 text-sm">
+          Todavía no hay reseñas. ¡Sé el primero!
+        </div>
       </div>
     </div>
 
     <!-- modal historial (sin cambios) -->
     <div
       v-if="showModal"
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm
-             flex items-center justify-center z-50 px-4"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
     >
       <div
-        class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl
-               w-[90%] max-w-md border border-[#4e0d05]/20"
+        class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20"
       >
         <h3 class="text-xl font-semibold text-[#3c490b] mb-3">
           Agregá una nota
@@ -331,24 +470,19 @@ export default {
           v-model="noteText"
           rows="4"
           placeholder="Por ejemplo: lo tomé con una pasta en Mendoza y me pareció súper dulce..."
-          class="w-full border border-[#e099a8] rounded-lg p-3
-                 text-[#4e0d05] bg-[#f6f6eb]
-                 focus:ring-1 focus:ring-[#e099a8] outline-none"
+          class="w-full border border-[#e099a8] rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none"
         ></textarea>
 
         <div class="flex justify-end gap-3 mt-4">
           <button
             @click="cancelModal"
-            class="px-4 py-2 rounded-full border border-[#4e0d05]/50
-                   text-[#4e0d05] hover:bg-[#4e0d05]/10 transition"
+            class="px-4 py-2 rounded-full border border-[#4e0d05]/50 text-[#4e0d05] hover:bg-[#4e0d05]/10 transition"
           >
             Cancelar
           </button>
           <button
             @click="confirmAddHistory"
-            class="px-4 py-2 rounded-full bg-[#e099a8]
-                   text-[#3c490b] font-semibold
-                   hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
+            class="px-4 py-2 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
           >
             Guardar
           </button>

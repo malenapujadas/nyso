@@ -8,7 +8,9 @@ import Blog from "../pages/Blog.vue";
 import MyProfile from "../pages/MyProfile.vue";
 import MyProfileEdit from "../pages/MyProfileEdit.vue";
 import Detail from "../pages/Detail.vue";
-import AdminSuggestions from "../pages/admin/Admin.vue";
+import AdminBlog from "../pages/admin/AdminBlog.vue";
+import AdminLayout from "../pages/admin/AdminLayout.vue";
+import AdminProfile from "../pages/admin/AdminProfile.vue";
 import RedSocial from "../pages/RedSocial.vue";
 import UserProfile from "../pages/UserProfile.vue";
 import RecuperarContrasena from "../pages/RecoverPassword.vue";
@@ -33,7 +35,34 @@ const routes = [
     component: MyProfileEdit,
     meta: { requiresAuth: true },
   },
-  { path: "/admin", component: AdminSuggestions },
+  //rutas de admin
+  /* { path: "/admin", component: AdminSuggestions }, */
+  {
+    path: "/admin",
+    component: AdminLayout, // El marco con Sidebar
+    meta: { requiresAdmin: true }, // Nueva meta para proteger todo el grupo
+    children: [
+      {
+        path: "", // Si entra a /admin, redirige a blog
+        redirect: "/admin/blog"
+      },
+      {
+        path: "blog", // URL: /admin/blog
+        component: AdminBlog
+      },
+      {
+        path: "usuarios", // URL: /admin/usuarios
+        name: "AdminUsers",
+        component: { template: '<h2 class="text-2xl text-[#4e0d05]">Gestión de Usuarios (Próximamente)</h2>' } // Placeholder temporal
+      },
+      {
+        path: "kits", // URL: /admin/kits
+        name: "AdminKits",
+        component: { template: '<h2 class="text-2xl text-[#4e0d05]">Gestión de Kits (Próximamente)</h2>' } // Placeholder temporal
+      },
+      { path: "perfil", component: AdminProfile }, // URL: /admin/perfil
+    ]
+  },
   { path: "/recuperar-contrasena", component: RecuperarContrasena },
   { path: "/reset-password", component: ResetPassword },
   {

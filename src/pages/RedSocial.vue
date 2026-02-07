@@ -41,6 +41,10 @@ export default {
       const end = start + this.perPage;
       return this.filteredUsers.slice(start, end);
     },
+
+    isAdmin() {
+      return this.user && this.user.role === "admin";
+    },
   },
 
   watch: {
@@ -237,7 +241,8 @@ export default {
                 user &&
                 user.id &&
                 user.id !== u.id &&
-                !sentRequests.includes(u.id)
+                !sentRequests.includes(u.id) &&
+                !isAdmin
               "
               @click="handleConnect(u.id)"
               class="text-[#3c490b] border border-[#3c490b] rounded-full px-4 py-1.5 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
