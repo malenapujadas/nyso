@@ -111,15 +111,25 @@ export default {
         );
       }
     },
+    async handleRemoveFriend(connectionId) {
+  try {
+    await updateConnectionStatus(connectionId, "removed");
+    if (this.user && this.user.id) {
+      const friends = await getFriends(this.user.id);
+      this.friends = friends;
+    }
+  } catch (error) {
+    console.error("[MyProfile.vue handleRemoveFriend] Error eliminando amigo: ", error);
+  }
+},
+
   },
 };
 </script>
 
 <template>
-  <section
-    class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16"
-  >
-    <!-- Iconos mobile  -->
+  <section class="min-h-screen bg-[#f6f6eb] relative overflow-hidden">
+    <!-- Iconos mobile -->
     <div class="relative w-full h-0 lg:hidden">
       <img
         src="/icono1.png"
@@ -138,7 +148,7 @@ export default {
       />
     </div>
 
-    <!-- iconos escritorio  -->
+    <!-- iconos escritorio -->
     <img
       src="/icono1.png"
       alt="icono"
@@ -180,80 +190,184 @@ export default {
       class="hidden lg:block absolute bottom-[40%] left-[4%] w-14 opacity-100 -rotate-12"
     />
 
-    <div class="text-center mb-12">
-      <h1 class="text-4xl font-bold text-[#3c490b] mb-2">Mi perfil</h1>
-      <p class="text-[#4e0d05]/70 text-lg">Bienvenido a tu espacio personal.</p>
-    </div>
+    <!-- CONTENEDOR PRINCIPAL  -->
+    <div class="mx-auto max-w-6xl px-6 md:px-12 py-12 relative z-10">
+      <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 md:p-8 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-[#e099a8]/25 border border-[#e099a8]/40 flex items-center justify-center text-[#4e0d05] font-extrabold text-xl">
+              {{ (user.display_name || user.email || "U").slice(0,1).toUpperCase() }}
+            </div>
 
-    <div class="w-full max-w-4xl space-y-10 relative z-10">
-      <div
-        class="bg-[#ede8d7]/70 backdrop-blur-sm shadow-sm rounded-xl p-6 border border-[#4e0d05]/10"
-      >
-        <h2
-          class="text-2xl font-semibold text-[#3c490b] mb-4 border-b border-[#4e0d05]/20 pb-2"
-        >
-          Información de usuario
-        </h2>
+            <div class="text-left">
+              <h1 class="text-2xl md:text-3xl font-extrabold text-[#4e0d05] leading-tight">
+                {{ user.display_name || (user.email ? user.email.split("@")[0] : "Usuario") }}
+              </h1>
+              <p class="text-sm text-[#4e0d05]/60 mt-1">
+                {{ user.email }}
+              </p>
+            </div>
+          </div>
 
-        <div class="text-[#4e0d05] space-y-2">
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p>
-            <strong>Nombre de usuario:</strong>
-            {{ user.display_name ?? "No establecido" }}
-          </p>
+          <div class="grid grid-cols-3 gap-3 md:gap-4">
+            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+              <p class="text-xs text-[#4e0d05]/60">Wishlist</p>
+              <p class="text-lg font-bold text-[#4e0d05]">{{ favorites.length }}</p>
+            </div>
+            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+              <p class="text-xs text-[#4e0d05]/60">Historial</p>
+              <p class="text-lg font-bold text-[#4e0d05]">{{ history.length }}</p>
+            </div>
+            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+              <p class="text-xs text-[#4e0d05]/60">Amigos</p>
+              <p class="text-lg font-bold text-[#4e0d05]">{{ friends.length }}</p>
+            </div>
+          </div>
         </div>
 
-        <div class="w-full border-t border-[#3c490b]/20 my-6"></div>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <RouterLink
+            to="/mi-perfil/editar"
+            class="inline-flex items-center justify-center px-5 py-2 rounded-full bg-[#4e0d05] text-[#f6f6eb] text-sm font-semibold hover:bg-[#3c490b] transition"
+          >
+            Editar perfil
+          </RouterLink>
+        </div>
 
         <!-- preferencias -->
-        <div v-if="preferences" class="mt-6">
+        <div v-if="preferences" class="mt-8">
           <h3 class="font-semibold text-xl text-[#3c490b] mb-3">
             Tus preferencias
           </h3>
           <ProfilePreferences :preferences="preferences" />
         </div>
-
-        <RouterLink
-          to="/mi-perfil/editar"
-          class="inline-block mt-4 text-[#e099a8] font-semibold hover:text-[#3c490b] transition-colors"
-        >
-          Editar perfil
-        </RouterLink>
       </div>
 
-      <!-- Favoritos -->
-      <div
-        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
-      >
-        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Wishlist</h2>
+      <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- WISHLIST  -->
+        <div class="rounded-3xl border border-[#e099a8]/35 bg-[#e099a8]/10 p-6 shadow-sm">
+          <div class="flex items-end justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-extrabold text-[#3c490b]">Wishlist</h2>
+              <p class="text-sm text-[#4e0d05]/60">Vinos que querés probar</p>
+            </div>
+          </div>
 
-        <div v-if="favorites.length" class="grid grid-cols-1 gap-6">
-          <div
-            v-for="v in favorites"
-            :key="v.id"
-            class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm text-center"
-          >
-            <img
-              :src="v.imagen"
-              class="w-24 h-36 object-contain mx-auto mb-3"
-            />
+          <div v-if="favorites.length" class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div
+              v-for="v in favorites"
+              :key="v.id"
+              class="bg-[#f6f6eb] rounded-2xl p-4 border border-[#4e0d05]/15 shadow-sm"
+            >
+              <div class="flex gap-4">
+                <img :src="v.imagen" class="w-16 h-24 object-contain" />
+                <div class="flex-1 text-left">
+                  <h3 class="text-base font-bold text-[#4e0d05] leading-tight">
+                    {{ v.nombre }}
+                  </h3>
+                  <p class="text-xs text-[#4e0d05]/60 mt-1">
+                    {{ v.bodega }} — {{ v.tipo }}
+                  </p>
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <RouterLink
+                      :to="{ name: 'detalle', params: { id: v.id } }"
+                      class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                    >
+                      Ver detalle
+                    </RouterLink>
+                    <button
+                      @click="handleRemoveFavorite(v.id)"
+                      class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <h3 class="text-lg font-semibold text-[#3c490b]">{{ v.nombre }}</h3>
-            <p class="text-sm text-[#4e0d05]/70">
-              {{ v.bodega }} — {{ v.tipo }}
-            </p>
+          <p v-else class="text-[#4e0d05]/60 italic">
+            Aún no tenés vinos en tu wishlist.
+          </p>
+        </div>
 
-            <div class="flex justify-center gap-3 mt-4">
-              <RouterLink
-                :to="{ name: 'detalle', params: { id: v.id } }"
-                class="px-3 py-1 border border-[#3c490b] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
-              >
-                Ver detalle
-              </RouterLink>
+        <!-- HISTORIAL -->
+        <div class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm">
+          <div class="flex items-end justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-extrabold text-[#3c490b]">Historial</h2>
+              <p class="text-sm text-[#4e0d05]/60">Lo que ya probaste</p>
+            </div>
+          </div>
+
+          <div v-if="history.length" class="space-y-4">
+            <div
+              v-for="v in history"
+              :key="v.id"
+              class="bg-[#f6f6eb] rounded-2xl p-4 border border-[#4e0d05]/15 shadow-sm"
+            >
+              <div class="flex gap-4">
+                <img :src="v.imagen" :alt="v.nombre" class="w-16 h-24 object-contain" />
+                <div class="flex-1 text-left">
+                  <h3 class="text-base font-bold text-[#4e0d05] leading-tight">
+                    {{ v.nombre }}
+                  </h3>
+                  <p class="text-xs text-[#4e0d05]/60 mt-1">
+                    {{ v.bodega }} — {{ v.tipo }}
+                  </p>
+
+                  <p v-if="v.note" class="mt-2 text-sm text-[#4e0d05]/80 italic">
+                    “{{ v.note }}”
+                  </p>
+
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    <RouterLink
+                      :to="{ name: 'detalle', params: { id: v.id } }"
+                      class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                    >
+                      Ver detalle
+                    </RouterLink>
+                    <button
+                      @click="handleRemoveHistory(v.id)"
+                      class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p v-else class="text-[#4e0d05]/60 italic">
+            No hay vinos en tu historial.
+          </p>
+        </div>
+      </div>
+
+      <!-- AMIGOS + PENDIENTES -->
+      <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm">
+          <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">Mis amigos</h2>
+
+          <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic">
+            No tenés amigos aún.
+          </div>
+
+          <div v-else class="space-y-3">
+            <div
+              v-for="f in friends"
+              :key="f.id"
+              class="bg-[#f6f6eb] rounded-2xl p-4 border border-[#4e0d05]/15 shadow-sm flex items-center justify-between"
+            >
+              <span class="font-semibold text-[#4e0d05]">
+                {{ f.display_name || f.email || f.id }}
+              </span>
 
               <button
-                @click="handleRemoveFavorite(v.id)"
-                class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
+                @click="handleRemoveFriend(f.id)"
+                class="px-3 py-1 rounded-full border border-red-500/40 text-red-600 text-xs font-semibold hover:bg-red-500 hover:text-white transition"
               >
                 Eliminar
               </button>
@@ -261,127 +375,48 @@ export default {
           </div>
         </div>
 
-        <p v-else class="text-[#4e0d05]/60 italic">
-          Aún no tenés vinos favoritos.
-        </p>
-      </div>
+        <!-- Solicitudes -->
+        <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm">
+          <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
 
-      <!-- Historial -->
-      <div
-        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
-      >
-        <h2 class="text-xl font-bold text-[#3c490b] mb-4">Historial</h2>
+          <div v-if="pendingRequests.length === 0" class="text-[#4e0d05]/60 italic">
+            No hay solicitudes pendientes.
+          </div>
 
-        <div v-if="history.length" class="grid grid-cols-1 gap-6">
-          <div
-            v-for="v in history"
-            :key="v.id"
-            class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm text-center"
-          >
-            <img
-              :src="v.imagen"
-              :alt="v.nombre"
-              class="w-24 h-36 object-contain mx-auto mb-3"
-            />
+          <div v-else class="space-y-3">
+            <div
+              v-for="r in pendingRequests"
+              :key="r.id"
+              class="bg-[#f6f6eb] rounded-2xl p-4 border border-[#4e0d05]/15 shadow-sm flex items-center justify-between"
+            >
+              <span class="font-semibold text-[#4e0d05]">
+                {{
+                  r?.requester?.display_name ||
+                  r?.requester?.email ||
+                  r.requester_id
+                }}
+              </span>
 
-            <h3 class="text-lg font-semibold text-[#3c490b]">{{ v.nombre }}</h3>
-            <p class="text-sm text-[#4e0d05]/70">
-              {{ v.bodega }} — {{ v.tipo }}
-            </p>
+              <div class="flex gap-2">
+                <button
+                  @click="handleResponse(r.id, 'accepted')"
+                  class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-xs font-semibold"
+                >
+                  Aceptar
+                </button>
 
-            <p v-if="v.note" class="text-sm text-[#4e0d05]/70 italic mt-1">
-              <strong>Nota:</strong> {{ v.note }}
-            </p>
-
-            <div class="flex justify-center gap-3 mt-4">
-              <RouterLink
-                :to="{ name: 'detalle', params: { id: v.id } }"
-                class="px-3 py-1 border border-[#3c490b] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
-              >
-                Ver detalle
-              </RouterLink>
-
-              <button
-                @click="handleRemoveHistory(v.id)"
-                class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm hover:bg-[#3c490b] hover:text-white transition"
-              >
-                Eliminar
-              </button>
+                <button
+                  @click="handleResponse(r.id, 'rejected')"
+                  class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-xs font-semibold"
+                >
+                  Rechazar
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
-        <p v-else class="text-[#4e0d05]/60 italic">
-          No hay vinos en tu historial.
-        </p>
       </div>
 
-      <!-- Amigos -->
-      <div
-        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
-      >
-        <h2 class="text-2xl font-bold text-[#3c490b] mb-4">Mis amigos</h2>
-
-        <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic mb-4">
-          No tienes amigos aún.
-        </div>
-
-        <div
-          v-for="f in friends"
-          :key="f.id"
-          class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center"
-        >
-          <span class="font-semibold text-[#3c490b]">
-            {{ f.display_name || f.email || f.id }}
-          </span>
-        </div>
-      </div>
-
-      <!-- Solicitudes -->
-      <div
-        class="bg-[#ede8d7] rounded-xl p-6 border border-[#4e0d05]/20 shadow-sm w-full"
-      >
-        <h2 class="text-xl font-bold text-[#3c490b] mb-4">
-          Solicitudes pendientes
-        </h2>
-
-        <div
-          v-if="pendingRequests.length === 0"
-          class="text-[#4e0d05]/60 italic mb-4"
-        >
-          No hay solicitudes pendientes.
-        </div>
-
-        <div
-          v-for="r in pendingRequests"
-          :key="r.id"
-          class="bg-[#f6f6eb] rounded-xl p-4 border border-[#4e0d05]/20 shadow-sm mb-4 flex justify-between items-center"
-        >
-          <span class="font-semibold text-[#3c490b]">
-            {{
-              r?.requester?.display_name ||
-              r?.requester?.email ||
-              r.requester_id
-            }}
-          </span>
-
-          <div class="flex gap-2">
-            <button
-              @click="handleResponse(r.id, 'accepted')"
-              class="px-3 py-1 bg-[#3c490b] text-white rounded-full text-sm"
-            >
-              Aceptar
-            </button>
-
-            <button
-              @click="handleResponse(r.id, 'rejected')"
-              class="px-3 py-1 bg-[#e099a8] text-[#3c490b] rounded-full text-sm"
-            >
-              Rechazar
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 </template>
