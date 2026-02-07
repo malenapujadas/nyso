@@ -25,7 +25,7 @@ export default {
           active-class="bg-[#ede8d7]/10 text-white font-semibold"
           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[#ede8d7]/5 text-[#ede8d7]/80"
         >
-          <span>📝</span> Gestión del Blog
+          <span></span> Gestión del Blog
         </router-link>
 
         <router-link 
@@ -33,7 +33,7 @@ export default {
           active-class="bg-[#ede8d7]/10 text-white font-semibold"
           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[#ede8d7]/5 text-[#ede8d7]/80"
         >
-          <span>👥</span> Usuarios
+          <span></span> Usuarios
         </router-link>
 
         <router-link 
@@ -41,7 +41,7 @@ export default {
           active-class="bg-[#ede8d7]/10 text-white font-semibold"
           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-[#ede8d7]/5 text-[#ede8d7]/80"
         >
-          <span>🍷</span> Suscripciones Kits
+          <span></span> Suscripciones Kits
         </router-link>
       </nav>
 

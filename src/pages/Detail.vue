@@ -231,7 +231,7 @@ export default {
         v-if="vino"
         class="w-full max-w-7xl flex flex-col md:flex-row gap-8 md:gap-10 mx-auto"
       >
-        <!-- imagen -->
+        <!-- imagen vino -->
         <div class="flex justify-center md:items-start">
           <img
             :src="vino.imagen"
@@ -247,27 +247,23 @@ export default {
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
             <h2
-              class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05] leading-tight"
+              class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]"
             >
               {{ vino.nombre }}
             </h2>
 
-            <div class="flex gap-3 items-center">
-              <button
-                v-if="!isAdmin"
-                @click="handleAddFavorite"
-                class="text-xs sm:text-sm md:text-sm font-medium rounded-full px-4 py-2 border border-[#e099a8] text-[#4e0d05] hover:bg-[#e099a8] hover:text-white transition-all duration-300"
-                :class="{ 'bg-[#e099a8] text-white': isFavorite }"
-              >
-                +Wishlist
-              </button>
-            </div>
+            <button
+              v-if="!isAdmin"
+              @click="handleAddFavorite"
+              class="text-xs sm:text-sm font-medium rounded-full px-4 py-2 border border-[#e099a8] text-[#4e0d05] hover:bg-[#e099a8] hover:text-white transition"
+              :class="{ 'bg-[#e099a8] text-white': isFavorite }"
+            >
+              +Wishlist
+            </button>
           </div>
 
           <!-- descripcion -->
-          <p
-            class="text-[#4e0d05]/90 leading-relaxed text-sm sm:text-base md:text-base"
-          >
+          <p class="text-[#4e0d05]/90">
             {{ vino.descripcion }}
           </p>
 
@@ -275,7 +271,7 @@ export default {
 
           <!-- datos -->
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1 text-[#4e0d05] text-sm sm:text-base md:text-base"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1 text-[#4e0d05]"
           >
             <p><strong>Bodega:</strong> {{ vino.bodega }}</p>
             <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
@@ -289,17 +285,15 @@ export default {
 
           <!-- maridajes -->
           <div>
-            <h3
-              class="text-lg sm:text-xl md:text-xl font-semibold text-[#3c490b] mb-3"
-            >
+            <h3 class="text-lg font-semibold text-[#3c490b] mb-3">
               Maridajes
             </h3>
 
-            <div class="flex flex-wrap gap-2 sm:gap-3">
+            <div class="flex flex-wrap gap-2">
               <span
                 v-for="(m, i) in vino.maridaje"
                 :key="i"
-                class="px-3 py-1 rounded-full bg-[#e099a8]/25 border border-[#e099a8]/40 text-[#4e0d05] text-xs sm:text-sm md:text-sm"
+                class="px-3 py-1 rounded-full bg-[#e099a8]/25 border border-[#e099a8]/40 text-xs"
               >
                 {{ m }}
               </span>
@@ -310,15 +304,12 @@ export default {
               <button
                 v-if="!isAdmin"
                 @click="handleAddHistory"
-                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#3c490b]/40 bg-[#3c490b]/5 text-[#3c490b] font-semibold text-sm sm:text-base hover:bg-[#3c490b]/10 hover:border-[#3c490b] transition-all duration-300"
+                class="w-full sm:w-auto px-5 py-3 rounded-xl border border-[#3c490b]/40 bg-[#3c490b]/5 text-[#3c490b] font-semibold hover:bg-[#3c490b]/10 transition"
               >
-                Registrar consumo
-                <span aria-hidden="true">↗</span>
+                Registrar consumo ↗
               </button>
 
-              <p
-                class="text-xs sm:text-sm text-[#4e0d05]/60 mt-2 text-center sm:text-left"
-              >
+              <p class="text-xs text-[#4e0d05]/60 mt-2">
                 Agregá una nota para recordar cuándo y cómo lo tomaste.
               </p>
             </div>
@@ -327,7 +318,7 @@ export default {
           <!-- mensaje -->
           <p
             v-if="message"
-            class="mt-3 rounded-full px-4 py-2 text-xs sm:text-sm md:text-sm text-center border transition-all duration-300"
+            class="mt-3 rounded-full px-4 py-2 text-xs text-center border"
             :class="
               messageType === 'history'
                 ? 'bg-[#3c490b10] border-[#3c490b40] text-[#3c490b]'
@@ -338,10 +329,10 @@ export default {
           </p>
 
           <!-- volver -->
-          <div class="flex justify-center md:justify-end pt-4">
+          <div class="flex justify-end pt-4">
             <RouterLink
               to="/social"
-              class="text-[#e099a8] font-medium text-sm sm:text-base hover:text-[#3c490b] transition-colors"
+              class="text-[#e099a8] font-medium hover:text-[#3c490b]"
             >
               Volver al listado
             </RouterLink>
@@ -349,143 +340,96 @@ export default {
         </div>
       </div>
 
-      <!-- no encontrado -->
-      <div
-        v-else
-        class="px-6 py-10 max-w-lg mx-auto bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl text-center text-[#4e0d05]"
-      >
-        <p>No se encontró el vino solicitado.</p>
-      </div>
-
-      <!-- reseñas -->
-      <div class="w-full">
-        <h3
-          class="text-lg sm:text-xl md:text-xl font-semibold text-[#3c490b] mb-6"
-        >
+      <!-- RESEÑAS -->
+      <div class="w-full mt-14">
+        <h3 class="text-lg sm:text-xl font-semibold text-[#3c490b] mb-6">
           Reseñas de la comunidad
         </h3>
 
+        <!-- formulario reseña -->
         <div
           v-if="user"
-          class="bg-[#e099a8]/10 p-5 rounded-xl border border-[#e099a8]/30 mb-8"
+          class="bg-[#e099a8]/10 p-6 rounded-xl border border-[#e099a8]/30 mb-8"
         >
-          <p class="text-[#4e0d05] font-medium mb-3">Dejá tu opinión:</p>
+          <div class="flex flex-col md:flex-row gap-4 items-start">
+            <!-- Nysito  -->
+            <div class="w-full md:w-1/4">
+              <img
+                src="/nysito-estrella.png"
+                alt="Nysito con estrella"
+                class="w-full max-h-60 object-contain"
+              />
+            </div>
 
-          <div class="flex gap-2 mb-3">
-            <button
-              v-for="star in 5"
-              :key="star"
-              @click="setRating(star)"
-              type="button"
-              class="text-2xl transition-transform hover:scale-110 focus:outline-none"
-              :class="
-                star <= newReview.rating
-                  ? 'text-[#e099a8]'
-                  : 'text-[#4e0d05]/20'
-              "
-            >
-              ★
-            </button>
-          </div>
+            <!-- formulario -->
+            <div class="w-full md:w-3/4">
+              <p class="font-medium mb-3 text-[#4e0d05]">
+                Dejá tu opinión:
+              </p>
 
-          <textarea
-            v-model="newReview.comment"
-            rows="2"
-            placeholder="¿Qué te pareció este vino?"
-            class="w-full border border-[#e099a8]/50 rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none text-sm"
-          ></textarea>
+              <div class="flex gap-2 mb-3">
+                <button
+                  v-for="star in 5"
+                  :key="star"
+                  @click="setRating(star)"
+                  class="text-2xl"
+                  :class="
+                    star <= newReview.rating
+                      ? 'text-[#e099a8]'
+                      : 'text-[#4e0d05]/20'
+                  "
+                >
+                  ★
+                </button>
+              </div>
 
-          <div class="flex items-center justify-between mt-3">
-            <span
-              v-if="reviewMessage"
-              class="text-xs text-[#3c490b] font-medium"
-              >{{ reviewMessage }}</span
-            >
-            <span v-else></span>
-            <button
-              @click="handleAddReview"
-              class="px-4 py-2 rounded-full bg-[#4e0d05] text-[#f6f6eb] text-sm font-medium hover:bg-[#3c490b] transition-colors"
-            >
-              Publicar reseña
-            </button>
+              <textarea
+                v-model="newReview.comment"
+                rows="2"
+                placeholder="¿Qué te pareció este vino?"
+                class="w-full border border-[#e099a8]/50 rounded-lg p-3 bg-[#f6f6eb]"
+              ></textarea>
+
+              <div class="flex justify-end mt-3">
+                <button
+                  @click="handleAddReview"
+                  class="px-4 py-2 rounded-full bg-[#4e0d05] text-[#f6f6eb] text-sm font-medium hover:bg-[#3c490b]"
+                >
+                  Publicar reseña
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div v-else class="text-center py-4 bg-[#e099a8]/10 rounded-xl mb-8">
-          <p class="text-[#4e0d05] text-sm">
+        <div v-else class="text-center py-4 bg-[#e099a8]/10 rounded-xl">
+          <p class="text-sm text-[#4e0d05]">
             Iniciá sesión para dejar tu reseña.
           </p>
         </div>
 
-        <div v-if="reviews.length > 0" class="space-y-4">
+        <!-- listado reseñas -->
+        <div v-if="reviews.length" class="space-y-4 mt-6">
           <div
             v-for="review in reviews"
             :key="review.id"
-            class="border-b border-[#4e0d05]/10 pb-4 last:border-0"
+            class="border-b border-[#4e0d05]/10 pb-4"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between">
               <div>
-                <h4 class="font-bold text-[#4e0d05] text-sm">
-                  {{ review.user_name }}
-                </h4>
-                <div class="flex text-[#e099a8] text-sm my-1">
-                  <span v-for="n in 5" :key="n">
-                    {{ n <= review.rating ? "★" : "☆" }}
-                  </span>
+                <p class="font-bold text-sm">{{ review.user_name }}</p>
+                <div class="text-[#e099a8]">
+                  {{ "★".repeat(review.rating) }}
                 </div>
               </div>
               <span class="text-xs text-[#4e0d05]/50">
                 {{ new Date(review.created_at).toLocaleDateString() }}
               </span>
             </div>
-            <p class="text-[#4e0d05]/80 text-sm mt-1 leading-snug">
+            <p class="text-sm mt-1 text-[#4e0d05]/80">
               {{ review.comment }}
             </p>
           </div>
-        </div>
-
-        <div v-else class="text-center text-[#4e0d05]/50 py-4 text-sm">
-          Todavía no hay reseñas. ¡Sé el primero!
-        </div>
-      </div>
-    </div>
-
-    <!-- modal historial (sin cambios) -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
-    >
-      <div
-        class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20"
-      >
-        <h3 class="text-xl font-semibold text-[#3c490b] mb-3">
-          Agregá una nota
-        </h3>
-
-        <p class="text-sm text-[#4e0d05]/70 mb-4">
-          ¡Escribí un recuerdo o comentario sobre este vino!
-        </p>
-
-        <textarea
-          v-model="noteText"
-          rows="4"
-          placeholder="Por ejemplo: lo tomé con una pasta en Mendoza y me pareció súper dulce..."
-          class="w-full border border-[#e099a8] rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none"
-        ></textarea>
-
-        <div class="flex justify-end gap-3 mt-4">
-          <button
-            @click="cancelModal"
-            class="px-4 py-2 rounded-full border border-[#4e0d05]/50 text-[#4e0d05] hover:bg-[#4e0d05]/10 transition"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="confirmAddHistory"
-            class="px-4 py-2 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
-          >
-            Guardar
-          </button>
         </div>
       </div>
     </div>
