@@ -29,7 +29,11 @@ const routes = [
   { path: "/blog", component: Blog },
   { path: "/red-social", component: RedSocial },
   { path: "/detalle/:id", name: "detalle", component: Detail },
-  { path: "/mi-perfil", component: MyProfile, meta: { requiresAuth: true } },
+  { 
+    path: "/mi-perfil", 
+    component: MyProfile, 
+    meta: { requiresAuth: true } 
+  },
   {
     path: "/mi-perfil/editar",
     component: MyProfileEdit,
@@ -74,7 +78,6 @@ const routes = [
 ];
 
 const router = createRouter({
-  /* history: createWebHistory(), */
   history: createWebHashHistory(),
   routes,
 
@@ -84,38 +87,52 @@ const router = createRouter({
 });
 
 //para saber si el usuario esta logueado
-let user = {
-  id: null,
-  email: null,
+let user = { 
+  id: null, 
+  email: null, 
+  role: null 
 };
 
 subscribeToAuthChanges((userState) => (user = userState));
 
-//proteccion de ruta gral
-router.beforeEach((to, from) => {
-  if (to.meta.requiresAuth && user.id === null) {
-    return "/ingresar";
-  }
-});
-
-//proteccion de ruta para el admin
+/* PROTECCIONES */
 router.beforeEach((to, from, next) => {
-  const user = getAuthUser();
+  // 1. Obtenemos el usuario actual
+  const currentUser = getAuthUser();
+  const isAuthenticated = !!currentUser.id;
+  const isAdmin = currentUser.role === 'admin';
 
-  // Si la ruta requiere admin
-  if (to.path === "/admin") {
-    if (!user?.id) {
-      // No está logueado
-      return next("/ingresar");
-    }
+  // 2. Verificamos los requisitos de la ruta
+  // .some() chequea si la ruta o sus padres tienen el meta
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
 
-    if (user.role !== "admin") {
-      // Está logueado pero no es admin
-      return next("/ingresar");
-    }
+  // CASO 1: Rutas de Admin (Protección estricta)
+  if (requiresAdmin) {
+    // Si no está logueado -> Login
+    if (!isAuthenticated) return next("/ingresar");
+    // Si está logueado pero NO es admin -> Home (o donde prefieras)
+    if (!isAdmin) return next("/"); 
+    // Si es admin -> Pasa
+    return next();
   }
 
+  // CASO 2: Admin intentando entrar a "Mi Perfil" de usuario común
+  // Si quiere ir a /mi-perfil Y es admin -> Lo mandamos a su dashboard
+  if (to.path === '/mi-perfil' && isAdmin || to.path === '/mi-perfil/editar' && isAdmin) {
+    return next('/admin/perfil');
+  }
+
+  // CASO 3: Rutas de Usuario Autenticado (Protección normal)
+  if (requiresAuth) {
+    if (!isAuthenticated) return next("/ingresar");
+    return next();
+  }
+
+  // Si no aplica ninguna regla anterior, dejar pasar
   next();
 });
 
 export default router;
+
+

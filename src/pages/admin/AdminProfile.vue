@@ -50,12 +50,12 @@ export default {
         </div>
       </div>
 
-      <router-link 
+      <!-- <router-link 
         to="/mi-perfil/editar"
         class="px-6 py-2 rounded-full border border-[#4e0d05]/30 text-[#4e0d05] hover:bg-[#4e0d05] hover:text-[#ede8d7] transition-all font-medium"
       >
         Editar mis datos
-      </router-link>
+      </router-link> -->
     </div>
   </div>
 </template>

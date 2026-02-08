@@ -1,6 +1,6 @@
 <script>
 import AppH1 from "../components/AppH1.vue";
-import { login } from "../services/auth.js";
+import { login, getAuthUser } from "../services/auth.js";
 
 export default {
   name: "Login",
@@ -33,7 +33,12 @@ export default {
       try {
         this.loading = true;
         await login(this.user.email, this.user.password);
-        this.$router.push("/mi-perfil");
+        const loggedUser = getAuthUser();
+        if (loggedUser.role === "admin") {
+          this.$router.push("/admin/perfil");
+        } else {
+          this.$router.push("/mi-perfil");
+        }
       } catch (error) {
         this.errorMsg = "Credenciales inválidas";
       }

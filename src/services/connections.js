@@ -86,5 +86,6 @@ export async function getPendingRequests(userId) {
     return [];
   }
 
-  return data;
+  /* return data; */ 
+  return data.map((req) => req.receiver_id);
 }

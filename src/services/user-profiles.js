@@ -70,7 +70,7 @@ export async function updateUserProfile(id, newData) {
 export async function getAllUsers() {
   const { data, error } = await supabase
     .from("user_profiles")
-    .select("id, display_name, email");
+    .select("id, display_name, email, role");
 
   if (error) {
     console.error("[users.js getAllUsers] Error al obtener usuarios:", error);
