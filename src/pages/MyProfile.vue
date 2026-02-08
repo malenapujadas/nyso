@@ -243,6 +243,22 @@ export default {
         </div>
       </div>
 
+            <!--  Box mensual -->
+            <div class="mt-10 rounded-3xl border border-[#3c490b]/20 bg-[#ede8d7]/80 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-left">
+          <p class="text-sm text-[#4e0d05]/70 font-medium">Box mensual</p>
+          <p class="text-lg md:text-xl font-extrabold text-[#4e0d05] leading-tight">
+            Un vino por mes, elegido por NYSO.
+          </p>
+        </div>
+
+        <RouterLink to="/box" class="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#3c490b] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#3c490b] hover:text-[#f6f6eb] transition">
+          Comprar box mensual
+        </RouterLink>
+      </div>
+
+
+
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- WISHLIST  -->
         <div class="rounded-3xl border border-[#e099a8]/35 bg-[#e099a8]/10 p-6 shadow-sm">
@@ -366,11 +382,11 @@ export default {
               </span>
 
               <button
-                @click="handleRemoveFriend(f.id)"
-                class="px-3 py-1 rounded-full border border-red-500/40 text-red-600 text-xs font-semibold hover:bg-red-500 hover:text-white transition"
-              >
-                Eliminar
-              </button>
+              @click="handleRemoveFriend(f.id)"
+              class="px-3 py-1 rounded-full border border-[#4e0d05]/40 text-[#4e0d05]text-xs font-semibold hover:bg-[#4e0d05] hover:text-[#f6f6eb]"               
+            >
+              Eliminar
+            </button>
             </div>
           </div>
         </div>

@@ -17,6 +17,7 @@ import RecuperarContrasena from "../pages/RecoverPassword.vue";
 import ResetPassword from "../pages/ResetPassword.vue";
 import { subscribeToAuthChanges } from "../services/auth";
 import { getAuthUser } from "../services/auth";
+import Box from "../pages/Box.vue";
 
 // definir rutas
 
@@ -33,6 +34,12 @@ const routes = [
     path: "/mi-perfil", 
     component: MyProfile, 
     meta: { requiresAuth: true } 
+  },
+
+  {
+    path: "/box",
+    name: "box",
+    component: Box,
   },
   {
     path: "/mi-perfil/editar",

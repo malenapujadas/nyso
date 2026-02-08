@@ -50,6 +50,10 @@ export default {
       DE UNA FORMA SIMPLE Y CERCANA, SIN NECESIDAD DE SER UN
       <span class="text-[#e099a8]">EXPERTO.</span>
     </AppH1>
+
+    <RouterLink to="/box" class="mt-10 inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300 relative z-10">
+      COMPRAR BOX MENSUAL
+    </RouterLink>
   </section>
 
   <section class="relative bg-[#f6f6eb] w-full h-16 md:h-20">
