@@ -7,7 +7,7 @@ import { getPreferencesForUser } from "../services/preferences.js";
 import * as opciones from "../data/preferences-options.js";
 import {
   getFriends,
-  getPendingRequests,
+  getPendingRequestsReceived,
   updateConnectionStatus,
 } from "../services/connections.js";
 import { getVinos } from "../services/wines.js";
@@ -41,7 +41,7 @@ export default {
           getFavorites(this.user.id),
           getHistory(this.user.id),
           getFriends(this.user.id),
-          getPendingRequests(this.user.id),
+          getPendingRequestsReceived(this.user.id),
         ]);
 
         this.friends = friends;
@@ -100,7 +100,7 @@ export default {
         // recargar pendientes y amigos
         if (this.user && this.user.id) {
           const friends = await getFriends(this.user.id);
-          const pending = await getPendingRequests(this.user.id);
+          const pending = await getPendingRequestsReceived(this.user.id);
           this.friends = friends;
           this.pendingRequests = pending;
         }

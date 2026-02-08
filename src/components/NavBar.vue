@@ -105,6 +105,17 @@ export default {
           Red Social
         </RouterLink>
       </li>
+      <li>
+        <RouterLink
+          to="/box"
+          class="hover:text-[#e099a8] transition-colors"
+          :class="{
+            'text-[#4e0d05] font-semibold': $route.path === '/box',
+          }"
+        >
+          Box NYSO
+        </RouterLink>
+      </li>
       <li v-if="user && user.role === 'admin'">
         <RouterLink
           to="/admin"

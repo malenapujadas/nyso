@@ -18,6 +18,7 @@ import ResetPassword from "../pages/ResetPassword.vue";
 import { subscribeToAuthChanges } from "../services/auth";
 import { getAuthUser } from "../services/auth";
 import Box from "../pages/Box.vue";
+import AdminKits from "../pages/admin/AdminKits.vue";
 
 // definir rutas
 
@@ -69,7 +70,7 @@ const routes = [
       {
         path: "kits", // URL: /admin/kits
         name: "AdminKits",
-        component: { template: '<h2 class="text-2xl text-[#4e0d05]">Gestión de Kits (Próximamente)</h2>' } // Placeholder temporal
+        component: AdminKits
       },
       { path: "perfil", component: AdminProfile }, // URL: /admin/perfil
     ]

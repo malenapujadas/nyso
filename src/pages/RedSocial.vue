@@ -4,7 +4,7 @@ import { getAllUsers } from "../services/user-profiles.js";
 import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
 import {
   sendConnectionRequest,
-  getPendingRequests,
+  getPendingRequestsSent,
 } from "../services/connections.js";
 import AppLoader from "../components/AppLoader.vue";
 
@@ -130,8 +130,7 @@ export default {
       this.allUsers = usersFromDB.filter((u) => u.role !== "admin");
 
       if (this.user) {
-        const pendingIds = await getPendingRequests(this.user.id);
-        this.sentRequests = pendingIds; 
+        this.sentRequests = await getPendingRequestsSent(this.user.id);
       }
 
       // 3. Generamos sugerencias (ya sin el admin en la lista)

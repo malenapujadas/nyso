@@ -1,9 +1,82 @@
 <script>
 import AppH1 from "../components/AppH1.vue";
+import { getCurrentUser } from "../services/auth.js";
+import {
+  createSubscription,
+  getUserSubscription,
+} from "../services/subscriptions.js";
 
 export default {
   name: "Box",
   components: { AppH1 },
+
+  data() {
+    return {
+      user: null,
+      showModal: false,
+      loading: false,
+      success: false, // Para mostrar el mensaje final de "Gracias"
+
+      // Datos del formulario
+      form: {
+        full_name: "",
+        address: "",
+        city: "",
+        zip_code: "",
+        phone: "",
+      },
+    };
+  },
+  async mounted() {
+    this.user = await getCurrentUser();
+    // Opcional: Podrías pre-llenar el nombre si ya lo tenés en el usuario
+    if (this.user) {
+      // Chequear si ya está suscrito para cambiar el botón (opcional)
+    }
+  },
+  methods: {
+    openSubscribeModal() {
+      if (!this.user) {
+        this.$router.push("/ingresar"); // O mostrá un mensaje de "Iniciá sesión"
+        return;
+      }
+      this.showModal = true;
+    },
+
+    async handleSubscribe() {
+      this.loading = true;
+      try {
+        await createSubscription({
+          user_id: this.user.id,
+          full_name: this.form.full_name,
+          address: this.form.address,
+          city: this.form.city,
+          zip_code: this.form.zip_code,
+          phone: this.form.phone,
+          status: "pending", // Estado inicial
+        });
+
+        this.success = true; // Cambiamos el modal a "Modo Éxito"
+      } catch (error) {
+        alert("Hubo un error al procesar tu solicitud.");
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    closeModal() {
+      this.showModal = false;
+      this.success = false;
+      // Limpiar form
+      this.form = {
+        full_name: "",
+        address: "",
+        city: "",
+        zip_code: "",
+        phone: "",
+      };
+    },
+  },
 };
 </script>
 
@@ -17,12 +90,12 @@ export default {
           </p>
 
           <AppH1
-          class="mt-3 text-[#4e0d05] font-extrabold text-3xl sm:text-4xl md:text-4xl leading-tight tracking-tight font-[Poppins] text-left max-w-none"
-        >
-          Tu vino del mes, directo a casa.
-          <span class="text-[#3c490b]"> Una box que te acompaña</span> 
-          <span class="text-[#e099a8]"> todo el año.</span>
-        </AppH1>
+            class="mt-3 text-[#4e0d05] font-extrabold text-3xl sm:text-4xl md:text-4xl leading-tight tracking-tight font-[Poppins] text-left max-w-none"
+          >
+            Tu vino del mes, directo a casa.
+            <span class="text-[#3c490b]"> Una box que te acompaña</span>
+            <span class="text-[#e099a8]"> todo el año.</span>
+          </AppH1>
 
           <p
             class="mt-5 text-[#4e0d05]/80 text-base md:text-lg leading-relaxed max-w-xl"
@@ -34,6 +107,7 @@ export default {
           <!-- boton comprar-->
           <div class="mt-7 flex flex-col sm:flex-row gap-3">
             <button
+              @click="openSubscribeModal"
               class="px-6 py-3 rounded-full bg-[#4e0d05] text-[#f6f6eb] font-semibold text-base hover:bg-[#3c490b] transition"
             >
               Comprar box mensual
@@ -128,7 +202,8 @@ export default {
           <div class="rounded-2xl bg-[#f6f6eb] border border-[#4e0d05]/10 p-5">
             <p class="font-bold text-[#4e0d05]">Guía + maridajes</p>
             <p class="text-sm text-[#4e0d05]/70 mt-2">
-              Tips simples: cómo tomarlo, con qué comerlo y por qué vale la pena.
+              Tips simples: cómo tomarlo, con qué comerlo y por qué vale la
+              pena.
             </p>
           </div>
 
@@ -142,12 +217,139 @@ export default {
 
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <button
-            class="px-6 py-3 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold text-base hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
-          >
-            Suscribirme
-          </button>
+            <button
+              @click="openSubscribeModal"
+              class="px-6 py-3 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold text-base hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
+            >
+              Suscribirme
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div
+      v-if="showModal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+    >
+      <div
+        class="bg-[#f6f6eb] rounded-3xl p-8 max-w-md w-full shadow-2xl relative border border-[#4e0d05]/10"
+      >
+        <button
+          @click="closeModal"
+          class="absolute top-4 right-4 text-[#4e0d05]/50 hover:text-[#4e0d05]"
+        >
+          ✕
+        </button>
+
+        <div v-if="!success">
+          <h3 class="text-2xl font-bold text-[#4e0d05] mb-2">
+            Suscribirse al Box
+          </h3>
+          <p class="text-sm text-[#4e0d05]/70 mb-6">
+            Completá tus datos de envío. Te contactaremos para coordinar el pago
+            y la entrega.
+          </p>
+
+          <form @submit.prevent="handleSubscribe" class="space-y-4">
+            <div>
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                >Nombre Completo</label
+              >
+              <input
+                v-model="form.full_name"
+                required
+                type="text"
+                class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
+                placeholder="Ej: Juan Pérez"
+              />
+            </div>
+
+            <div>
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                >Dirección de Entrega</label
+              >
+              <input
+                v-model="form.address"
+                required
+                type="text"
+                class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
+                placeholder="Calle y altura"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label
+                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                  >Ciudad</label
+                >
+                <input
+                  v-model="form.city"
+                  required
+                  type="text"
+                  class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                  >C.P.</label
+                >
+                <input
+                  v-model="form.zip_code"
+                  required
+                  type="text"
+                  class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                >Teléfono / WhatsApp</label
+              >
+              <input
+                v-model="form.phone"
+                required
+                type="tel"
+                class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
+                placeholder="Para coordinar el pago"
+              />
+            </div>
+
+            <button
+              type="submit"
+              :disabled="loading"
+              class="w-full py-3 mt-4 rounded-full bg-[#4e0d05] text-[#f6f6eb] font-bold hover:bg-[#3c490b] transition disabled:opacity-50"
+            >
+              {{ loading ? "Procesando..." : "Confirmar Solicitud" }}
+            </button>
+          </form>
+        </div>
+
+        <div v-else class="text-center py-6">
+          <div
+            class="w-16 h-16 bg-[#3c490b]/10 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"
+          >
+            🎉
+          </div>
+          <h3 class="text-2xl font-bold text-[#3c490b] mb-2">
+            ¡Solicitud Enviada!
+          </h3>
+          <p class="text-[#4e0d05]/80 mb-6">
+            Ya recibimos tus datos. En las próximas 24hs te vamos a escribir al
+            WhatsApp/Mail que nos dejaste para finalizar la suscripción.
+          </p>
+          <button
+            @click="closeModal"
+            class="px-6 py-2 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold hover:bg-[#4e0d05] hover:text-white transition"
+          >
+            Entendido
+          </button>
         </div>
       </div>
     </div>
