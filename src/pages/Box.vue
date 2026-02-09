@@ -104,6 +104,11 @@ export default {
             protagonista con un regalo sorpresa.
           </p>
 
+          <div class="mt-6 flex items-end gap-3">
+            <p class="text-3xl md:text-4xl font-extrabold text-[#4e0d05]">$30.000</p>
+            <p class="text-sm text-[#4e0d05]/60">por mes</p>
+          </div>
+
           <!-- boton comprar-->
           <div class="mt-7 flex flex-col sm:flex-row gap-3">
             <button

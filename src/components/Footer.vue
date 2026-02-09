@@ -62,6 +62,14 @@ export default {
                 Red social
               </RouterLink>
             </li>
+            <li>
+              <RouterLink
+                to="/box"
+                class="hover:text-[#e099a8] transition-colors"
+              >
+                Box NYSO
+              </RouterLink>
+            </li>
           </ul>
         </div>
 

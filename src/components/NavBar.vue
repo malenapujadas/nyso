@@ -176,6 +176,7 @@ export default {
       <RouterLink @click="menuOpen = false" to="/">Inicio</RouterLink>
       <RouterLink @click="menuOpen = false" to="/social">Vinos</RouterLink>
       <RouterLink @click="menuOpen = false" to="/blog">Blog</RouterLink>
+      <RouterLink @click="menuOpen = false" to="/BOX">Box</RouterLink>
       <RouterLink @click="menuOpen = false" to="/red-social"
         >Red Social</RouterLink
       >

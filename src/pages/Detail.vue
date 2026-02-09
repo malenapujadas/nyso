@@ -433,5 +433,45 @@ export default {
         </div>
       </div>
     </div>
+
+    <!-- modal historial (AGREGADO) -->
+    <div
+      v-if="showModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+    >
+      <div
+        class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20"
+      >
+        <h3 class="text-xl font-semibold text-[#3c490b] mb-3">
+          Agregá una nota
+        </h3>
+
+        <p class="text-sm text-[#4e0d05]/70 mb-4">
+          ¡Escribí un recuerdo o comentario sobre este vino!
+        </p>
+
+        <textarea
+          v-model="noteText"
+          rows="4"
+          placeholder="Por ejemplo: lo tomé con una pasta en Mendoza y me pareció súper dulce..."
+          class="w-full border border-[#e099a8] rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none"
+        ></textarea>
+
+        <div class="flex justify-end gap-3 mt-4">
+          <button
+            @click="cancelModal"
+            class="px-4 py-2 rounded-full border border-[#4e0d05]/50 text-[#4e0d05] hover:bg-[#4e0d05]/10 transition"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="confirmAddHistory"
+            class="px-4 py-2 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
