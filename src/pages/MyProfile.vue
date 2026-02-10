@@ -139,6 +139,75 @@ export default {
       }
     },
 
+        normalizarValor(val) {
+      if (val === null || val === undefined) return "";
+      if (Array.isArray(val)) return val.map((x) => String(x).toLowerCase().trim()).join(" ");
+      return String(val).toLowerCase().trim();
+    },
+
+    armarSugeridos() {
+      if (!this.preferences || !this.vinosDB || !this.vinosDB.length) {
+        this.sugeridos = [];
+        return;
+      }
+
+      const favIds = new Set(this.favorites.map((v) => String(v.id)));
+      const hisIds = new Set(this.history.map((v) => String(v.id)));
+
+      const prefs = this.preferences;
+
+      const puntuar = (vino) => {
+        let score = 0;
+
+        // compara por campos comunes si existen
+        const checks = [
+          ["tipo", "tipo"],
+          ["uva", "uva"],
+          ["region", "region"],
+          ["bodega", "bodega"],
+        ];
+
+        checks.forEach(([prefKey, vinoKey]) => {
+          const pv = this.normalizarValor(prefs?.[prefKey]);
+          const vv = this.normalizarValor(vino?.[vinoKey]);
+          if (pv && vv && (vv.includes(pv) || pv.includes(vv))) score += 3;
+        });
+
+        // fallback: si tus preferencias tienen otras keys (ej: dulzor, cuerpo, etc)
+        // suma 1 punto por coincidencias de texto
+        Object.keys(prefs || {}).forEach((k) => {
+          const pv = this.normalizarValor(prefs[k]);
+          if (!pv) return;
+          const vv = this.normalizarValor(vino?.[k]);
+          if (vv && (vv.includes(pv) || pv.includes(vv))) score += 1;
+        });
+
+        return score;
+      };
+
+      const candidatos = this.vinosDB
+        .filter((v) => !favIds.has(String(v.id)) && !hisIds.has(String(v.id)))
+        .map((v) => ({ ...v, __score: puntuar(v) }))
+        .sort((a, b) => b.__score - a.__score);
+
+      this.sugeridos = candidatos.filter((v) => v.__score > 0).slice(0, 10);
+
+      // si no matchea nada, mostramos algo “random” como fallback
+      if (!this.sugeridos.length) {
+        this.sugeridos = this.vinosDB
+          .filter((v) => !favIds.has(String(v.id)) && !hisIds.has(String(v.id)))
+          .slice(0, 10);
+      }
+    },
+
+    scrollSugeridos(dir) {
+      const el = this.$refs?.sugeridosTrack;
+      if (!el) return;
+      const amount = Math.round(el.clientWidth * 0.85);
+      el.scrollBy({ left: dir * amount, behavior: "smooth" });
+    },
+
+
   },
 };
 </script>
