@@ -1,6 +1,8 @@
 <script>
 import { getPreferencesForUser } from "../services/preferences.js";
 import { getUserProfileById } from "../services/user-profiles.js";
+import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
+import { sendConnectionRequest } from "../services/connections.js";
 import AppLoader from "../components/AppLoader.vue";
 import ProfilePreferences from "../components/ProfilePreferences.vue";
 
@@ -13,12 +15,62 @@ export default {
       profile: null,
       preferences: null,
       loading: true,
+
+      user: null,
+      message: "",
+      sentRequests: [],
     };
+  },
+
+  computed: {
+    receiverId() {
+      return this.$route.params.id;
+    },
+
+    canShowConnectButton() {
+      return this.user && this.user.id && this.receiverId && this.user.id !== this.receiverId;
+    },
+
+    alreadySent() {
+      return this.sentRequests.includes(this.receiverId);
+    },
+  },
+
+  methods: {
+    async handleConnect() {
+      if (!this.user) {
+        this.message = "Debes iniciar sesión para conectar con alguien.";
+        setTimeout(() => (this.message = ""), 3000);
+        return;
+      }
+
+      try {
+        await sendConnectionRequest(this.user.id, this.receiverId);
+
+
+        if (!this.sentRequests.includes(this.receiverId)) {
+          this.sentRequests.push(this.receiverId);
+        }
+
+        this.message = "Solicitud de amistad enviada!";
+        setTimeout(() => (this.message = ""), 3000);
+      } catch (err) {
+        console.error("Error enviando solicitud de conexión:", err);
+      }
+    },
   },
 
   async mounted() {
     try {
       const userId = this.$route.params.id;
+
+      // usuario logueado
+      this.user = await getCurrentUser();
+      subscribeToAuthChanges((userState) => {
+        this.user = userState;
+      });
+
+      // perfil y preferencias
       this.profile = await getUserProfileById(userId);
       this.preferences = await getPreferencesForUser(userId);
     } catch (error) {
@@ -64,10 +116,6 @@ export default {
       <div
         class="w-full max-w-3xl z-10 bg-[#ede8d7] rounded-3xl shadow-lg p-8 border border-[#4e0d05]/20"
       >
-        <h1 class="text-3xl font-extrabold text-[#3c490b] mb-6 text-center">
-          Perfil
-        </h1>
-
         <div v-if="loading" class="text-center py-8 text-[#4e0d05]/70 italic">
           Cargando perfil...
         </div>
@@ -93,6 +141,31 @@ export default {
                 {{ profile.display_name || "Sin nombre" }}
               </h2>
               <p class="text-sm text-[#4e0d05]/70">{{ profile.email }}</p>
+
+              <!-- BOTÓN CONECTAR -->
+              <div v-if="canShowConnectButton" class="mt-4">
+                <button
+                  v-if="!alreadySent"
+                  @click="handleConnect"
+                  class="text-[#3c490b] border border-[#3c490b] rounded-full px-6 py-2 text-sm font-medium hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+                >
+                  + Conectar
+                </button>
+
+                <span
+                  v-else
+                  class="text-[#3c490b] border border-[#3c490b] rounded-full px-6 py-2 text-sm font-medium"
+                >
+                  Solicitud enviada
+                </span>
+              </div>
+
+              <div
+                v-if="message"
+                class="mt-3 text-sm text-[#3c490b]"
+              >
+                {{ message }}
+              </div>
             </div>
           </div>
 
