@@ -107,7 +107,7 @@ export default {
               </div>
 
               <span
-                class="px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap"
+                class="w-[110px] text-center px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap"
                 :class="{
                   'bg-yellow-100 text-yellow-800 border-yellow-200':
                     sub.status === 'pending',
@@ -150,16 +150,16 @@ export default {
                 <button
                   v-if="sub.status === 'pending' || sub.status === 'cancelled'"
                   @click="changeStatus(sub, 'active')"
-                  class="px-3 py-2 rounded-xl bg-[#3c490b] text-white text-sm font-semibold hover:bg-[#4e0d05] transition"
-                  title="Marcar como pagado/activo"
+                  class="w-10 h-10 rounded-xl bg-[#3c490b] text-white text-base font-semibold hover:bg-[#4e0d05] transition flex items-center justify-center"
+                  title="Aceptar / activar"
                 >
-                  Confirmar
+                  ✓
                 </button>
 
                 <button
                   v-if="sub.status !== 'cancelled'"
                   @click="changeStatus(sub, 'cancelled')"
-                  class="px-3 py-2 rounded-xl border border-[#e099a8] text-[#e099a8] text-sm font-semibold hover:bg-[#e099a8] hover:text-white transition"
+                  class="w-10 h-10 rounded-xl border border-[#e099a8] text-[#e099a8] text-base font-semibold hover:bg-[#e099a8] hover:text-white transition flex items-center justify-center"
                   title="Cancelar suscripción"
                 >
                   ✕
@@ -182,8 +182,8 @@ export default {
                 <th class="p-4 font-bold">Cliente</th>
                 <th class="p-4 font-bold">Dirección de Envío</th>
                 <th class="p-4 font-bold">Contacto</th>
-                <th class="p-4 font-bold">Estado</th>
-                <th class="p-4 font-bold text-right">Acciones</th>
+                <th class="p-4 font-bold text-center">Estado</th>
+                <th class="p-4 font-bold text-center">Acciones</th>
               </tr>
             </thead>
             <tbody class="text-sm text-[#4e0d05]">
@@ -218,9 +218,9 @@ export default {
                   </a>
                 </td>
 
-                <td class="p-4">
+                <td class="p-4 text-center">
                   <span
-                    class="px-3 py-1 rounded-full text-xs font-bold border"
+                    class="w-[120px] inline-block text-center px-3 py-1 rounded-full text-xs font-bold border"
                     :class="{
                       'bg-yellow-100 text-yellow-800 border-yellow-200':
                         sub.status === 'pending',
@@ -240,21 +240,21 @@ export default {
                   </span>
                 </td>
 
-                <td class="p-4 text-right">
-                  <div class="flex justify-end gap-2" v-if="processingId !== sub.id">
+                <td class="p-4 text-center">
+                  <div class="flex justify-center gap-2" v-if="processingId !== sub.id">
                     <button
                       v-if="sub.status === 'pending' || sub.status === 'cancelled'"
                       @click="changeStatus(sub, 'active')"
-                      class="px-3 py-1 rounded-lg bg-[#3c490b] text-white text-xs font-semibold hover:bg-[#4e0d05] transition"
-                      title="Marcar como pagado/activo"
+                      class="w-9 h-9 rounded-lg bg-[#3c490b] text-white text-sm font-semibold hover:bg-[#4e0d05] transition flex items-center justify-center"
+                      title="Aceptar / activar"
                     >
-                      Confirmar
+                      ✓
                     </button>
 
                     <button
                       v-if="sub.status !== 'cancelled'"
                       @click="changeStatus(sub, 'cancelled')"
-                      class="px-3 py-1 rounded-lg border border-[#e099a8] text-[#e099a8] text-xs font-semibold hover:bg-[#e099a8] hover:text-white transition"
+                      class="w-9 h-9 rounded-lg border border-[#e099a8] text-[#e099a8] text-sm font-semibold hover:bg-[#e099a8] hover:text-white transition flex items-center justify-center"
                       title="Cancelar suscripción"
                     >
                       ✕

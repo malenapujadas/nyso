@@ -26,6 +26,15 @@ export default {
       showModal: false,
       noteText: "",
 
+      selectedNote: "",
+      noteOptions: [
+        "Me encantó",
+        "Muy rico y fácil de tomar",
+        "Lo volvería a comprar",
+        "Esta bien, pero no me sorprendió",
+        "No me gustó",
+      ],
+
       reviews: [], // lista de reseñas
       newReview: {
         rating: 0,
@@ -113,23 +122,31 @@ export default {
     },
 
     async confirmAddHistory() {
-      try {
-        await addHistory(this.user.id, this.vino.id, this.noteText);
-        this.message = "Agregado a tu Historial";
+    try {
+      if (!this.selectedNote) {
+        this.message = "Elegí una opción antes de guardar.";
         this.messageType = "history";
-        this.showModal = false;
-        this.noteText = "";
-      } catch (e) {
-        console.error(e);
-        this.message = "Error al agregar al Historial";
-        this.messageType = "history";
+        setTimeout(() => (this.message = null), 3000);
+        return;
       }
-    },
+
+      await addHistory(this.user.id, this.vino.id, this.selectedNote);
+
+      this.message = "Agregado a tu Historial";
+      this.messageType = "history";
+      this.showModal = false;
+      this.selectedNote = "";
+    } catch (e) {
+      console.error(e);
+      this.message = "Error al agregar al Historial";
+      this.messageType = "history";
+    }
+  },
 
     cancelModal() {
-      this.showModal = false;
-      this.noteText = "";
-    },
+    this.showModal = false;
+    this.selectedNote = "";
+  },
 
     // metodo para estrellas
     setRating(star) {
@@ -182,6 +199,18 @@ export default {
   computed: {
     isAdmin() {
       return this.user && this.user.role === "admin";
+    },
+
+    averageRating() {
+      if (!this.reviews || this.reviews.length === 0) return 0;
+
+      const sum = this.reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0);
+      return sum / this.reviews.length;
+    },
+
+    averageRatingText() {
+      if (!this.reviews || this.reviews.length === 0) return null;
+      return this.averageRating.toFixed(1); 
     },
   },
 };
@@ -242,15 +271,34 @@ export default {
 
         <!-- info -->
         <div class="flex-1 text-left space-y-6 mt-6 md:mt-0">
-          <!-- titulo + wishlist -->
+          <!-- titulo y promedio + wishlist  -->
           <div
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
-            <h2
-              class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]"
-            >
-              {{ vino.nombre }}
-            </h2>
+          <div class="flex items-center gap-3">
+
+          <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]">
+            {{ vino.nombre }}
+          </h2>
+
+          <div
+            v-if="averageRatingText"
+            class="flex items-center gap-1 text-sm sm:text-base font-semibold text-[#4e0d05]"
+          >
+            <span class="text-[#e099a8] text-lg leading-none">★</span>
+            <span>{{ averageRatingText }}</span>
+            <span class="text-xs text-[#4e0d05]/60 font-normal">
+              ({{ reviews.length }})
+            </span>
+          </div>
+
+          <div
+            v-else
+            class="text-xs sm:text-sm text-[#4e0d05]/60"
+          >
+            Sin calificaciones
+          </div>
+        </div>
 
             <button
               v-if="!isAdmin"
@@ -408,33 +456,43 @@ export default {
           </p>
         </div>
 
-        <!-- listado reseñas -->
-        <div v-if="reviews.length" class="space-y-4 mt-6">
-          <div
-            v-for="review in reviews"
-            :key="review.id"
-            class="border-b border-[#4e0d05]/10 pb-4"
-          >
-            <div class="flex justify-between">
-              <div>
-                <p class="font-bold text-sm">{{ review.user_name }}</p>
-                <div class="text-[#e099a8]">
-                  {{ "★".repeat(review.rating) }}
-                </div>
+    <!-- listado reseñas-->
+    <div v-if="reviews.length" class="mt-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+        v-for="review in reviews"
+        :key="review.id"
+        class="rounded-xl border border-[#4e0d05]/10 bg-[#f6f6eb] p-4 shadow-sm h-[190px] flex flex-col justify-between"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-bold text-sm text-[#4e0d05] truncate">
+                {{ review.user_name }}
+              </p>
+
+              <div class="text-[#e099a8] leading-none">
+                {{ "★".repeat(review.rating) }}
+                <span class="text-[#4e0d05]/40 text-xs ml-1">
+                  ({{ review.rating }}/5)
+                </span>
               </div>
-              <span class="text-xs text-[#4e0d05]/50">
-                {{ new Date(review.created_at).toLocaleDateString() }}
-              </span>
             </div>
-            <p class="text-sm mt-1 text-[#4e0d05]/80">
-              {{ review.comment }}
-            </p>
+
+            <span class="text-[11px] text-[#4e0d05]/50 whitespace-nowrap">
+              {{ new Date(review.created_at).toLocaleDateString() }}
+            </span>
           </div>
+
+          <p class="text-sm mt-3 text-[#4e0d05]/80 overflow-hidden text-ellipsis">
+            {{ review.comment }}
+          </p>
         </div>
       </div>
     </div>
+  </div> 
+</div> 
 
-    <!-- modal historial (AGREGADO) -->
+    <!-- modal historial -->
     <div
       v-if="showModal"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
@@ -447,15 +505,27 @@ export default {
         </h3>
 
         <p class="text-sm text-[#4e0d05]/70 mb-4">
-          ¡Escribí un recuerdo o comentario sobre este vino!
+          Elegí una opción para guardar en tu historial:
         </p>
 
-        <textarea
-          v-model="noteText"
-          rows="4"
-          placeholder="Por ejemplo: lo tomé con una pasta en Mendoza y me pareció súper dulce..."
-          class="w-full border border-[#e099a8] rounded-lg p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none"
-        ></textarea>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button
+          v-for="(opt, i) in noteOptions"
+          :key="i"
+          type="button"
+          @click="selectedNote = opt"
+          class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+          :class="
+            selectedNote === opt
+              ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+              : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+          "
+        >
+          <span class="leading-snug">
+            {{ opt }}
+          </span>
+        </button>
+      </div>
 
         <div class="flex justify-end gap-3 mt-4">
           <button

@@ -20,6 +20,15 @@ export default {
       postsLoading: true,
       error: null,
       postsError: null,
+
+      // buscador + paginación
+      suggSearchQuery: "",
+      postsSearchQuery: "",
+      suggCurrentPage: 1,
+      suggPerPage: 6,
+      postsCurrentPage: 1,
+      postsPerPage: 6,
+
       replyText: {},
       sendingReply: {},
       user: { id: null },
@@ -28,6 +37,86 @@ export default {
       confirmMessage: "",
       confirmAction: null,
     };
+  },
+
+  computed: {
+    // SUGERENCIAS (solo no respondidas, como ya mostrás)
+    filteredSuggestions() {
+      const query = this.suggSearchQuery?.toLowerCase() || "";
+      return this.suggestions
+        .filter((s) => !s.responded)
+        .filter((s) => {
+          const t = (s.titulo || "").toLowerCase();
+          const d = (s.descripcion || "").toLowerCase();
+          const n = (s.nombre || "").toLowerCase();
+          const e = (s.email || "").toLowerCase();
+          return (
+            t.includes(query) ||
+            d.includes(query) ||
+            n.includes(query) ||
+            e.includes(query)
+          );
+        });
+    },
+
+    suggTotalPages() {
+      return Math.max(
+        1,
+        Math.ceil(this.filteredSuggestions.length / this.suggPerPage)
+      );
+    },
+
+    paginatedSuggestions() {
+      const start = (this.suggCurrentPage - 1) * this.suggPerPage;
+      const end = start + this.suggPerPage;
+      return this.filteredSuggestions.slice(start, end);
+    },
+
+    // POSTS
+    filteredPosts() {
+      const query = this.postsSearchQuery?.toLowerCase() || "";
+      return this.posts.filter((p) => {
+        const t = (p.titulo || "").toLowerCase();
+        const s = (p.sinopsis || "").toLowerCase();
+        const d = (p.descripcion || "").toLowerCase();
+        return t.includes(query) || s.includes(query) || d.includes(query);
+      });
+    },
+
+    postsTotalPages() {
+      return Math.max(
+        1,
+        Math.ceil(this.filteredPosts.length / this.postsPerPage)
+      );
+    },
+
+    paginatedPosts() {
+      const start = (this.postsCurrentPage - 1) * this.postsPerPage;
+      const end = start + this.postsPerPage;
+      return this.filteredPosts.slice(start, end);
+    },
+  },
+
+  watch: {
+    // reset a página 1 cuando buscás
+    suggSearchQuery() {
+      this.suggCurrentPage = 1;
+    },
+    postsSearchQuery() {
+      this.postsCurrentPage = 1;
+    },
+
+    // si quedaste en una página que ya no existe
+    suggTotalPages() {
+      if (this.suggCurrentPage > this.suggTotalPages) {
+        this.suggCurrentPage = this.suggTotalPages;
+      }
+    },
+    postsTotalPages() {
+      if (this.postsCurrentPage > this.postsTotalPages) {
+        this.postsCurrentPage = this.postsTotalPages;
+      }
+    },
   },
 
   async mounted() {
@@ -110,6 +199,43 @@ export default {
         }
       );
     },
+
+    // PAGINACIÓN (misma lógica que Vinos.vue) + scroll arriba
+    goToSuggPage(p) {
+      const page = Number(p);
+      if (!Number.isFinite(page)) return;
+
+      if (page < 1) this.suggCurrentPage = 1;
+      else if (page > this.suggTotalPages)
+        this.suggCurrentPage = this.suggTotalPages;
+      else this.suggCurrentPage = page;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    nextSuggPage() {
+      this.goToSuggPage(this.suggCurrentPage + 1);
+    },
+    prevSuggPage() {
+      this.goToSuggPage(this.suggCurrentPage - 1);
+    },
+
+    goToPostsPage(p) {
+      const page = Number(p);
+      if (!Number.isFinite(page)) return;
+
+      if (page < 1) this.postsCurrentPage = 1;
+      else if (page > this.postsTotalPages)
+        this.postsCurrentPage = this.postsTotalPages;
+      else this.postsCurrentPage = page;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    nextPostsPage() {
+      this.goToPostsPage(this.postsCurrentPage + 1);
+    },
+    prevPostsPage() {
+      this.goToPostsPage(this.postsCurrentPage - 1);
+    },
   },
 };
 </script>
@@ -172,7 +298,9 @@ export default {
         Gestión del Blog
       </AppH1>
 
-      <p class="text-[#4e0d05]/60">Administrá las sugerencias y publicaciones activas.</p>
+      <p class="text-[#4e0d05]/60">
+        Administrá las sugerencias y publicaciones activas.
+      </p>
 
       <!-- sugerencias -->
       <div
@@ -184,6 +312,16 @@ export default {
           Sugerencias del blog
         </h2>
 
+        <!-- BUSCADOR SUGERENCIAS -->
+        <div class="relative w-full max-w-lg mb-6">
+          <input
+            v-model="suggSearchQuery"
+            type="search"
+            placeholder="Buscar sugerencias por título, descripción, nombre o email..."
+            class="w-full border border-[#e099a8] rounded-full p-3 pl-4 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
+          />
+        </div>
+
         <div v-if="loading" class="text-[#e099a8] text-center py-4">
           Cargando sugerencias...
         </div>
@@ -193,12 +331,15 @@ export default {
         </div>
 
         <div v-else>
-          <p v-if="suggestions.length === 0" class="text-[#4e0d05]/60 italic">
+          <p
+            v-if="filteredSuggestions.length === 0"
+            class="text-[#4e0d05]/60 italic"
+          >
             No hay sugerencias por ahora
           </p>
 
           <div
-            v-for="s in suggestions.filter((s) => !s.responded)"
+            v-for="s in paginatedSuggestions"
             :key="s.id"
             class="mb-6 p-4 sm:p-6 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl shadow-sm hover:shadow-md transition-all"
           >
@@ -251,6 +392,53 @@ export default {
               </div>
             </div>
           </div>
+
+          <!-- PAGINACIÓN SUGERENCIAS -->
+          <div
+            v-if="filteredSuggestions.length > 0 && suggTotalPages > 1"
+            class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+          >
+            <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+              Página {{ suggCurrentPage }} de {{ suggTotalPages }}
+            </p>
+
+            <div
+              class="flex flex-wrap items-center justify-center lg:justify-end gap-2"
+            >
+              <button
+                type="button"
+                @click="prevSuggPage"
+                :disabled="suggCurrentPage === 1"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Anterior
+              </button>
+
+              <button
+                v-for="p in suggTotalPages"
+                :key="p"
+                type="button"
+                @click="goToSuggPage(p)"
+                :class="[
+                  'w-10 h-10 rounded-full border text-sm font-semibold transition',
+                  p === suggCurrentPage
+                    ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                ]"
+              >
+                {{ p }}
+              </button>
+
+              <button
+                type="button"
+                @click="nextSuggPage"
+                :disabled="suggCurrentPage === suggTotalPages"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -262,6 +450,16 @@ export default {
           Publicaciones del blog
         </h2>
 
+        <!-- BUSCADOR POSTS -->
+        <div class="relative w-full max-w-lg mb-6">
+          <input
+            v-model="postsSearchQuery"
+            type="search"
+            placeholder="Buscar publicaciones por título o sinopsis..."
+            class="w-full border border-[#e099a8] rounded-full p-3 pl-4 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/60"
+          />
+        </div>
+
         <div v-if="postsLoading" class="text-[#e099a8] text-center py-4">
           Cargando publicaciones...
         </div>
@@ -271,12 +469,15 @@ export default {
         </div>
 
         <div v-else>
-          <p v-if="posts.length === 0" class="text-[#4e0d05]/60 italic">
+          <p
+            v-if="filteredPosts.length === 0"
+            class="text-[#4e0d05]/60 italic"
+          >
             No hay publicaciones aún
           </p>
 
           <div
-            v-for="p in posts"
+            v-for="p in paginatedPosts"
             :key="p.id"
             class="mb-4 p-4 sm:p-5 bg-[#f6f6eb] border border-[#4e0d05]/20 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:shadow-md transition-all"
           >
@@ -295,6 +496,53 @@ export default {
             >
               Eliminar ✕
             </button>
+          </div>
+
+          <!-- PAGINACIÓN POSTS -->
+          <div
+            v-if="filteredPosts.length > 0 && postsTotalPages > 1"
+            class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+          >
+            <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+              Página {{ postsCurrentPage }} de {{ postsTotalPages }}
+            </p>
+
+            <div
+              class="flex flex-wrap items-center justify-center lg:justify-end gap-2"
+            >
+              <button
+                type="button"
+                @click="prevPostsPage"
+                :disabled="postsCurrentPage === 1"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Anterior
+              </button>
+
+              <button
+                v-for="p in postsTotalPages"
+                :key="p"
+                type="button"
+                @click="goToPostsPage(p)"
+                :class="[
+                  'w-10 h-10 rounded-full border text-sm font-semibold transition',
+                  p === postsCurrentPage
+                    ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                ]"
+              >
+                {{ p }}
+              </button>
+
+              <button
+                type="button"
+                @click="nextPostsPage"
+                :disabled="postsCurrentPage === postsTotalPages"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+            </div>
           </div>
         </div>
       </div>
