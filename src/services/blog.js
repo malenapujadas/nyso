@@ -173,3 +173,18 @@ export async function deletePost(postId) {
 
   return true;
 }
+
+// Contar sugerencias del blog sin responder
+export async function getPendingSuggestionsCount() {
+  const { count, error } = await supabase
+    .from("blog_suggestions") 
+    .select('*', { count: 'exact', head: true })
+    .eq("responded", false); 
+
+  if (error) {
+    console.error("Error al contar sugerencias pendientes:", error);
+    return 0;
+  }
+  
+  return count || 0;
+}

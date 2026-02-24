@@ -63,3 +63,18 @@ export async function updateSubscriptionStatus(id, newStatus) {
   }
   return data;
 }
+
+// 5. Contar cuántas suscripciones pendientes hay (Para la notificación)
+export async function getPendingSubscriptionsCount() {
+  const { count, error } = await supabase
+    .from("subscriptions")
+    .select('*', { count: 'exact', head: true }) // head: true evita traer los datos completos, solo trae el número
+    .eq("status", "pending");
+
+  if (error) {
+    console.error("Error al contar suscripciones pendientes:", error);
+    return 0;
+  }
+  
+  return count || 0;
+}

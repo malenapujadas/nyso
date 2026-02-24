@@ -19,6 +19,7 @@ import { subscribeToAuthChanges } from "../services/auth";
 import { getAuthUser } from "../services/auth";
 import Box from "../pages/Box.vue";
 import AdminKits from "../pages/admin/AdminKits.vue";
+import AdminUsers from "../pages/admin/AdminUsers.vue";
 
 // definir rutas
 
@@ -65,7 +66,7 @@ const routes = [
       {
         path: "usuarios", // URL: /admin/usuarios
         name: "AdminUsers",
-        component: { template: '<h2 class="text-2xl text-[#4e0d05]">Gestión de Usuarios (Próximamente)</h2>' } // Placeholder temporal
+        component: AdminUsers
       },
       {
         path: "kits", // URL: /admin/kits

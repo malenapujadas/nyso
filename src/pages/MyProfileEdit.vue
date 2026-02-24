@@ -24,8 +24,15 @@ export default {
         con_quien: "",
         temas: [],
       },
+      avatar_url: null,
       loading: false,
       ...opciones,
+      avataresDisponibles: [
+        "/avatar1.png",
+        "/avatar2.png",
+        "/avatar3.png",
+        "/avatar4.png",
+      ],
     };
   },
   methods: {
@@ -52,15 +59,24 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
-        // Guardar preferencias
+        // 1. Guardar preferencias
         await savePreferencesForUser(user.id, this.answers);
 
-        // Guardar nombre de usuario
+        // 2. Armamos el objeto con TODOS los datos del perfil
+        const profileData = {
+          display_name: this.display_name,
+          avatar_url: this.avatar_url, 
+        };
+
+        // 3. Guardamos en la tabla user_profiles
+        await updateUserProfile(user.id, profileData);
+
+        // 4. Guardar nombre de usuario en Auth (esto dejalo como lo tenías)
         if (this.display_name) {
-          await updateUserProfile(user.id, { display_name: this.display_name });
           await updateAuthUserData({ display_name: this.display_name });
         }
 
+        // 5. Redirigir
         this.$router.push("/mi-perfil");
       } catch (error) {
         console.error("[MyProfileEdit] Error al editar datos:", error);
@@ -75,6 +91,9 @@ export default {
       // Precargar nombre de usuario
       this.display_name =
         user.user_metadata?.display_name || user.display_name || "";
+
+      // Precargar avatar de usuario
+      this.avatar_url = user.avatar_url || null;
 
       // Cargar preferencias y asegurar valores por defecto
       const prefs = await getPreferencesForUser(user.id);
@@ -146,6 +165,63 @@ export default {
             v-model="display_name"
             class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none"
           />
+        </div>
+
+        <!-- AVATAR -->
+        <div class="mb-6">
+          <label class="block text-sm font-bold text-[#4e0d05] mb-3"
+            >Elegí tu Avatar</label
+          >
+
+          <div class="flex flex-wrap gap-4 items-center">
+            <button
+              type="button"
+              @click="avatar_url = null"
+              class="relative w-16 h-16 rounded-full transition-all duration-300"
+              :class="
+                avatar_url === null
+                  ? 'ring-4 ring-[#3c490b] scale-110 shadow-lg'
+                  : 'opacity-70 hover:opacity-100'
+              "
+            >
+              <div
+                class="w-full h-full rounded-full bg-[#ede8d7] flex items-center justify-center text-2xl font-bold text-[#4e0d05] border border-[#4e0d05]/20"
+              >
+                {{ display_name ? display_name.charAt(0).toUpperCase() : "U" }}
+              </div>
+              <div
+                v-if="avatar_url === null"
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-[#3c490b] rounded-full flex items-center justify-center text-white text-xs border-2 border-white"
+              >
+                ✓
+              </div>
+            </button>
+
+            <button
+              v-for="(img, index) in avataresDisponibles"
+              :key="index"
+              type="button"
+              @click="avatar_url = img"
+              class="relative w-16 h-16 rounded-full transition-all duration-300"
+              :class="
+                avatar_url === img
+                  ? 'ring-4 ring-[#3c490b] scale-110 shadow-lg'
+                  : 'opacity-70 hover:opacity-100'
+              "
+            >
+              <img
+                :src="img"
+                class="w-full h-full rounded-full object-cover border border-[#4e0d05]/20"
+              />
+
+              <div
+                v-if="avatar_url === img"
+                class="absolute -bottom-1 -right-1 w-5 h-5 bg-[#3c490b] rounded-full flex items-center justify-center text-white text-xs border-2 border-white"
+              >
+                ✓
+              </div>
+            </button>
+          </div>
         </div>
 
         <div>

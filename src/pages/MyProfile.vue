@@ -1,6 +1,6 @@
 <script>
 import AppH1 from "../components/AppH1.vue";
-import { subscribeToAuthChanges } from "../services/auth.js";
+import { subscribeToAuthChanges, getCurrentUser } from "../services/auth.js";
 import { getFavorites, removeFavorite } from "../services/favorites.js";
 import { getHistory, clearHistory } from "../services/history.js";
 import { getPreferencesForUser } from "../services/preferences.js";
@@ -22,6 +22,7 @@ export default {
         id: null,
         email: null,
         display_name: null,
+        avatar_url: null, 
       },
       favorites: [],
       history: [],
@@ -33,11 +34,14 @@ export default {
   },
   mounted() {
     subscribeToAuthChanges(async (userState) => {
-      this.user = userState;
-      const vinosDB = await getVinos();
-      if (this.user && this.user.id) {
+      // Si hay un usuario logueado
+      if (userState && userState.id) {
+        const fullUser = await getCurrentUser(); 
+        this.user = fullUser || userState;
+
+        const vinosDB = await getVinos();
+        
         const [favIds, hisIds, friends, pending] = await Promise.all([
-          //el promise carga todo al mismo tiempo
           getFavorites(this.user.id),
           getHistory(this.user.id),
           getFriends(this.user.id),
@@ -48,14 +52,13 @@ export default {
         this.pendingRequests = pending;
 
         this.favorites = vinosDB.filter(
-          (v) => favIds.includes(Number(v.id)) || favIds.includes(String(v.id))
+          (v) => favIds.includes(Number(v.id)) || favIds.includes(String(v.id)),
         );
 
-        //nuevo para agregar la nota
         this.history = vinosDB
           .map((v) => {
             const match = hisIds.find(
-              (h) => String(h.vino_id) === String(v.id)
+              (h) => String(h.vino_id) === String(v.id),
             );
             if (match) {
               return { ...v, note: match.note };
@@ -65,6 +68,9 @@ export default {
           .filter(Boolean);
 
         this.preferences = await getPreferencesForUser(this.user.id);
+      } else {
+        // Si no hay usuario (cerró sesión)
+        this.user = { id: null, email: null, display_name: null, avatar_url: null };
       }
     });
   },
@@ -77,7 +83,7 @@ export default {
       } catch (error) {
         console.error(
           "[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ",
-          error
+          error,
         );
         throw new Error(error.message);
       }
@@ -89,7 +95,7 @@ export default {
       } catch (error) {
         console.error(
           "[MyProfile.vue handleRemoveHistory] Error al eliminar vino del historial: ",
-          error
+          error,
         );
         throw new Error(error.message);
       }
@@ -106,7 +112,10 @@ export default {
               reqOrId?.request_id;
 
         if (!connectionId) {
-          console.error("[MyProfile.vue handleResponse] connectionId undefined:", reqOrId);
+          console.error(
+            "[MyProfile.vue handleResponse] connectionId undefined:",
+            reqOrId,
+          );
           return;
         }
 
@@ -122,7 +131,7 @@ export default {
       } catch (error) {
         console.error(
           "[MyProfile.vue handleResponse] Error actualizando solicitud: ",
-          error
+          error,
         );
       }
     },
@@ -135,13 +144,17 @@ export default {
           this.friends = friends;
         }
       } catch (error) {
-        console.error("[MyProfile.vue handleRemoveFriend] Error eliminando amigo: ", error);
+        console.error(
+          "[MyProfile.vue handleRemoveFriend] Error eliminando amigo: ",
+          error,
+        );
       }
     },
 
-        normalizarValor(val) {
+    normalizarValor(val) {
       if (val === null || val === undefined) return "";
-      if (Array.isArray(val)) return val.map((x) => String(x).toLowerCase().trim()).join(" ");
+      if (Array.isArray(val))
+        return val.map((x) => String(x).toLowerCase().trim()).join(" ");
       return String(val).toLowerCase().trim();
     },
 
@@ -206,8 +219,6 @@ export default {
       const amount = Math.round(el.clientWidth * 0.85);
       el.scrollBy({ left: dir * amount, behavior: "smooth" });
     },
-
-
   },
 };
 </script>
@@ -277,16 +288,38 @@ export default {
 
     <!-- CONTENEDOR PRINCIPAL  -->
     <div class="mx-auto max-w-6xl px-6 md:px-12 py-12 relative z-10">
-      <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 md:p-8 shadow-sm">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      <div
+        class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 md:p-8 shadow-sm"
+      >
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+        >
           <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-[#e099a8]/25 border border-[#e099a8]/40 flex items-center justify-center text-[#4e0d05] font-extrabold text-xl">
-              {{ (user.display_name || user.email || "U").slice(0,1).toUpperCase() }}
+            <img
+              v-if="user.avatar_url"
+              :src="user.avatar_url"
+              class="w-14 h-14 rounded-2xl object-cover border border-[#e099a8]/40 shadow-sm"
+            />
+
+            <div
+              v-else
+              class="w-14 h-14 rounded-2xl bg-[#e099a8]/25 border border-[#e099a8]/40 flex items-center justify-center text-[#4e0d05] font-extrabold text-xl"
+            >
+              {{
+                (user.display_name || user.email || "U")
+                  .slice(0, 1)
+                  .toUpperCase()
+              }}
             </div>
 
             <div class="text-left">
-              <h1 class="text-2xl md:text-3xl font-extrabold text-[#4e0d05] leading-tight">
-                {{ user.display_name || (user.email ? user.email.split("@")[0] : "Usuario") }}
+              <h1
+                class="text-2xl md:text-3xl font-extrabold text-[#4e0d05] leading-tight"
+              >
+                {{
+                  user.display_name ||
+                  (user.email ? user.email.split("@")[0] : "Usuario")
+                }}
               </h1>
               <p class="text-sm text-[#4e0d05]/60 mt-1">
                 {{ user.email }}
@@ -295,17 +328,29 @@ export default {
           </div>
 
           <div class="grid grid-cols-3 gap-3 md:gap-4">
-            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+            <div
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            >
               <p class="text-xs text-[#4e0d05]/60">Wishlist</p>
-              <p class="text-lg font-bold text-[#4e0d05]">{{ favorites.length }}</p>
+              <p class="text-lg font-bold text-[#4e0d05]">
+                {{ favorites.length }}
+              </p>
             </div>
-            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+            <div
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            >
               <p class="text-xs text-[#4e0d05]/60">Historial</p>
-              <p class="text-lg font-bold text-[#4e0d05]">{{ history.length }}</p>
+              <p class="text-lg font-bold text-[#4e0d05]">
+                {{ history.length }}
+              </p>
             </div>
-            <div class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center">
+            <div
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            >
               <p class="text-xs text-[#4e0d05]/60">Amigos</p>
-              <p class="text-lg font-bold text-[#4e0d05]">{{ friends.length }}</p>
+              <p class="text-lg font-bold text-[#4e0d05]">
+                {{ friends.length }}
+              </p>
             </div>
           </div>
         </div>
@@ -329,127 +374,134 @@ export default {
       </div>
 
       <!--  Box mensual -->
-      <div class="mt-10 rounded-3xl border border-[#3c490b]/20 bg-[#ede8d7]/80 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+      <div
+        class="mt-10 rounded-3xl border border-[#3c490b]/20 bg-[#ede8d7]/80 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4"
+      >
         <div class="text-left">
           <p class="text-sm text-[#4e0d05]/70 font-medium">Box mensual</p>
-          <p class="text-lg md:text-xl font-extrabold text-[#4e0d05] leading-tight">
+          <p
+            class="text-lg md:text-xl font-extrabold text-[#4e0d05] leading-tight"
+          >
             Un vino por mes, elegido por NYSO.
           </p>
         </div>
 
-        <RouterLink to="/box" class="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#3c490b] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#3c490b] hover:text-[#f6f6eb] transition">
+        <RouterLink
+          to="/box"
+          class="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#3c490b] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
+        >
           Comprar box mensual
         </RouterLink>
       </div>
 
-    <!-- WISHLIST + HISTORIAL -->
-<div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-<!-- WISHLIST -->
-<div class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm">
-  <div class="mb-4">
-    <h2 class="text-xl font-extrabold text-[#3c490b]">Wishlist</h2>
-    <p class="text-sm text-[#4e0d05]/60">Vinos que querés probar</p>
-  </div>
-
-  <div v-if="favorites.length" class="divide-y divide-[#4e0d05]/10">
-    <div
-      v-for="v in favorites"
-      :key="v.id"
-      class="py-4 flex items-center justify-between gap-4"
-    >
-      <div class="text-left">
-        <p class="font-semibold text-[#4e0d05] leading-tight">
-          {{ v.nombre }}
-        </p>
-        <p class="text-xs text-[#4e0d05]/60">
-          {{ v.bodega }} — {{ v.tipo }}
-        </p>
-      </div>
-
-      <div class="flex gap-2 shrink-0">
-        <RouterLink
-          :to="{ name: 'detalle', params: { id: v.id } }"
-          class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+      <!-- WISHLIST + HISTORIAL -->
+      <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- WISHLIST -->
+        <div
+          class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
         >
-          Ver
-        </RouterLink>
+          <div class="mb-4">
+            <h2 class="text-xl font-extrabold text-[#3c490b]">Wishlist</h2>
+            <p class="text-sm text-[#4e0d05]/60">Vinos que querés probar</p>
+          </div>
 
-        <button
-          @click="handleRemoveFavorite(v.id)"
-          class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
-        >
-          Eliminar
-        </button>
-      </div>
-    </div>
-  </div>
+          <div v-if="favorites.length" class="divide-y divide-[#4e0d05]/10">
+            <div
+              v-for="v in favorites"
+              :key="v.id"
+              class="py-4 flex items-center justify-between gap-4"
+            >
+              <div class="text-left">
+                <p class="font-semibold text-[#4e0d05] leading-tight">
+                  {{ v.nombre }}
+                </p>
+                <p class="text-xs text-[#4e0d05]/60">
+                  {{ v.bodega }} — {{ v.tipo }}
+                </p>
+              </div>
 
-  <p v-else class="text-[#4e0d05]/60 italic">
-    Aún no tenés vinos en tu wishlist.
-  </p>
-</div>
+              <div class="flex gap-2 shrink-0">
+                <RouterLink
+                  :to="{ name: 'detalle', params: { id: v.id } }"
+                  class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                >
+                  Ver
+                </RouterLink>
 
-<!-- HISTORIAL -->
-<div class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm">
-  <div class="mb-4">
-    <h2 class="text-xl font-extrabold text-[#3c490b]">Historial</h2>
-    <p class="text-sm text-[#4e0d05]/60">Lo que ya probaste</p>
-  </div>
+                <button
+                  @click="handleRemoveFavorite(v.id)"
+                  class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
 
-  <div v-if="history.length" class="divide-y divide-[#4e0d05]/10">
-    <div
-      v-for="v in history"
-      :key="v.id"
-      class="py-4 flex flex-col gap-2"
-    >
-      <div class="flex items-center justify-between gap-4">
-        <div class="text-left">
-          <p class="font-semibold text-[#4e0d05] leading-tight">
-            {{ v.nombre }}
-          </p>
-          <p class="text-xs text-[#4e0d05]/60">
-            {{ v.bodega }} — {{ v.tipo }}
+          <p v-else class="text-[#4e0d05]/60 italic">
+            Aún no tenés vinos en tu wishlist.
           </p>
         </div>
 
-        <div class="flex gap-2 shrink-0">
-          <RouterLink
-            :to="{ name: 'detalle', params: { id: v.id } }"
-            class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
-          >
-            Ver
-          </RouterLink>
+        <!-- HISTORIAL -->
+        <div
+          class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
+        >
+          <div class="mb-4">
+            <h2 class="text-xl font-extrabold text-[#3c490b]">Historial</h2>
+            <p class="text-sm text-[#4e0d05]/60">Lo que ya probaste</p>
+          </div>
 
-          <button
-            @click="handleRemoveHistory(v.id)"
-            class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
-          >
-            Eliminar
-          </button>
+          <div v-if="history.length" class="divide-y divide-[#4e0d05]/10">
+            <div
+              v-for="v in history"
+              :key="v.id"
+              class="py-4 flex flex-col gap-2"
+            >
+              <div class="flex items-center justify-between gap-4">
+                <div class="text-left">
+                  <p class="font-semibold text-[#4e0d05] leading-tight">
+                    {{ v.nombre }}
+                  </p>
+                  <p class="text-xs text-[#4e0d05]/60">
+                    {{ v.bodega }} — {{ v.tipo }}
+                  </p>
+                </div>
+
+                <div class="flex gap-2 shrink-0">
+                  <RouterLink
+                    :to="{ name: 'detalle', params: { id: v.id } }"
+                    class="px-3 py-1 rounded-full border border-[#3c490b] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                  >
+                    Ver
+                  </RouterLink>
+
+                  <button
+                    @click="handleRemoveHistory(v.id)"
+                    class="px-3 py-1 rounded-full bg-[#e099a8] text-[#3c490b] text-xs font-semibold hover:bg-[#3c490b] hover:text-white transition"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+
+              <p v-if="v.note" class="text-sm text-[#4e0d05]/80 italic pl-1">
+                “{{ v.note }}”
+              </p>
+            </div>
+          </div>
+
+          <p v-else class="text-[#4e0d05]/60 italic">
+            No hay vinos en tu historial.
+          </p>
         </div>
       </div>
-
-      <p
-        v-if="v.note"
-        class="text-sm text-[#4e0d05]/80 italic pl-1"
-      >
-        “{{ v.note }}”
-      </p>
-    </div>
-  </div>
-
-  <p v-else class="text-[#4e0d05]/60 italic">
-    No hay vinos en tu historial.
-  </p>
-</div>
-
-</div>
-
 
       <!-- AMIGOS + PENDIENTES -->
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm">
+        <div
+          class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
+        >
           <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">Mis amigos</h2>
 
           <div v-if="friends.length === 0" class="text-[#4e0d05]/60 italic">
@@ -468,7 +520,7 @@ export default {
 
               <button
                 @click="handleRemoveFriend(f.id)"
-                class="px-3 py-1 rounded-full border border-[#4e0d05]/40 text-[#4e0d05]text-xs font-semibold hover:bg-[#4e0d05] hover:text-[#f6f6eb]"               
+                class="px-3 py-1 rounded-full border border-[#4e0d05]/40 text-[#4e0d05]text-xs font-semibold hover:bg-[#4e0d05] hover:text-[#f6f6eb]"
               >
                 Eliminar
               </button>
@@ -477,10 +529,17 @@ export default {
         </div>
 
         <!-- Solicitudes -->
-        <div class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm">
-          <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">Solicitudes pendientes</h2>
+        <div
+          class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
+        >
+          <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">
+            Solicitudes pendientes
+          </h2>
 
-          <div v-if="pendingRequests.length === 0" class="text-[#4e0d05]/60 italic">
+          <div
+            v-if="pendingRequests.length === 0"
+            class="text-[#4e0d05]/60 italic"
+          >
             No hay solicitudes pendientes.
           </div>
 
@@ -517,7 +576,6 @@ export default {
           </div>
         </div>
       </div>
-
     </div>
   </section>
 </template>

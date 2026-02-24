@@ -21,6 +21,7 @@ export default {
       user: null,
       message: "",
       sentRequests: [],
+      avatar_url: null,
 
       // paginacion (Solo aplica a los resultados de búsqueda)
       currentPage: 1,
@@ -242,8 +243,15 @@ export default {
               :key="u.id"
               class="bg-white border border-[#4e0d05]/10 rounded-2xl p-6 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-all group"
             >
+              <img
+                v-if="u.avatar_url"
+                :src="u.avatar_url"
+                alt="Avatar"
+                class="w-12 h-12 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm"
+              />
               <div
-                class="w-20 h-20 rounded-full bg-[#ede8d7] flex items-center justify-center text-2xl font-bold text-[#4e0d05] mb-4 group-hover:scale-110 transition-transform duration-300"
+                v-else
+                class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10"
               >
                 {{
                   u.display_name ? u.display_name.charAt(0).toUpperCase() : "?"
@@ -264,13 +272,15 @@ export default {
                 </router-link>
 
                 <button
-                  v-if="!sentRequests.includes(u.id)"
+                  v-if="!isAdmin && !sentRequests.includes(u.id)"
                   @click="handleConnect(u.id)"
                   class="w-full py-2 rounded-full bg-[#e099a8]/20 text-[#4e0d05] text-sm font-semibold hover:bg-[#e099a8] hover:text-white transition-colors"
                 >
                   Conectar
                 </button>
-                <span v-else class="text-xs text-[#3c490b] font-medium py-2"
+                <span 
+                  v-else-if="!isAdmin && sentRequests.includes(u.id)"
+                  class="text-xs text-[#3c490b] font-medium py-2"
                   >Solicitud enviada</span
                 >
               </div>

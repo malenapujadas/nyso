@@ -15,6 +15,7 @@ export default {
       profile: null,
       preferences: null,
       loading: true,
+      avatar_url: null,
 
       user: null,
       message: "",
@@ -28,7 +29,13 @@ export default {
     },
 
     canShowConnectButton() {
-      return this.user && this.user.id && this.receiverId && this.user.id !== this.receiverId;
+      return (
+        this.user &&
+        this.user.id &&
+        this.receiverId &&
+        this.user.id !== this.receiverId &&
+        this.user.role !== 'admin'
+      );
     },
 
     alreadySent() {
@@ -46,7 +53,6 @@ export default {
 
       try {
         await sendConnectionRequest(this.user.id, this.receiverId);
-
 
         if (!this.sentRequests.includes(this.receiverId)) {
           this.sentRequests.push(this.receiverId);
@@ -133,10 +139,22 @@ export default {
           >
             <div class="flex flex-col items-center text-center">
               <img
-                src="/nysito2.png"
-                alt="MYSITO"
-                class="w-28 h-28 rounded-full object-cover border-4 border-[#e099a8]/70 mb-4 bg-white"
+                v-if="profile.avatar_url"
+                :src="profile.avatar_url"
+                alt="Avatar"
+                class="w-16 h-16 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm mb-4"
               />
+
+              <div
+                v-else
+                class="w-16 h-16 rounded-full bg-[#ede8d7] flex items-center justify-center text-2xl font-bold text-[#4e0d05] border border-[#4e0d05]/10 mb-4"
+              >
+                {{
+                  profile.display_name
+                    ? profile.display_name.charAt(0).toUpperCase()
+                    : "?"
+                }}
+              </div>
               <h2 class="text-2xl font-bold text-[#4e0d05] mb-1">
                 {{ profile.display_name || "Sin nombre" }}
               </h2>
@@ -160,10 +178,7 @@ export default {
                 </span>
               </div>
 
-              <div
-                v-if="message"
-                class="mt-3 text-sm text-[#3c490b]"
-              >
+              <div v-if="message" class="mt-3 text-sm text-[#3c490b]">
                 {{ message }}
               </div>
             </div>

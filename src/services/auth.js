@@ -43,7 +43,8 @@ async function loadExtendedProfile() {
       id: user.id,
       email: user.email,
       display_name: profile?.display_name || user?.display_name || null,
-      role: "user", // default
+      role: "user", // default,
+      avatar_url: null,
     });
 
     // volver a cargar el perfil recién creado
@@ -139,8 +140,18 @@ export function subscribeToAuthChanges(callback) {
 }
 
 export async function getCurrentUser() {
-  const { data } = await supabase.auth.getUser();
-  return data?.user || null;
+  // 1. Buscamos el usuario de Auth (email, id)
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData?.user) return null;
+
+  // 2. Buscamos tu perfil extendido (avatar, rol, preferencias)
+  const profile = await getUserProfileById(authData.user.id);
+
+  // 3. Juntamos todo en un solo objeto y lo devolvemos
+  return {
+    ...authData.user,
+    ...profile
+  };
 }
 
 function notify(callback) {
