@@ -360,28 +360,50 @@ export default {
           </p>
         </div>
 
-        <div
-          v-if="filteredUsers.length > 0 && totalPages > 1"
-          class="flex justify-center mt-8 gap-2"
+       <!--  Paginación  -->
+    <div
+      v-if="filteredUsers.length > 0 && totalPages > 1"
+      class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+    >
+      <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+        Página {{ currentPage }} de {{ totalPages }}
+      </p>
+
+      <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
+        <button
+          type="button"
+          @click="prevPage"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
         >
-          <button
-            @click="prevPage"
-            :disabled="currentPage === 1"
-            class="px-3 py-1 rounded-md text-sm disabled:opacity-30 hover:bg-[#e099a8]/20"
-          >
-            Ant
-          </button>
-          <span class="px-3 py-1 font-bold text-[#4e0d05]">{{
-            currentPage
-          }}</span>
-          <button
-            @click="nextPage"
-            :disabled="currentPage === totalPages"
-            class="px-3 py-1 rounded-md text-sm disabled:opacity-30 hover:bg-[#e099a8]/20"
-          >
-            Sig
-          </button>
-        </div>
+          Anterior
+        </button>
+
+        <button
+          v-for="p in totalPages"
+          :key="p"
+          type="button"
+          @click="goToPage(p)"
+          :class="[
+            'w-10 h-10 rounded-full border text-sm font-semibold transition',
+            p === currentPage
+              ? 'bg-[#3c490b] text-white border-[#3c490b]'
+              : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+          ]"
+        >
+          {{ p }}
+        </button>
+
+        <button
+          type="button"
+          @click="nextPage"
+          :disabled="currentPage === totalPages"
+          class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+        >
+          Siguiente
+        </button>
+      </div>
+    </div>
       </div>
     </section>
   </div>

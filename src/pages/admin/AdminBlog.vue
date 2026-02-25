@@ -25,7 +25,7 @@ export default {
       suggSearchQuery: "",
       postsSearchQuery: "",
       suggCurrentPage: 1,
-      suggPerPage: 6,
+      suggPerPage: 3,
       postsCurrentPage: 1,
       postsPerPage: 6,
 
@@ -293,14 +293,14 @@ export default {
 
     <div class="relative z-10 max-w-5xl mx-auto">
       <AppH1
-        class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-8 sm:mb-10 text-center tracking-wide"
-      >
-        Gestión del Blog
-      </AppH1>
+      class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-3 sm:mb-4 text-center tracking-wide"
+    >
+      Gestión del Blog
+    </AppH1>
 
-      <p class="text-[#4e0d05]/60">
-        Administrá las sugerencias y publicaciones activas.
-      </p>
+    <p class="text-[#4e0d05]/60 text-center mb-8 sm:mb-10">
+      Administrá las sugerencias y publicaciones activas.
+    </p>
 
       <!-- sugerencias -->
       <div

@@ -530,8 +530,9 @@ export default {
 
         <!-- Solicitudes -->
         <div
-          class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
-        >
+        id="solicitudes"
+        class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
+      >
           <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">
             Solicitudes pendientes
           </h2>

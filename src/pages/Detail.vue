@@ -40,7 +40,11 @@ export default {
         rating: 0,
         comment: "",
       },
-      reviewMessage: null, // mensaje de exito/error específico para reseñas
+      reviewMessage: null, 
+
+      // PAGINACIÓN RESEÑAS
+      reviewsCurrentPage: 1,
+      reviewsPerPage: 3,
     };
   },
 
@@ -80,6 +84,15 @@ export default {
     }
 
     this.loading = false;
+  },
+
+  watch: {
+    // PAGINACIÓN RESEÑAS (NUEVO) - si quedaste en una página que ya no existe
+    totalReviewPages() {
+      if (this.reviewsCurrentPage > this.totalReviewPages) {
+        this.reviewsCurrentPage = this.totalReviewPages;
+      }
+    },
   },
 
   methods: {
@@ -122,31 +135,31 @@ export default {
     },
 
     async confirmAddHistory() {
-    try {
-      if (!this.selectedNote) {
-        this.message = "Elegí una opción antes de guardar.";
+      try {
+        if (!this.selectedNote) {
+          this.message = "Elegí una opción antes de guardar.";
+          this.messageType = "history";
+          setTimeout(() => (this.message = null), 3000);
+          return;
+        }
+
+        await addHistory(this.user.id, this.vino.id, this.selectedNote);
+
+        this.message = "Agregado a tu Historial";
         this.messageType = "history";
-        setTimeout(() => (this.message = null), 3000);
-        return;
+        this.showModal = false;
+        this.selectedNote = "";
+      } catch (e) {
+        console.error(e);
+        this.message = "Error al agregar al Historial";
+        this.messageType = "history";
       }
-
-      await addHistory(this.user.id, this.vino.id, this.selectedNote);
-
-      this.message = "Agregado a tu Historial";
-      this.messageType = "history";
-      this.showModal = false;
-      this.selectedNote = "";
-    } catch (e) {
-      console.error(e);
-      this.message = "Error al agregar al Historial";
-      this.messageType = "history";
-    }
-  },
+    },
 
     cancelModal() {
-    this.showModal = false;
-    this.selectedNote = "";
-  },
+      this.showModal = false;
+      this.selectedNote = "";
+    },
 
     // metodo para estrellas
     setRating(star) {
@@ -184,6 +197,9 @@ export default {
         // agrego reseña a la lista local
         this.reviews.unshift(savedReview);
 
+        // PAGINACIÓN RESEÑAS (NUEVO) - volver a página 1
+        this.reviewsCurrentPage = 1;
+
         // limpio
         this.newReview.rating = 0;
         this.newReview.comment = "";
@@ -195,7 +211,26 @@ export default {
         this.reviewMessage = "Error al guardar la reseña.";
       }
     },
+
+    // PAGINACIÓN RESEÑAS (NUEVO) - igual a Vinos
+    goToReviewPage(p) {
+      const page = Number(p);
+      if (!Number.isFinite(page)) return;
+
+      if (page < 1) this.reviewsCurrentPage = 1;
+      else if (page > this.totalReviewPages) this.reviewsCurrentPage = this.totalReviewPages;
+      else this.reviewsCurrentPage = page;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    nextReviewPage() {
+      this.goToReviewPage(this.reviewsCurrentPage + 1);
+    },
+    prevReviewPage() {
+      this.goToReviewPage(this.reviewsCurrentPage - 1);
+    },
   },
+
   computed: {
     isAdmin() {
       return this.user && this.user.role === "admin";
@@ -210,7 +245,17 @@ export default {
 
     averageRatingText() {
       if (!this.reviews || this.reviews.length === 0) return null;
-      return this.averageRating.toFixed(1); 
+      return this.averageRating.toFixed(1);
+    },
+
+    // PAGINACIÓN RESEÑAS (NUEVO)
+    totalReviewPages() {
+      return Math.max(1, Math.ceil(this.reviews.length / this.reviewsPerPage));
+    },
+    paginatedReviews() {
+      const start = (this.reviewsCurrentPage - 1) * this.reviewsPerPage;
+      const end = start + this.reviewsPerPage;
+      return this.reviews.slice(start, end);
     },
   },
 };
@@ -275,30 +320,26 @@ export default {
           <div
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
-          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3">
+              <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]">
+                {{ vino.nombre }}
+              </h2>
 
-          <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]">
-            {{ vino.nombre }}
-          </h2>
+              <div
+                v-if="averageRatingText"
+                class="flex items-center gap-1 text-sm sm:text-base font-semibold text-[#4e0d05]"
+              >
+                <span class="text-[#e099a8] text-lg leading-none">★</span>
+                <span>{{ averageRatingText }}</span>
+                <span class="text-xs text-[#4e0d05]/60 font-normal">
+                  ({{ reviews.length }})
+                </span>
+              </div>
 
-          <div
-            v-if="averageRatingText"
-            class="flex items-center gap-1 text-sm sm:text-base font-semibold text-[#4e0d05]"
-          >
-            <span class="text-[#e099a8] text-lg leading-none">★</span>
-            <span>{{ averageRatingText }}</span>
-            <span class="text-xs text-[#4e0d05]/60 font-normal">
-              ({{ reviews.length }})
-            </span>
-          </div>
-
-          <div
-            v-else
-            class="text-xs sm:text-sm text-[#4e0d05]/60"
-          >
-            Sin calificaciones
-          </div>
-        </div>
+              <div v-else class="text-xs sm:text-sm text-[#4e0d05]/60">
+                Sin calificaciones
+              </div>
+            </div>
 
             <button
               v-if="!isAdmin"
@@ -333,9 +374,7 @@ export default {
 
           <!-- maridajes -->
           <div>
-            <h3 class="text-lg font-semibold text-[#3c490b] mb-3">
-              Maridajes
-            </h3>
+            <h3 class="text-lg font-semibold text-[#3c490b] mb-3">Maridajes</h3>
 
             <div class="flex flex-wrap gap-2">
               <span
@@ -411,9 +450,7 @@ export default {
 
             <!-- formulario -->
             <div class="w-full md:w-3/4">
-              <p class="font-medium mb-3 text-[#4e0d05]">
-                Dejá tu opinión:
-              </p>
+              <p class="font-medium mb-3 text-[#4e0d05]">Dejá tu opinión:</p>
 
               <div class="flex gap-2 mb-3">
                 <button
@@ -451,46 +488,90 @@ export default {
         </div>
 
         <div v-else class="text-center py-4 bg-[#e099a8]/10 rounded-xl">
-          <p class="text-sm text-[#4e0d05]">
-            Iniciá sesión para dejar tu reseña.
-          </p>
+          <p class="text-sm text-[#4e0d05]">Iniciá sesión para dejar tu reseña.</p>
         </div>
 
-    <!-- listado reseñas-->
-    <div v-if="reviews.length" class="mt-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div
-        v-for="review in reviews"
-        :key="review.id"
-        class="rounded-xl border border-[#4e0d05]/10 bg-[#f6f6eb] p-4 shadow-sm h-[190px] flex flex-col justify-between"
-        >
-          <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <p class="font-bold text-sm text-[#4e0d05] truncate">
-                {{ review.user_name }}
-              </p>
+        <!-- listado reseñas-->
+        <div v-if="reviews.length" class="mt-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              v-for="review in paginatedReviews"
+              :key="review.id"
+              class="rounded-xl border border-[#4e0d05]/10 bg-[#f6f6eb] p-4 shadow-sm h-[190px] flex flex-col justify-between"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-[#4e0d05] truncate">
+                    {{ review.user_name }}
+                  </p>
 
-              <div class="text-[#e099a8] leading-none">
-                {{ "★".repeat(review.rating) }}
-                <span class="text-[#4e0d05]/40 text-xs ml-1">
-                  ({{ review.rating }}/5)
+                  <div class="text-[#e099a8] leading-none">
+                    {{ "★".repeat(review.rating) }}
+                    <span class="text-[#4e0d05]/40 text-xs ml-1">
+                      ({{ review.rating }}/5)
+                    </span>
+                  </div>
+                </div>
+
+                <span class="text-[11px] text-[#4e0d05]/50 whitespace-nowrap">
+                  {{ new Date(review.created_at).toLocaleDateString() }}
                 </span>
               </div>
-            </div>
 
-            <span class="text-[11px] text-[#4e0d05]/50 whitespace-nowrap">
-              {{ new Date(review.created_at).toLocaleDateString() }}
-            </span>
+              <p class="text-sm mt-3 text-[#4e0d05]/80 overflow-hidden text-ellipsis">
+                {{ review.comment }}
+              </p>
+            </div>
           </div>
 
-          <p class="text-sm mt-3 text-[#4e0d05]/80 overflow-hidden text-ellipsis">
-            {{ review.comment }}
-          </p>
+          <!--  Paginación reseñas (NUEVO)  -->
+          <div
+            v-if="reviews.length > 0 && totalReviewPages > 1"
+            class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
+          >
+            <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+              Página {{ reviewsCurrentPage }} de {{ totalReviewPages }}
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
+              <button
+                type="button"
+                @click="prevReviewPage"
+                :disabled="reviewsCurrentPage === 1"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Anterior
+              </button>
+
+              <button
+                v-for="p in totalReviewPages"
+                :key="p"
+                type="button"
+                @click="goToReviewPage(p)"
+                :class="[
+                  'w-10 h-10 rounded-full border text-sm font-semibold transition',
+                  p === reviewsCurrentPage
+                    ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                ]"
+              >
+                {{ p }}
+              </button>
+
+              <button
+                type="button"
+                @click="nextReviewPage"
+                :disabled="reviewsCurrentPage === totalReviewPages"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
-  </div> 
-</div> 
 
     <!-- modal historial -->
     <div
@@ -500,32 +581,30 @@ export default {
       <div
         class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20"
       >
-        <h3 class="text-xl font-semibold text-[#3c490b] mb-3">
-          Agregá una nota
-        </h3>
+        <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Agregá una nota</h3>
 
         <p class="text-sm text-[#4e0d05]/70 mb-4">
           Elegí una opción para guardar en tu historial:
         </p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button
-          v-for="(opt, i) in noteOptions"
-          :key="i"
-          type="button"
-          @click="selectedNote = opt"
-          class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
-          :class="
-            selectedNote === opt
-              ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
-              : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
-          "
-        >
-          <span class="leading-snug">
-            {{ opt }}
-          </span>
-        </button>
-      </div>
+          <button
+            v-for="(opt, i) in noteOptions"
+            :key="i"
+            type="button"
+            @click="selectedNote = opt"
+            class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+            :class="
+              selectedNote === opt
+                ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+                : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+            "
+          >
+            <span class="leading-snug">
+              {{ opt }}
+            </span>
+          </button>
+        </div>
 
         <div class="flex justify-end gap-3 mt-4">
           <button
