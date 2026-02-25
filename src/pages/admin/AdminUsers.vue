@@ -56,7 +56,6 @@ export default {
     },
   },
   watch: {
-    // Si cambia el total de páginas (ej. borramos un usuario), ajustamos la página actual
     totalPages() {
       if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
     },
@@ -79,7 +78,6 @@ export default {
     }
   },
   methods: {
-    // --- MÉTODOS DE PAGINACIÓN ---
     goToPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
@@ -101,62 +99,58 @@ export default {
 </script>
 
 <template>
-  <section
-    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8 overflow-hidden"
-  >
+  <section class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8">
     <!-- Iconos decorativos -->
     <img
       src="/icono1.png"
       alt="icono"
-      class="hidden md:block absolute top-10 left-10 w-16 opacity-90 rotate-12"
+      class="hidden md:block absolute top-10 left-10 w-16 opacity-90 rotate-12 pointer-events-none"
     />
     <img
       src="/icono2.png"
       alt="icono"
-      class="hidden md:block absolute top-16 right-20 w-20 opacity-100 -rotate-6"
+      class="hidden md:block absolute top-16 right-20 w-20 opacity-100 -rotate-6 pointer-events-none"
     />
     <img
       src="/icono3.png"
       alt="icono"
-      class="hidden md:block absolute top-1/3 left-10 w-22 opacity-80 rotate-3"
+      class="hidden md:block absolute top-1/3 left-10 w-22 opacity-80 rotate-3 pointer-events-none"
     />
     <img
       src="/icono4.png"
       alt="icono"
-      class="hidden md:block absolute top-[40%] right-10 w-18 opacity-80 rotate-6"
+      class="hidden md:block absolute top-[40%] right-10 w-18 opacity-80 rotate-6 pointer-events-none"
     />
     <img
       src="/icono5.png"
       alt="icono"
-      class="hidden md:block absolute bottom-[25%] left-10 w-24 opacity-80 -rotate-6"
+      class="hidden md:block absolute bottom-[25%] left-10 w-24 opacity-80 -rotate-6 pointer-events-none"
     />
     <img
       src="/icono6.png"
       alt="icono"
-      class="hidden md:block absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3"
+      class="hidden md:block absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3 pointer-events-none"
     />
     <img
       src="/icono7.png"
       alt="icono"
-      class="hidden md:block absolute top-[20%] left-10 w-18 opacity-90 rotate-12"
+      class="hidden md:block absolute top-[20%] left-10 w-18 opacity-90 rotate-12 pointer-events-none"
     />
     <img
       src="/icono2.png"
       alt="icono"
-      class="hidden md:block absolute bottom-16 right-20 w-20 opacity-100 -rotate-6"
+      class="hidden md:block absolute bottom-16 right-20 w-20 opacity-100 -rotate-6 pointer-events-none"
     />
     <img
       src="/icono6.png"
       alt="icono"
-      class="hidden md:block absolute bottom-22 left-20 w-24 opacity-100 -rotate-6"
+      class="hidden md:block absolute bottom-22 left-20 w-24 opacity-100 -rotate-6 pointer-events-none"
     />
 
-    <div class="relative z-10 max-w-7xl mx-auto pb-20">
-      <!-- Header centrado (H1 correcto) -->
+    <div class="relative z-10 max-w-7xl mx-auto pb-20 px-0 md:px-0">
+      <!-- Header centrado -->
       <div class="mb-10 text-center">
-        <h1
-          class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide"
-        >
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide">
           Comunidad NYSO
         </h1>
         <p class="text-[#4e0d05]/60">
@@ -168,15 +162,18 @@ export default {
         <AppLoader />
       </div>
 
+      <div v-else-if="error" class="text-center text-red-600">
+        {{ error }}
+      </div>
+
       <div v-else>
+        <!-- Métricas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <div
             class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p
-                class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1"
-              >
+              <p class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1">
                 Total Usuarios
               </p>
               <p class="text-4xl font-extrabold text-[#4e0d05]">
@@ -190,9 +187,7 @@ export default {
             class="bg-[#e099a8]/20 rounded-3xl border border-[#e099a8]/40 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p
-                class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1"
-              >
+              <p class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1">
                 Suscriptos al Box
               </p>
               <p class="text-4xl font-extrabold text-[#4e0d05]">
@@ -206,9 +201,7 @@ export default {
             class="bg-[#3c490b]/10 rounded-3xl border border-[#3c490b]/20 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p
-                class="text-sm font-bold text-[#3c490b]/70 uppercase tracking-wider mb-1"
-              >
+              <p class="text-sm font-bold text-[#3c490b]/70 uppercase tracking-wider mb-1">
                 Tasa de Conversión
               </p>
               <p class="text-4xl font-extrabold text-[#3c490b]">
@@ -219,16 +212,81 @@ export default {
           </div>
         </div>
 
-        <div
-          class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-sm overflow-hidden"
-        >
-          <div
-            class="p-6 border-b border-[#4e0d05]/10 flex justify-between items-center bg-white/40"
-          >
+        <!-- Contenedor listado -->
+        <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-[#4e0d05]/10 flex justify-between items-center bg-white/40">
             <h3 class="text-lg font-bold text-[#4e0d05]">Listado de Usuarios</h3>
           </div>
 
-          <div class="overflow-x-auto">
+          <!-- MOBILE: cards -->
+          <div class="md:hidden p-4 space-y-4">
+            <div
+              v-for="u in paginatedUsers"
+              :key="u.id"
+              class="bg-[#f6f6eb] border border-[#4e0d05]/15 rounded-2xl p-4 shadow-sm"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <img
+                    v-if="u.avatar_url"
+                    :src="u.avatar_url"
+                    alt="Avatar"
+                    class="w-12 h-12 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm shrink-0"
+                  />
+
+                  <div
+                    v-else
+                    class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10 shrink-0"
+                  >
+                    {{ u.display_name ? u.display_name.charAt(0).toUpperCase() : "?" }}
+                  </div>
+
+                  <div class="min-w-0">
+                    <p class="font-bold text-[#4e0d05] truncate">
+                      {{ u.display_name || "Sin nombre" }}
+                    </p>
+                    <p class="text-xs text-[#4e0d05]/60 break-all">
+                      {{ u.email }}
+                    </p>
+                  </div>
+                </div>
+
+                <span
+                  v-if="u.role === 'admin'"
+                  class="px-2 py-1 bg-[#4e0d05] text-[#ede8d7] rounded text-xs font-semibold shrink-0"
+                >
+                  Admin
+                </span>
+                <span v-else class="text-xs opacity-60 shrink-0">Usuario</span>
+              </div>
+
+              <div class="mt-3 flex items-center justify-between gap-3">
+                <div>
+                  <span
+                    v-if="u.isSubscribed"
+                    class="inline-flex px-3 py-1 rounded-full bg-[#3c490b]/15 text-[#3c490b] text-xs font-bold border border-[#3c490b]/20"
+                  >
+                    Suscrito ✨
+                  </span>
+                  <span v-else class="text-xs opacity-50">
+                    No suscrito
+                  </span>
+                </div>
+
+                <router-link
+                  v-if="u.role !== 'admin'"
+                  :to="`/usuario/${u.id}`"
+                  target="_blank"
+                  class="text-[#e099a8] font-semibold hover:text-[#4e0d05] transition-colors text-sm"
+                >
+                  Ver perfil ↗
+                </router-link>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESKTOP: tabla -->
+          <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr
@@ -248,17 +306,17 @@ export default {
                   class="border-b border-[#4e0d05]/5 hover:bg-[#4e0d05]/5 transition-colors"
                 >
                   <td class="p-4">
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
                       <img
                         v-if="u.avatar_url"
                         :src="u.avatar_url"
                         alt="Avatar"
-                        class="w-12 h-12 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm"
+                        class="w-12 h-12 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm shrink-0"
                       />
 
                       <div
                         v-else
-                        class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10"
+                        class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10 shrink-0"
                       >
                         {{
                           u.display_name
@@ -266,13 +324,14 @@ export default {
                             : "?"
                         }}
                       </div>
-                      <span class="font-bold">{{
-                        u.display_name || "Sin nombre"
-                      }}</span>
+
+                      <span class="font-bold truncate">
+                        {{ u.display_name || "Sin nombre" }}
+                      </span>
                     </div>
                   </td>
 
-                  <td class="p-4 opacity-70">
+                  <td class="p-4 opacity-70 break-all">
                     {{ u.email }}
                   </td>
 
@@ -311,6 +370,7 @@ export default {
             </table>
           </div>
 
+          <!-- PAGINACIÓN -->
           <div
             v-if="usersWithData.length > 0 && totalPages > 1"
             class="w-full flex flex-col sm:flex-row items-center justify-between p-6 gap-3 bg-white/40 border-t border-[#4e0d05]/10"
@@ -319,7 +379,7 @@ export default {
               Página {{ currentPage }} de {{ totalPages }}
             </p>
 
-            <div class="flex flex-nowrap items-center gap-2">
+            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
               <button
                 type="button"
                 @click="prevPage"

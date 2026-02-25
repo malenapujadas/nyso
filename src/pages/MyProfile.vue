@@ -22,7 +22,7 @@ export default {
         id: null,
         email: null,
         display_name: null,
-        avatar_url: null, 
+        avatar_url: null,
       },
       favorites: [],
       history: [],
@@ -36,11 +36,11 @@ export default {
     subscribeToAuthChanges(async (userState) => {
       // Si hay un usuario logueado
       if (userState && userState.id) {
-        const fullUser = await getCurrentUser(); 
+        const fullUser = await getCurrentUser();
         this.user = fullUser || userState;
 
         const vinosDB = await getVinos();
-        
+
         const [favIds, hisIds, friends, pending] = await Promise.all([
           getFavorites(this.user.id),
           getHistory(this.user.id),
@@ -57,9 +57,7 @@ export default {
 
         this.history = vinosDB
           .map((v) => {
-            const match = hisIds.find(
-              (h) => String(h.vino_id) === String(v.id),
-            );
+            const match = hisIds.find((h) => String(h.vino_id) === String(v.id));
             if (match) {
               return { ...v, note: match.note };
             }
@@ -70,12 +68,24 @@ export default {
         this.preferences = await getPreferencesForUser(this.user.id);
       } else {
         // Si no hay usuario (cerró sesión)
-        this.user = { id: null, email: null, display_name: null, avatar_url: null };
+        this.user = {
+          id: null,
+          email: null,
+          display_name: null,
+          avatar_url: null,
+        };
       }
     });
   },
 
   methods: {
+    // ✅ NUEVO: scroll a sección
+    scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+
     async handleRemoveFavorite(id) {
       try {
         await removeFavorite(this.user.id, id);
@@ -136,12 +146,22 @@ export default {
       }
     },
 
-    async handleRemoveFriend(connectionId) {
+    async handleRemoveFriend(friend) {
       try {
+        const connectionId = friend?.connection_id || friend?.connectionId || friend?.id;
+
+        if (!connectionId) {
+          console.error(
+            "[MyProfile.vue handleRemoveFriend] connectionId undefined:",
+            friend,
+          );
+          return;
+        }
+
         await updateConnectionStatus(connectionId, "removed");
+
         if (this.user && this.user.id) {
-          const friends = await getFriends(this.user.id);
-          this.friends = friends;
+          this.friends = await getFriends(this.user.id);
         }
       } catch (error) {
         console.error(
@@ -327,31 +347,40 @@ export default {
             </div>
           </div>
 
+          <!-- ✅ SOLO CAMBIO: ahora son clickeables y scrollean -->
           <div class="grid grid-cols-3 gap-3 md:gap-4">
-            <div
-              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            <button
+              type="button"
+              @click="scrollToSection('wishlist')"
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center hover:bg-white/60 transition"
             >
               <p class="text-xs text-[#4e0d05]/60">Wishlist</p>
               <p class="text-lg font-bold text-[#4e0d05]">
                 {{ favorites.length }}
               </p>
-            </div>
-            <div
-              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            </button>
+
+            <button
+              type="button"
+              @click="scrollToSection('historial')"
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center hover:bg-white/60 transition"
             >
               <p class="text-xs text-[#4e0d05]/60">Historial</p>
               <p class="text-lg font-bold text-[#4e0d05]">
                 {{ history.length }}
               </p>
-            </div>
-            <div
-              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center"
+            </button>
+
+            <button
+              type="button"
+              @click="scrollToSection('amigos')"
+              class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3 text-center hover:bg-white/60 transition"
             >
               <p class="text-xs text-[#4e0d05]/60">Amigos</p>
               <p class="text-lg font-bold text-[#4e0d05]">
                 {{ friends.length }}
               </p>
-            </div>
+            </button>
           </div>
         </div>
 
@@ -398,7 +427,8 @@ export default {
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- WISHLIST -->
         <div
-          class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
+          id="wishlist"
+          class="scroll-mt-24 rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
         >
           <div class="mb-4">
             <h2 class="text-xl font-extrabold text-[#3c490b]">Wishlist</h2>
@@ -445,7 +475,8 @@ export default {
 
         <!-- HISTORIAL -->
         <div
-          class="rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
+          id="historial"
+          class="scroll-mt-24 rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
         >
           <div class="mb-4">
             <h2 class="text-xl font-extrabold text-[#3c490b]">Historial</h2>
@@ -500,7 +531,8 @@ export default {
       <!-- AMIGOS + PENDIENTES -->
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div
-          class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
+          id="amigos"
+          class="scroll-mt-24 rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
         >
           <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">Mis amigos</h2>
 
@@ -519,8 +551,8 @@ export default {
               </span>
 
               <button
-                @click="handleRemoveFriend(f.id)"
-                class="px-3 py-1 rounded-full border border-[#4e0d05]/40 text-[#4e0d05]text-xs font-semibold hover:bg-[#4e0d05] hover:text-[#f6f6eb]"
+                @click="handleRemoveFriend(f)"
+                class="px-3 py-1 rounded-full border border-[#4e0d05]/40 text-[#4e0d05] text-xs font-semibold hover:bg-[#4e0d05] hover:text-[#f6f6eb]"
               >
                 Eliminar
               </button>
@@ -530,9 +562,9 @@ export default {
 
         <!-- Solicitudes -->
         <div
-        id="solicitudes"
-        class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
-      >
+          id="solicitudes"
+          class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 shadow-sm"
+        >
           <h2 class="text-xl font-extrabold text-[#3c490b] mb-4">
             Solicitudes pendientes
           </h2>
@@ -577,6 +609,7 @@ export default {
           </div>
         </div>
       </div>
+
     </div>
   </section>
 </template>
