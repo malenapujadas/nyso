@@ -429,7 +429,7 @@ export default {
 
       <!-- RESEÑAS -->
       <div class="w-full mt-14">
-        <h3 class="text-lg sm:text-xl font-semibold text-[#3c490b] mb-6">
+        <h3 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-8">
           Reseñas de la comunidad
         </h3>
 

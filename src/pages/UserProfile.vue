@@ -93,6 +93,16 @@ export default {
     <section
       class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden"
     >
+      <!-- Botón volver -->
+      <div class="w-full max-w-3xl z-10 mb-6">
+        <RouterLink
+          to="/red-social"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#4e0d05]/30 text-[#4e0d05] hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition"
+        >
+          <span class="text-lg leading-none">←</span>
+          Volver
+        </RouterLink>
+      </div>
       <img
         src="/icono1.png"
         alt="icono"
