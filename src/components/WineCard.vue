@@ -6,6 +6,14 @@ export default {
       type: Object,
       required: true,
     },
+    averageRating: {
+      type: Number,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
   },
 };
 </script>
@@ -27,6 +35,25 @@ export default {
         >
           {{ vino.nombre }}
         </h2>
+
+        <!-- PROMEDIO -->
+        <div
+          v-if="reviewCount > 0"
+          class="flex items-center justify-center gap-1 mb-2"
+        >
+          <span class="text-[#e099a8] text-lg leading-none">★</span>
+          <span class="text-[#4e0d05] font-semibold">
+            {{ averageRating.toFixed(1) }}
+          </span>
+          <span class="text-xs text-[#4e0d05]/60">
+            ({{ reviewCount }})
+          </span>
+        </div>
+
+        <div v-else class="text-xs text-[#4e0d05]/50 mb-2">
+          Sin calificaciones
+        </div>
+
         <p class="text-[#4e0d05]/80 mb-1">
           <strong>Bodega:</strong> {{ vino.bodega }}
         </p>

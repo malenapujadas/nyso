@@ -27,6 +27,8 @@ export default {
       noteText: "",
 
       selectedNote: "",
+      customNote: "", 
+
       noteOptions: [
         "Me encantó",
         "Muy rico y fácil de tomar",
@@ -134,7 +136,7 @@ export default {
       this.showModal = true;
     },
 
-    async confirmAddHistory() {
+        async confirmAddHistory() {
       try {
         if (!this.selectedNote) {
           this.message = "Elegí una opción antes de guardar.";
@@ -143,12 +145,21 @@ export default {
           return;
         }
 
-        await addHistory(this.user.id, this.vino.id, this.selectedNote);
+        const extra = (this.customNote || "").trim();
+
+        // Guardamos mensaje + nota extra (si existe)
+        const noteToSave = extra
+          ? `${this.selectedNote} — Nota: ${extra}`
+          : this.selectedNote;
+
+        await addHistory(this.user.id, this.vino.id, noteToSave);
 
         this.message = "Agregado a tu Historial";
         this.messageType = "history";
         this.showModal = false;
+
         this.selectedNote = "";
+        this.customNote = "";
       } catch (e) {
         console.error(e);
         this.message = "Error al agregar al Historial";
@@ -157,9 +168,10 @@ export default {
     },
 
     cancelModal() {
-      this.showModal = false;
-      this.selectedNote = "";
-    },
+    this.showModal = false;
+    this.selectedNote = "";
+    this.customNote = "";
+  },
 
     // metodo para estrellas
     setRating(star) {
@@ -212,7 +224,7 @@ export default {
       }
     },
 
-    // PAGINACIÓN RESEÑAS (NUEVO) - igual a Vinos
+    // PAGINACIÓN RESEÑAS
     goToReviewPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
@@ -220,8 +232,6 @@ export default {
       if (page < 1) this.reviewsCurrentPage = 1;
       else if (page > this.totalReviewPages) this.reviewsCurrentPage = this.totalReviewPages;
       else this.reviewsCurrentPage = page;
-
-      window.scrollTo({ top: 0, behavior: "smooth" });
     },
     nextReviewPage() {
       this.goToReviewPage(this.reviewsCurrentPage + 1);
@@ -358,16 +368,26 @@ export default {
 
           <hr class="border-t border-[#4e0d05]/30" />
 
-          <!-- datos -->
-          <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-1 text-[#4e0d05]"
-          >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-2 text-[#4e0d05] max-w-2xl">
+
+          <!-- Columna 1 -->
+          <div class="space-y-1">
             <p><strong>Bodega:</strong> {{ vino.bodega }}</p>
-            <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
-            <p><strong>Región:</strong> {{ vino.region }}</p>
             <p><strong>Uva:</strong> {{ vino.uva }}</p>
+          </div>
+
+          <!-- Columna 2 -->
+          <div class="space-y-1">
+            <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
             <p><strong>Año:</strong> {{ vino["año"] }}</p>
+          </div>
+
+          <!-- Columna 3 -->
+          <div class="space-y-1">
+            <p><strong>Región:</strong> {{ vino.region }}</p>
             <p><strong>Precio aprox.:</strong> ${{ vino.precio_aproximado }}</p>
+          </div>
+
           </div>
 
           <hr class="border-t border-[#4e0d05]/30" />
@@ -587,24 +607,54 @@ export default {
           Elegí una opción para guardar en tu historial:
         </p>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <button
-            v-for="(opt, i) in noteOptions"
-            :key="i"
-            type="button"
-            @click="selectedNote = opt"
-            class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
-            :class="
-              selectedNote === opt
-                ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
-                : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
-            "
-          >
-            <span class="leading-snug">
-              {{ opt }}
-            </span>
-          </button>
-        </div>
+    <!-- Opciones: 2 + 2 + 1 centrada -->
+    <div class="grid grid-cols-2 gap-4">
+      <!-- primeras 4 en 2x2 -->
+      <button
+        v-for="(opt, i) in noteOptions.slice(0, 4)"
+        :key="i"
+        type="button"
+        @click="selectedNote = opt"
+        class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+        :class="
+          selectedNote === opt
+            ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+            : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+        "
+      >
+        <span class="leading-snug">{{ opt }}</span>
+      </button>
+
+      <!-- 5ta centrada -->
+      <div class="col-span-2 flex justify-center">
+        <button
+          type="button"
+          @click="selectedNote = noteOptions[4]"
+          class="h-20 w-full sm:w-[70%] flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+          :class="
+            selectedNote === noteOptions[4]
+              ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+              : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+          "
+        >
+          <span class="leading-snug">{{ noteOptions[4] }}</span>
+        </button>
+      </div>
+
+      <!-- textarea debajo del 5to -->
+      <div class="col-span-2 mt-2">
+        <label class="text-sm font-medium text-[#4e0d05]/80 block mb-2">
+          Nota extra:
+        </label>
+
+        <textarea
+          v-model="customNote"
+          rows="3"
+          placeholder="Ej: Lo tomé con amigos..."
+          class="w-full border border-[#e099a8]/50 rounded-xl p-3 bg-[#f6f6eb] text-[#4e0d05] outline-none focus:ring-1 focus:ring-[#e099a8]"
+        ></textarea>
+      </div>
+    </div>
 
         <div class="flex justify-end gap-3 mt-4">
           <button

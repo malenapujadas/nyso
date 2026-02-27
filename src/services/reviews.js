@@ -24,6 +24,15 @@ export async function addReview(userId, wineId, userName, rating, comment) {
   if (error) handleError("addReview", error);
   return data[0];
 }
+//traer todas las reseñas (para promedios en listado)
+export async function getAllReviewsLight() {
+  const { data, error } = await supabase
+    .from("reviews")
+    .select("wine_id, rating");
+
+  if (error) handleError("getAllReviewsLight", error);
+  return data || [];
+}
 
 //obtener reseñas de un vino
 export async function getReviewsByWineId(wineId) {
@@ -35,4 +44,5 @@ export async function getReviewsByWineId(wineId) {
 
   if (error) handleError("getReviewsByWineId", error);
   return data || [];
+  
 }

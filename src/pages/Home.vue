@@ -45,7 +45,7 @@ export default {
       class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl uppercase tracking-tight font-[Poppins] relative z-10 px-4"
     >
       DESCUBRIR,
-      <span class="text-[#3c490b]">GUARDAR</span>, Y COMPARTIR
+      <span class="text-[#3c490b]">GUARDAR</span> Y COMPARTIR
       <span class="text-[#e099a8]">VINOS</span>
       DE UNA FORMA SIMPLE Y CERCANA, SIN NECESIDAD DE SER UN
       <span class="text-[#e099a8]">EXPERTO.</span>
@@ -180,10 +180,10 @@ export default {
       class="absolute bottom-2 left-1/3 w-16 md:w-28 opacity-100 rotate-12"
     />
 
-    <div class="w-full max-w-md z-10 text-center md:text-right">
+    <div class="w-full max-w-xl z-10 text-center md:text-right">
       <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
-        Usá el buscador con filtros <br class="hidden md:block" />
-        para encontrar ese vino perfecto.
+        <span class="block">Usá el buscador con filtros</span>
+        <span class="block">para encontrar ese vino perfecto.</span>
       </p>
 
       <RouterLink
@@ -232,11 +232,11 @@ export default {
       class="w-52 md:w-[380px] z-10"
     />
 
-    <div class="w-full max-w-md z-10 text-center md:text-left">
-      <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
-        Creá tu perfil para guardar tus favoritos,<br class="hidden md:block" />
-        compartir y conectar con gente como vos.
-      </p>
+    <div class="w-full max-w-2xl z-10 text-center md:text-left">
+            <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
+  <span class="block">Creá tu perfil para guardar tus favoritos,</span>
+  <span class="block">compartir y conectar con gente como vos.</span>
+</p>
 
       <RouterLink
         to="/crear-cuenta"

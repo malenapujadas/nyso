@@ -180,7 +180,7 @@ export default {
                 {{ totalUsers }}
               </p>
             </div>
-            <div class="absolute -bottom-4 -right-4 text-7xl opacity-5">👥</div>
+            <div class="absolute -bottom-4 -right-4 text-7xl opacity-5"></div>
           </div>
 
           <div
@@ -194,7 +194,7 @@ export default {
                 {{ totalSubscribers }}
               </p>
             </div>
-            <div class="absolute -bottom-4 -right-4 text-7xl opacity-10">🍷</div>
+            <div class="absolute -bottom-4 -right-4 text-7xl opacity-10"></div>
           </div>
 
           <div
@@ -208,7 +208,7 @@ export default {
                 {{ conversionRate }}%
               </p>
             </div>
-            <div class="absolute -bottom-4 -right-4 text-7xl opacity-5">📈</div>
+            <div class="absolute -bottom-4 -right-4 text-7xl opacity-5"></div>
           </div>
         </div>
 
@@ -266,7 +266,7 @@ export default {
                     v-if="u.isSubscribed"
                     class="inline-flex px-3 py-1 rounded-full bg-[#3c490b]/15 text-[#3c490b] text-xs font-bold border border-[#3c490b]/20"
                   >
-                    Suscrito ✨
+                    Suscrito 
                   </span>
                   <span v-else class="text-xs opacity-50">
                     No suscrito
@@ -296,7 +296,7 @@ export default {
                   <th class="p-4 font-bold">Email</th>
                   <th class="p-4 font-bold">Rol</th>
                   <th class="p-4 font-bold">Box Mensual</th>
-                  <th class="p-4 font-bold text-right">Perfil</th>
+                  <th class="p-4 font-bold">Perfil</th>
                 </tr>
               </thead>
               <tbody class="text-sm text-[#4e0d05]">
@@ -350,12 +350,12 @@ export default {
                       v-if="u.isSubscribed"
                       class="px-3 py-1 rounded-full bg-[#3c490b]/15 text-[#3c490b] text-xs font-bold border border-[#3c490b]/20"
                     >
-                      Suscrito ✨
+                      Suscrito
                     </span>
                     <span v-else class="text-xs opacity-40"> No suscrito </span>
                   </td>
 
-                  <td class="p-4 text-right">
+                  <td class="p-4">
                     <router-link
                       v-if="u.role !== 'admin'"
                       :to="`/usuario/${u.id}`"
@@ -373,18 +373,45 @@ export default {
           <!-- PAGINACIÓN -->
           <div
             v-if="usersWithData.length > 0 && totalPages > 1"
-            class="w-full flex flex-col sm:flex-row items-center justify-between p-6 gap-3 bg-white/40 border-t border-[#4e0d05]/10"
+            class="w-full flex flex-col items-center p-4 gap-2 bg-white/40 border-t border-[#4e0d05]/10"
           >
-            <p class="text-xs text-[#4e0d05]/70">
+            <!-- TEXTO -->
+            <p class="text-[11px] text-[#4e0d05]/70">
               Página {{ currentPage }} de {{ totalPages }}
             </p>
 
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+            <!-- MOBILE (simple y prolijo) -->
+            <div class="flex sm:hidden items-center justify-center gap-4 w-full">
               <button
                 type="button"
                 @click="prevPage"
                 :disabled="currentPage === 1"
-                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40 hover:bg-white transition"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] text-xs disabled:opacity-40"
+              >
+                Anterior
+              </button>
+
+              <span class="text-sm font-semibold text-[#3c490b]">
+                {{ currentPage }} / {{ totalPages }}
+              </span>
+
+              <button
+                type="button"
+                @click="nextPage"
+                :disabled="currentPage === totalPages"
+                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] text-xs disabled:opacity-40"
+              >
+                Siguiente
+              </button>
+            </div>
+
+            <!-- DESKTOP (tu versión original intacta) -->
+            <div class="hidden sm:flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                @click="prevPage"
+                :disabled="currentPage === 1"
+                class="px-3 py-1.5 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] text-xs disabled:opacity-40"
               >
                 Anterior
               </button>
@@ -395,7 +422,7 @@ export default {
                 type="button"
                 @click="goToPage(p)"
                 :class="[
-                  'w-10 h-10 rounded-full border text-sm font-semibold transition flex items-center justify-center',
+                  'w-8 h-8 rounded-full border text-xs font-semibold transition flex items-center justify-center',
                   p === currentPage
                     ? 'bg-[#3c490b] text-white border-[#3c490b]'
                     : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white',
@@ -408,7 +435,7 @@ export default {
                 type="button"
                 @click="nextPage"
                 :disabled="currentPage === totalPages"
-                class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40 hover:bg-white transition"
+                class="px-3 py-1.5 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] text-xs disabled:opacity-40"
               >
                 Siguiente
               </button>

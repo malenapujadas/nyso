@@ -9,6 +9,8 @@ import {
 import WineCard from "../components/WineCard.vue";
 import AppLoader from "../components/AppLoader.vue";
 
+import { getAllReviewsLight } from "../services/reviews.js"; // ✅ NUEVO
+
 export default {
   name: "Vinos",
   components: { AppH1, WineCard, AppLoader },
@@ -35,6 +37,9 @@ export default {
 
       loading: true,
       error: null,
+
+      // ✅ NUEVO: promedios por vino
+      ratingsMap: {}, // { [wineId]: { avg, count } }
     };
   },
 
@@ -69,15 +74,40 @@ export default {
       return Math.max(...this.vinosList.map((v) => v.precio_aproximado || 0));
     },
 
-    // filtrado principal
+    // ✅ filtrado + ORDEN por rating (mejor -> peor) y sin reseñas al final
     filteredVinos() {
       const query = this.searchQuery?.toLowerCase() || "";
-      return this.vinosList.filter(
+
+      const base = this.vinosList.filter(
         (vino) =>
           matchesSearch(vino, query) &&
           matchesFilters(vino, this.filters) &&
           matchesPrice(vino, this.selectedMinPrice, this.selectedMaxPrice)
       );
+
+      return base.slice().sort((a, b) => {
+        const aId = Number(a.id);
+        const bId = Number(b.id);
+
+        const aData = this.ratingsMap[aId] || { avg: 0, count: 0 };
+        const bData = this.ratingsMap[bId] || { avg: 0, count: 0 };
+
+        const aHas = aData.count > 0;
+        const bHas = bData.count > 0;
+
+        // con reseñas primero
+        if (aHas !== bHas) return aHas ? -1 : 1;
+
+        // ambos con reseñas: avg desc
+        if (aHas && bHas) {
+          if (bData.avg !== aData.avg) return bData.avg - aData.avg;
+          // empate: más cantidad de reseñas primero
+          if (bData.count !== aData.count) return bData.count - aData.count;
+        }
+
+        // fallback
+        return (a.nombre || "").localeCompare(b.nombre || "");
+      });
     },
 
     // paginacion
@@ -89,11 +119,9 @@ export default {
       const end = start + this.perPage;
       return this.filteredVinos.slice(start, end);
     },
-
   },
 
   watch: {
-    // volvemos a página 1
     searchQuery() {
       this.currentPage = 1;
     },
@@ -110,7 +138,6 @@ export default {
       this.currentPage = 1;
     },
 
-    // si quedaste en una página que ya no existe
     totalPages() {
       if (this.currentPage > this.totalPages) {
         this.currentPage = this.totalPages;
@@ -136,8 +163,6 @@ export default {
       };
       this.selectedMinPrice = null;
       this.selectedMaxPrice = null;
-
-      //  paginacion
       this.currentPage = 1;
     },
 
@@ -152,7 +177,6 @@ export default {
       return map[key] || [];
     },
 
-    // paginacion + scroll arriba
     goToPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
@@ -169,6 +193,30 @@ export default {
     prevPage() {
       this.goToPage(this.currentPage - 1);
     },
+
+    // construir ratingsMap
+    buildRatingsMap(reviews) {
+      const acc = {}; 
+
+      for (const r of reviews || []) {
+        const id = Number(r.wine_id);
+        const rating = Number(r.rating || 0);
+        if (!Number.isFinite(id)) continue;
+
+        if (!acc[id]) acc[id] = { sum: 0, count: 0 };
+        acc[id].sum += rating;
+        acc[id].count += 1;
+      }
+
+      const map = {};
+      for (const key of Object.keys(acc)) {
+        const id = Number(key);
+        const { sum, count } = acc[id];
+        map[id] = { avg: count ? sum / count : 0, count };
+      }
+
+      this.ratingsMap = map;
+    },
   },
 
   async mounted() {
@@ -180,8 +228,12 @@ export default {
       this.vinosList = data || [];
       this.selectedMinPrice = this.priceMin;
       this.selectedMaxPrice = this.priceMax;
+
+      // ✅ 1 sola query para ratings
+      const reviews = await getAllReviewsLight();
+      this.buildRatingsMap(reviews);
     } catch (error) {
-      console.error("[Vinos.vue] Error al cargar vinos desde Supabase:", error);
+      console.error("[Vinos.vue] Error al cargar vinos:", error);
       this.error = "Ocurrió un error al cargar los vinos.";
     } finally {
       this.loading = false;
@@ -387,6 +439,8 @@ export default {
             v-for="vino in paginatedVinos"
             :key="vino.id"
             :vino="vino"
+            :average-rating="ratingsMap[Number(vino.id)]?.avg || 0"
+            :review-count="ratingsMap[Number(vino.id)]?.count || 0"
           />
         </div>
 

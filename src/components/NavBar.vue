@@ -68,8 +68,11 @@ export default {
       }
     },
 
-    toggleNotifications() {
+    // Mobile: toggle con stopPropagation para que no se cierre instantáneo
+    toggleNotifications(e) {
+      e?.stopPropagation();
       this.notifOpen = !this.notifOpen;
+      if (this.notifOpen) this.loadPending();
     },
 
     closeNotifications() {
@@ -78,14 +81,27 @@ export default {
 
     openAndRefreshNotifications() {
       this.notifOpen = true;
-      // refresca al abrir (por si llegó algo)
       this.loadPending();
     },
 
+    // Ir a solicitudes + scroll suave al #solicitudes
     goToFriendRequests() {
       this.menuOpen = false;
       this.notifOpen = false;
-      this.$router.push({ path: "/mi-perfil", hash: "#solicitudes" });
+
+      this.$router.push("/mi-perfil").then(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            const el = document.getElementById("solicitudes");
+            if (!el) return;
+
+            const yOffset = 90; // ajustá si el navbar tapa (60/80/100)
+            const y = el.getBoundingClientRect().top + window.pageYOffset - yOffset;
+
+            window.scrollTo({ top: y, behavior: "smooth" });
+          });
+        });
+      });
     },
 
     // cerrar dropdown clic afuera
@@ -116,23 +132,118 @@ export default {
 </script>
 
 <template>
- <nav
-  class="relative z-50 w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between"
+  <nav
+    class="relative z-50 w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between"
   >
-    <!-- Logo -->
-    <RouterLink to="/" class="flex items-center">
+    <!-- ✅ DESKTOP: Logo como siempre (izquierda) -->
+    <RouterLink to="/" class="hidden md:flex items-center">
       <img src="/logo.png" alt="NYSO" class="w-22 md:w-26" />
     </RouterLink>
 
-    <!-- Mobile botón menú -->
-    <button
-      @click="menuOpen = !menuOpen"
-      class="text-3xl text-[#4e0d05] md:hidden"
-    >
-      ☰
-    </button>
+    <!-- ✅ MOBILE: izq notis / centro logo / der menú -->
+    <div class="flex md:hidden items-center justify-between w-full">
+      <!-- Izq: Notificaciones -->
+      <div class="w-12 flex justify-start">
+        <div v-if="user && !isAdmin" ref="notifRoot" class="relative">
+          <button
+            type="button"
+            @click="toggleNotifications"
+            class="relative inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#4e0d05]/20 bg-white/40 hover:bg-white/70 transition"
+            aria-label="Notificaciones"
+            title="Notificaciones"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 text-[#4e0d05]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+              <path d="M13.73 21a2 2 0 01-3.46 0" />
+            </svg>
 
-    <!-- Menu escritorio -->
+            <span
+              v-if="pendingCount > 0"
+              class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#e099a8] text-white text-[10px] font-bold flex items-center justify-center border border-[#f6f6eb]"
+            >
+              {{ pendingBadgeText }}
+            </span>
+          </button>
+
+          <!-- Dropdown MOBILE -->
+          <div
+            v-if="notifOpen"
+            class="fixed left-4 right-4 top-[64px] z-[9999] rounded-2xl border border-[#4e0d05]/20 bg-[#ede8d7] shadow-lg overflow-hidden"
+          >
+            <div class="px-4 py-3 border-b border-[#4e0d05]/10">
+              <p class="font-semibold text-sm text-[#4e0d05]">Notificaciones</p>
+              <p class="text-xs text-[#4e0d05]/60">Solicitudes de amistad</p>
+            </div>
+
+            <div v-if="pendingCount === 0" class="px-4 py-4">
+              <p class="text-sm text-[#4e0d05]/70">No tenés notificaciones.</p>
+            </div>
+
+            <div v-else class="max-h-72 overflow-auto">
+              <button
+                v-for="r in pendingRequests"
+                :key="r.id"
+                type="button"
+                @click="goToFriendRequests"
+                class="w-full text-left px-4 py-3 hover:bg-white/60 transition border-b border-[#4e0d05]/5"
+              >
+                <p class="text-sm text-[#4e0d05] font-semibold truncate">
+                  {{
+                    r?.requester?.display_name ||
+                    (r?.requester?.email ? r.requester.email.split('@')[0] : null) ||
+                    r.requester_id ||
+                    "Alguien"
+                  }}
+                </p>
+                <p class="text-xs text-[#4e0d05]/70">
+                  te envió una solicitud de amistad.
+                </p>
+              </button>
+            </div>
+
+            <div class="px-4 py-3 bg-white/40">
+              <button
+                type="button"
+                @click="goToFriendRequests"
+                class="text-xs font-semibold text-[#3c490b] hover:underline"
+              >
+                Ver solicitudes
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- si no hay user, dejamos el espacio -->
+        <div v-else class="w-10 h-10"></div>
+      </div>
+
+      <!-- Centro: Logo -->
+      <RouterLink to="/" class="flex justify-center flex-1">
+        <img src="/logo.png" alt="NYSO" class="w-22" />
+      </RouterLink>
+
+      <!-- Derecha: menú -->
+      <div class="w-12 flex justify-end">
+        <button
+          @click="menuOpen = !menuOpen"
+          class="text-3xl text-[#4e0d05]"
+          aria-label="Abrir menú"
+        >
+          ☰
+        </button>
+      </div>
+    </div>
+
+    <!-- ✅ DESKTOP: Menú como lo tenías -->
     <ul
       class="hidden md:flex absolute left-1/2 -translate-x-1/2 justify-center gap-10 text-base font-medium"
     >
@@ -196,14 +307,13 @@ export default {
       </li>
     </ul>
 
-    <!-- Usuario -->
+    <!-- ✅ DESKTOP: Usuario como lo tenías (derecha) -->
     <div class="hidden md:flex items-center gap-4">
       <template v-if="!isAuthChecked">
         <span class="text-[#4e0d05]/40 text-sm italic">...</span>
       </template>
 
       <template v-else-if="user">
-        <!-- 1) Mi perfil -->
         <RouterLink
           :to="isAdmin ? '/admin/perfil' : '/mi-perfil'"
           class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8]"
@@ -211,7 +321,7 @@ export default {
           Mi perfil
         </RouterLink>
 
-        <!-- 2) Campanita + dropdown -->
+        <!-- Campanita desktop + dropdown -->
         <div v-if="!isAdmin" ref="notifRoot" class="relative">
           <button
             type="button"
@@ -242,24 +352,18 @@ export default {
             </span>
           </button>
 
-          <!-- Dropdown -->
+          <!-- Dropdown desktop -->
           <div
-          v-if="notifOpen"
-          class="fixed left-4 right-4 md:left-auto md:right-8 top-[64px] md:top-[72px] z-[9999] md:w-[320px] rounded-2xl border border-[#4e0d05]/20 bg-[#ede8d7] shadow-lg p-4"
-        >
+            v-if="notifOpen"
+            class="fixed left-4 right-4 md:left-auto md:right-8 top-[64px] md:top-[72px] z-[9999] md:w-[320px] rounded-2xl border border-[#4e0d05]/20 bg-[#ede8d7] shadow-lg p-4"
+          >
             <div class="px-4 py-3 border-b border-[#4e0d05]/10">
-              <p class="font-semibold text-sm text-[#4e0d05]">
-                Notificaciones
-              </p>
-              <p class="text-xs text-[#4e0d05]/60">
-                Solicitudes de amistad
-              </p>
+              <p class="font-semibold text-sm text-[#4e0d05]">Notificaciones</p>
+              <p class="text-xs text-[#4e0d05]/60">Solicitudes de amistad</p>
             </div>
 
             <div v-if="pendingCount === 0" class="px-4 py-4">
-              <p class="text-sm text-[#4e0d05]/70">
-                No tenés notificaciones.
-              </p>
+              <p class="text-sm text-[#4e0d05]/70">No tenés notificaciones.</p>
             </div>
 
             <div v-else class="max-h-72 overflow-auto">
@@ -296,7 +400,6 @@ export default {
           </div>
         </div>
 
-        <!-- 3) Cerrar sesión -->
         <button
           @click="handleLogOut"
           class="text-sm font-medium border border-[#e099a8] text-[#4e0d05] rounded-full px-4 py-1.5 hover:bg-[#e099a8] hover:text-white"
@@ -306,10 +409,7 @@ export default {
       </template>
 
       <template v-else>
-        <RouterLink
-          to="/ingresar"
-          class="text-sm font-medium hover:text-[#e099a8]"
-        >
+        <RouterLink to="/ingresar" class="text-sm font-medium hover:text-[#e099a8]">
           Login
         </RouterLink>
 
@@ -323,7 +423,7 @@ export default {
     </div>
   </nav>
 
-  <!-- Menu mobile -->
+  <!-- Menu mobile (igual que antes, pero SIN notificaciones adentro) -->
   <div
     v-if="menuOpen"
     class="md:hidden w-full bg-[#f6f6eb] border-b border-[#4e0d05]/30 px-8 py-6 space-y-5"
@@ -338,95 +438,16 @@ export default {
         v-if="user && user.role === 'admin'"
         @click="menuOpen = false"
         to="/admin"
-        >Administrador</RouterLink
       >
+        Administrador
+      </RouterLink>
     </ul>
 
     <div class="h-px bg-[#4e0d05]/20 my-3"></div>
 
     <div class="flex flex-col gap-3">
       <template v-if="user">
-        <!-- Mobile: notificaciones como item -->
-        <button
-          v-if="!isAdmin"
-          type="button"
-          @click="notifOpen ? closeNotifications() : openAndRefreshNotifications()"
-          class="flex items-center justify-between px-4 py-3 rounded-2xl border border-[#4e0d05]/20 bg-white/40"
-        >
-          <span class="flex items-center gap-3 text-[#4e0d05] font-medium">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-[#4e0d05]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
-              <path d="M13.73 21a2 2 0 01-3.46 0" />
-            </svg>
-            Notificaciones
-          </span>
-
-          <span
-            v-if="pendingCount > 0"
-            class="min-w-[22px] h-[22px] px-2 rounded-full bg-[#e099a8] text-white text-xs font-bold flex items-center justify-center"
-          >
-            {{ pendingBadgeText }}
-          </span>
-        </button>
-
-        <!-- Dropdown mobile (simple) -->
-        <div
-          v-if="notifOpen && !isAdmin"
-          class="rounded-2xl border border-[#4e0d05]/15 bg-[#f6f6eb] shadow-sm overflow-hidden"
-        >
-          <div class="px-4 py-3 border-b border-[#4e0d05]/10">
-            <p class="font-semibold text-sm text-[#4e0d05]">Notificaciones</p>
-          </div>
-
-          <div v-if="pendingCount === 0" class="px-4 py-4">
-            <p class="text-sm text-[#4e0d05]/70">No tenés notificaciones.</p>
-          </div>
-
-          <div v-else class="max-h-64 overflow-auto">
-            <button
-              v-for="r in pendingRequests"
-              :key="r.id"
-              type="button"
-              @click="goToFriendRequests"
-              class="w-full text-left px-4 py-3 hover:bg-white/60 transition border-b border-[#4e0d05]/5"
-            >
-              <p class="text-sm text-[#4e0d05] font-semibold truncate">
-                {{
-                  r?.requester?.display_name ||
-                  (r?.requester?.email ? r.requester.email.split('@')[0] : null) ||
-                  r.requester_id ||
-                  "Alguien"
-                }}
-              </p>
-              <p class="text-xs text-[#4e0d05]/70">
-                te envió una solicitud de amistad.
-              </p>
-            </button>
-          </div>
-
-          <div class="px-4 py-3 bg-white/40">
-            <button
-              type="button"
-              @click="goToFriendRequests"
-              class="text-xs font-semibold text-[#3c490b] hover:underline"
-            >
-              Ver solicitudes
-            </button>
-          </div>
-        </div>
-
-        <RouterLink @click="menuOpen = false" to="/mi-perfil">
-          Mi perfil
-        </RouterLink>
+        <RouterLink @click="menuOpen = false" to="/mi-perfil">Mi perfil</RouterLink>
 
         <button
           @click="handleLogOut"
