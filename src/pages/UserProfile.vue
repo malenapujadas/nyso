@@ -2,7 +2,7 @@
 import { getPreferencesForUser } from "../services/preferences.js";
 import { getUserProfileById } from "../services/user-profiles.js";
 import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
-import { sendConnectionRequest } from "../services/connections.js";
+import { sendConnectionRequest, getPendingRequestsSent } from "../services/connections.js";
 import AppLoader from "../components/AppLoader.vue";
 import ProfilePreferences from "../components/ProfilePreferences.vue";
 
@@ -45,7 +45,7 @@ export default {
 
   methods: {
     async handleConnect() {
-      if (!this.user) {
+      if (!this.user || !this.user.id) {
         this.message = "Debes iniciar sesión para conectar con alguien.";
         setTimeout(() => (this.message = ""), 3000);
         return;
@@ -72,6 +72,12 @@ export default {
 
       // usuario logueado
       this.user = await getCurrentUser();
+
+      // Si el usuario existe, buscamos a quiénes le mandó solicitud
+      if (this.user) {
+        this.sentRequests = await getPendingRequestsSent(this.user.id);
+      }
+
       subscribeToAuthChanges((userState) => {
         this.user = userState;
       });

@@ -79,3 +79,15 @@ export async function getAllUsers() {
 
   return data || [];
 }
+
+export async function toggleUserActiveStatus(userId, currentStatus) {
+  const { data, error } = await supabase
+    .from("user_profiles")
+    .update({ is_active: !currentStatus })
+    .eq("id", userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}

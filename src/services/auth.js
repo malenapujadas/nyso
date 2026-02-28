@@ -105,6 +105,14 @@ export async function login(email, password) {
     throw new Error(error.message);
   }
 
+  const profile = await getUserProfileById(data.user.id);
+
+  if (profile && profile.is_active === false) {
+    // Si está pausado, lo sacamos inmediatamente
+    await supabase.auth.signOut();
+    throw new Error("SUSPENDED_ACCOUNT");
+  }
+
   setAuthUserState({
     id: data.user.id,
     email: data.user.email,

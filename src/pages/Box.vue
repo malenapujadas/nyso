@@ -16,6 +16,7 @@ export default {
       showModal: false,
       loading: false,
       success: false, // Para mostrar el mensaje final de "Gracias"
+      errorMsg: "",
 
       // Datos del formulario
       form: {
@@ -44,21 +45,78 @@ export default {
     },
 
     async handleSubscribe() {
+      this.errorMsg = "";
+
+      // Limpiamos los espacios en blanco de los extremos para que no nos engañen con "   "
+      const nombre = this.form.full_name.trim();
+      const direccion = this.form.address.trim();
+      const ciudad = this.form.city.trim();
+      const cp = this.form.zip_code.trim();
+      const telefono = this.form.phone.trim();
+
+      // 1. Validamos que no haya campos vacíos
+      if (!nombre || !direccion || !ciudad || !cp || !telefono) {
+        this.errorMsg = "Por favor, completá todos los campos.";
+        return;
+      }
+
+      // 2. Validar Nombre
+      if (nombre.length < 3) {
+        this.errorMsg = "El nombre debe tener al menos 3 caracteres.";
+        return;
+      }
+
+      // 3. Validar Dirección
+      if (direccion.length < 5) {
+        this.errorMsg = "La dirección debe tener al menos 5 caracteres.";
+        return;
+      }
+
+      // 4. Validar Ciudad
+      if (ciudad.length < 3) {
+        this.errorMsg = "La ciudad debe tener al menos 3 caracteres.";
+        return;
+      }
+
+      // 5. Validar Código Postal (Longitud y que sean números)
+      if (cp.length !== 4) {
+        this.errorMsg = "El código postal debe contener exactamente 4 caracteres.";
+        return;
+      }
+      
+      // isNaN pregunta "¿Esto NO es un número?". Si es texto (ej: "asda"), devuelve true y entra al error.
+      if (isNaN(cp)) {
+        this.errorMsg = "El código postal debe contener únicamente números.";
+        return;
+      }
+
+      // 6. Validar Teléfono (Longitud y que sean números)
+      if (telefono.length !== 10) {
+        this.errorMsg = "El teléfono debe contener exactamente 10 números.";
+        return;
+      }
+      
+      if (isNaN(telefono)) {
+        this.errorMsg = "El teléfono debe contener únicamente números.";
+        return;
+      }
+
+      // Si llegó hasta acá, es porque pasó todas las pruebas manuales
       this.loading = true;
       try {
         await createSubscription({
           user_id: this.user.id,
-          full_name: this.form.full_name,
-          address: this.form.address,
-          city: this.form.city,
-          zip_code: this.form.zip_code,
-          phone: this.form.phone,
-          status: "pending", // Estado inicial
+          full_name: nombre,
+          address: direccion,
+          city: ciudad,
+          zip_code: cp,
+          phone: telefono,
+          status: "pending", 
         });
 
-        this.success = true; // Cambiamos el modal a "Modo Éxito"
+        this.success = true; 
       } catch (error) {
-        alert("Hubo un error al procesar tu solicitud.");
+        this.errorMsg = "Hubo un error al procesar tu solicitud.";
       } finally {
         this.loading = false;
       }
@@ -67,6 +125,7 @@ export default {
     closeModal() {
       this.showModal = false;
       this.success = false;
+      this.errorMsg = "";
       // Limpiar form
       this.form = {
         full_name: "",
@@ -257,6 +316,13 @@ export default {
           </p>
 
           <form @submit.prevent="handleSubscribe" class="space-y-4">
+            <div
+              v-if="errorMsg"
+              class="text-center text-[#4e0d05] font-semibold bg-[#e099a8]/20 border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base mb-2"
+            >
+              {{ errorMsg }}
+            </div>
+
             <div>
               <label
                 class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"

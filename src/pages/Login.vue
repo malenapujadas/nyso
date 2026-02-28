@@ -40,9 +40,14 @@ export default {
           this.$router.push("/mi-perfil");
         }
       } catch (error) {
-        this.errorMsg = "Credenciales inválidas";
-      }
-
+        // Si el error es el que lanzamos nosotros por la cuenta pausada
+        if (error.message === "SUSPENDED_ACCOUNT") {
+          this.errorMsg = "Tu cuenta ha sido suspendida. Contactate con soporte.";
+        } else {
+          // Si es un error real de Supabase (contraseña mal, etc.)
+          this.errorMsg = "Email o contraseña incorrectos.";
+        }
+      } 
       this.loading = false;
     },
   },

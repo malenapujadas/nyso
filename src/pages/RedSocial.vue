@@ -52,8 +52,8 @@ export default {
       return this.filteredUsers.slice(start, end);
     },
 
-    isAdmin() {
-      return this.user && this.user.role === "admin";
+    isRegularUser() {
+      return this.user && this.user.id && this.user.role !== "admin";
     },
   },
 
@@ -69,7 +69,7 @@ export default {
 
   methods: {
     async handleConnect(receiverId) {
-      if (!this.user) {
+      if (!this.user || !this.user.id) {
         this.message = "Debes iniciar sesión para conectar.";
         setTimeout(() => (this.message = ""), 3000);
         return;
@@ -272,14 +272,14 @@ export default {
                 </router-link>
 
                 <button
-                  v-if="!isAdmin && !sentRequests.includes(u.id)"
+                  v-if="isRegularUser && !sentRequests.includes(u.id)"
                   @click="handleConnect(u.id)"
                   class="w-full py-2 rounded-full bg-[#e099a8]/20 text-[#4e0d05] text-sm font-semibold hover:bg-[#e099a8] hover:text-white transition-colors"
                 >
                   Conectar
                 </button>
                 <span 
-                  v-else-if="!isAdmin && sentRequests.includes(u.id)"
+                  v-else-if="isRegularUser && sentRequests.includes(u.id)"
                   class="text-xs text-[#3c490b] font-medium py-2"
                   >Solicitud enviada</span
                 >
@@ -326,12 +326,7 @@ export default {
               </router-link>
 
               <button
-                v-if="
-                  user &&
-                  user.id !== u.id &&
-                  !sentRequests.includes(u.id) &&
-                  !isAdmin
-                "
+                v-if="isRegularUser && user.id !== u.id && !sentRequests.includes(u.id)"
                 @click="handleConnect(u.id)"
                 class="px-5 py-1.5 rounded-full bg-[#3c490b] text-white text-sm font-medium hover:bg-[#4e0d05] transition-colors shadow-md shadow-[#3c490b]/20"
               >
@@ -339,7 +334,7 @@ export default {
               </button>
 
               <span
-                v-else-if="sentRequests.includes(u.id)"
+                v-else-if="isRegularUser && sentRequests.includes(u.id)"
                 class="text-xs text-[#3c490b] font-bold border border-[#3c490b]/20 px-3 py-1 rounded-full bg-[#3c490b]/5"
               >
                 Enviada

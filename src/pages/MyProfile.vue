@@ -1,4 +1,5 @@
 <script>
+import { toast } from 'vue3-toastify';
 import AppH1 from "../components/AppH1.vue";
 import { subscribeToAuthChanges, getCurrentUser } from "../services/auth.js";
 import { getFavorites, removeFavorite } from "../services/favorites.js";
@@ -163,6 +164,10 @@ export default {
         if (this.user && this.user.id) {
           this.friends = await getFriends(this.user.id);
         }
+
+        //notificacion de eliminaste a amigo
+        const nombreEliminado = friend.display_name || friend.email || 'este usuario';
+        toast(`Eliminaste a ${nombreEliminado} de tu lista de amigos.`);
       } catch (error) {
         console.error(
           "[MyProfile.vue handleRemoveFriend] Error eliminando amigo: ",

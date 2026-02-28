@@ -45,22 +45,49 @@ export default {
     togglePost(id) {
       this.openPost = this.openPost === id ? null : id;
     },
-    //enviar sugerencia
+    //enviar sugerencia y validaciones 
     async submitSugg() {
+      // 1. Limpiamos el mensaje de error/éxito previo
       this.suggestionMessage = "";
 
-      if (!this.sugg.titulo || !this.sugg.descripcion) {
-        this.suggestionMessage = "Por favor completá título y descripción.";
+      // 2. Limpiamos los espacios en blanco de los extremos
+      const titulo = this.sugg.titulo.trim();
+      const descripcion = this.sugg.descripcion.trim();
+      const nombre = this.sugg.nombre.trim();
+      const email = this.sugg.email.trim();
+
+      // 3. Validar que no haya campos requeridos vacíos
+      if (!titulo || !descripcion) {
+        this.suggestionMessage = "Por favor completá el título y la descripción.";
         return;
       }
 
-      this.sendingSuggestion = true;
+      // 4. Validar longitud mínima del Título (10 caracteres)
+      if (titulo.length < 10) {
+        this.suggestionMessage = "El título debe tener al menos 10 caracteres.";
+        return;
+      }
 
+      // 5. Validar longitud mínima de la Descripción (20 caracteres)
+      if (descripcion.length < 20) {
+        this.suggestionMessage = "La descripción debe tener al menos 20 caracteres.";
+        return;
+      }
+
+      // 6. Si todo está correcto, enviamos los datos "limpios" (con trim)
+      this.sendingSuggestion = true;
       try {
-        await submitSuggestion(this.sugg);
-        this.suggestionMessage = "¡Gracias! Tu tema fue enviado al equipo ";
+        await submitSuggestion({
+          nombre: nombre,
+          email: email,
+          titulo: titulo,
+          descripcion: descripcion
+        });
+        
+        this.suggestionMessage = "¡Gracias! Tu tema fue enviado al equipo.";
         setTimeout(() => (this.suggestionMessage = ""), 4000);
 
+        // Limpiamos el formulario después del éxito
         this.sugg = {
           nombre: "",
           email: "",
@@ -69,8 +96,7 @@ export default {
         };
       } catch (err) {
         console.error(err);
-        this.suggestionMessage =
-          err.message || "Error al enviar la sugerencia.";
+        this.suggestionMessage = err.message || "Error al enviar la sugerencia.";
       } finally {
         this.sendingSuggestion = false;
       }
@@ -296,7 +322,19 @@ export default {
           class="p-3 rounded-3xl border border-[#e099a8]/40 focus:border-[#e099a8] outline-none bg-[#f6f6eb] text-[#4e0d05] resize-none w-full"
         ></textarea>
 
-        <div class="flex justify-center mt-4">
+        <div
+          v-if="suggestionMessage"
+          class="text-center font-semibold rounded-full py-2 px-4 text-sm md:text-base border"
+          :class="
+            suggestionMessage.includes('Gracias')
+              ? 'bg-[#3c490b]/10 text-[#3c490b] border-[#3c490b]' // Estilo de éxito
+              : 'bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]' // Estilo de error (Igual al Register)
+          "
+        >
+          {{ suggestionMessage }}
+        </div>
+
+        <div class="flex justify-center mt-2">
           <button
             type="submit"
             :disabled="sendingSuggestion"
@@ -305,18 +343,6 @@ export default {
             {{ sendingSuggestion ? "Enviando..." : "Enviar sugerencia" }}
           </button>
         </div>
-
-        <p
-          v-if="suggestionMessage"
-          class="text-center mt-3 font-medium"
-          :class="
-            suggestionMessage.includes('Gracias')
-              ? 'text-[#3c490b]'
-              : 'text-red-600'
-          "
-        >
-          {{ suggestionMessage }}
-        </p>
       </form>
     </section>
   </div>

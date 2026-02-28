@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* --- COLORES DE TOASTIFY  --- */
+:root {
+  /* Fondo del cartelito (Borravino) */
+  --toastify-color-light: #4e0d05; 
+  
+  /* Color del texto (Cremita) */
+  --toastify-text-color-light: #f6f6eb; 
+  
+  /* Color de la crucecita para cerrar */
+  --toastify-color-transparent: #f6f6eb; 
+  
+  /* Color de la barra de progreso (Rosa viejo para que resalte) */
+  --toastify-color-progress-light: #e099a8; 
+}
+
+/* Redondeamos un poco más los bordes para que combine con tus botones */
+.Toastify__toast {
+  border-radius: 1rem !important; 
+  font-family: inherit !important; /* Para que use la tipografía de tu web */
+}
+
+
 /* html, body, #app {
 height: 100%;
 }

@@ -1,6 +1,9 @@
 <script>
 import AppLoader from "../../components/AppLoader.vue";
-import { getAllUsers } from "../../services/user-profiles.js";
+import {
+  getAllUsers,
+  toggleUserActiveStatus,
+} from "../../services/user-profiles.js";
 import { getAllSubscriptions } from "../../services/subscriptions.js";
 
 export default {
@@ -22,7 +25,7 @@ export default {
     usersWithData() {
       return this.users.map((user) => {
         const activeSub = this.subscriptions.find(
-          (sub) => sub.user_id === user.id && sub.status === "active"
+          (sub) => sub.user_id === user.id && sub.status === "active",
         );
         return {
           ...user,
@@ -47,7 +50,7 @@ export default {
     },
     totalSubscribers() {
       return this.usersWithData.filter(
-        (u) => u.isSubscribed && u.role !== "admin"
+        (u) => u.isSubscribed && u.role !== "admin",
       ).length;
     },
     conversionRate() {
@@ -57,7 +60,8 @@ export default {
   },
   watch: {
     totalPages() {
-      if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+      if (this.currentPage > this.totalPages)
+        this.currentPage = this.totalPages;
     },
   },
   async mounted() {
@@ -94,12 +98,26 @@ export default {
     prevPage() {
       this.goToPage(this.currentPage - 1);
     },
+    async handleToggleStatus(user) {
+      try {
+        const updated = await toggleUserActiveStatus(user.id, user.is_active);
+        // Actualizamos la lista local para que el cambio se vea al instante
+        const index = this.users.findIndex((u) => u.id === user.id);
+        if (index !== -1) {
+          this.users[index].is_active = updated.is_active;
+        }
+      } catch (err) {
+        alert("Error al cambiar el estado del usuario");
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <section class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8">
+  <section
+    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8"
+  >
     <!-- Iconos decorativos -->
     <img
       src="/icono1.png"
@@ -150,7 +168,9 @@ export default {
     <div class="relative z-10 max-w-7xl mx-auto pb-20 px-0 md:px-0">
       <!-- Header centrado -->
       <div class="mb-10 text-center">
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide">
+        <h1
+          class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide"
+        >
           Comunidad NYSO
         </h1>
         <p class="text-[#4e0d05]/60">
@@ -173,7 +193,9 @@ export default {
             class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1">
+              <p
+                class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1"
+              >
                 Total Usuarios
               </p>
               <p class="text-4xl font-extrabold text-[#4e0d05]">
@@ -187,7 +209,9 @@ export default {
             class="bg-[#e099a8]/20 rounded-3xl border border-[#e099a8]/40 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1">
+              <p
+                class="text-sm font-bold text-[#4e0d05]/60 uppercase tracking-wider mb-1"
+              >
                 Suscriptos al Box
               </p>
               <p class="text-4xl font-extrabold text-[#4e0d05]">
@@ -201,7 +225,9 @@ export default {
             class="bg-[#3c490b]/10 rounded-3xl border border-[#3c490b]/20 p-6 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div class="relative z-10">
-              <p class="text-sm font-bold text-[#3c490b]/70 uppercase tracking-wider mb-1">
+              <p
+                class="text-sm font-bold text-[#3c490b]/70 uppercase tracking-wider mb-1"
+              >
                 Tasa de Conversión
               </p>
               <p class="text-4xl font-extrabold text-[#3c490b]">
@@ -213,9 +239,15 @@ export default {
         </div>
 
         <!-- Contenedor listado -->
-        <div class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-sm overflow-hidden">
-          <div class="p-6 border-b border-[#4e0d05]/10 flex justify-between items-center bg-white/40">
-            <h3 class="text-lg font-bold text-[#4e0d05]">Listado de Usuarios</h3>
+        <div
+          class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-sm overflow-hidden"
+        >
+          <div
+            class="p-6 border-b border-[#4e0d05]/10 flex justify-between items-center bg-white/40"
+          >
+            <h3 class="text-lg font-bold text-[#4e0d05]">
+              Listado de Usuarios
+            </h3>
           </div>
 
           <!-- MOBILE: cards -->
@@ -238,7 +270,11 @@ export default {
                     v-else
                     class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10 shrink-0"
                   >
-                    {{ u.display_name ? u.display_name.charAt(0).toUpperCase() : "?" }}
+                    {{
+                      u.display_name
+                        ? u.display_name.charAt(0).toUpperCase()
+                        : "?"
+                    }}
                   </div>
 
                   <div class="min-w-0">
@@ -266,11 +302,9 @@ export default {
                     v-if="u.isSubscribed"
                     class="inline-flex px-3 py-1 rounded-full bg-[#3c490b]/15 text-[#3c490b] text-xs font-bold border border-[#3c490b]/20"
                   >
-                    Suscrito 
+                    Suscrito
                   </span>
-                  <span v-else class="text-xs opacity-50">
-                    No suscrito
-                  </span>
+                  <span v-else class="text-xs opacity-50"> No suscrito </span>
                 </div>
 
                 <router-link
@@ -297,6 +331,7 @@ export default {
                   <th class="p-4 font-bold">Rol</th>
                   <th class="p-4 font-bold">Box Mensual</th>
                   <th class="p-4 font-bold">Perfil</th>
+                  <th class="p-4 font-bold">Estado</th>
                 </tr>
               </thead>
               <tbody class="text-sm text-[#4e0d05]">
@@ -365,6 +400,20 @@ export default {
                       Ver perfil ↗
                     </router-link>
                   </td>
+                  <td class="p-4 text-center">
+                    <button
+                      v-if="u.role !== 'admin'"
+                      @click="handleToggleStatus(u)"
+                      class="px-3 py-1 rounded-full text-xs font-bold transition-all border"
+                      :class="
+                        u.is_active !== false
+                          ? 'bg-green-100 text-green-700 border-green-200 hover:bg-red-100 hover:text-red-700 hover:border-red-200'
+                          : 'bg-red-600 text-white border-red-700 hover:bg-green-600'
+                      "
+                    >
+                      {{ u.is_active !== false ? "Activo" : "Pausado" }}
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -381,7 +430,9 @@ export default {
             </p>
 
             <!-- MOBILE (simple y prolijo) -->
-            <div class="flex sm:hidden items-center justify-center gap-4 w-full">
+            <div
+              class="flex sm:hidden items-center justify-center gap-4 w-full"
+            >
               <button
                 type="button"
                 @click="prevPage"
@@ -406,7 +457,9 @@ export default {
             </div>
 
             <!-- DESKTOP (tu versión original intacta) -->
-            <div class="hidden sm:flex flex-wrap items-center justify-center gap-2">
+            <div
+              class="hidden sm:flex flex-wrap items-center justify-center gap-2"
+            >
               <button
                 type="button"
                 @click="prevPage"

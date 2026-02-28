@@ -3,7 +3,7 @@ import AppH1 from "../components/AppH1.vue";
 import { getVinoById } from "../services/wines.js";
 import { getCurrentUser, getAuthUser } from "../services/auth.js";
 import { addFavorite, getFavorites } from "../services/favorites.js";
-import { addHistory } from "../services/history.js";
+import { addHistory, getHistory } from "../services/history.js";
 import { addReview, getReviewsByWineId } from "../services/reviews.js";
 import AppLoader from "../components/AppLoader.vue";
 
@@ -19,11 +19,13 @@ export default {
       message: null,
       messageType: null,
       isFavorite: false,
+      isInHistory: false,
 
       loading: true,
       error: null,
 
       showModal: false,
+      modalError: null,
       noteText: "",
 
       selectedNote: "",
@@ -79,6 +81,13 @@ export default {
         this.isFavorite =
           favIds.includes(Number(this.vino.id)) ||
           favIds.includes(String(this.vino.id));
+
+        // Verificar Historial 
+        const historyData = await getHistory(this.user.id);
+        // getHistory devuelve objetos tipo { vino_id: 123, note: "..." }
+        this.isInHistory = historyData.some(
+          (h) => String(h.vino_id) === String(this.vino.id)
+        );
       }
     } catch (error) {
       console.error("[Detail.vue] Error al cargar detalle de vino:", error);
@@ -133,26 +142,44 @@ export default {
         return;
       }
 
+      this.modalError = null;
       this.showModal = true;
     },
 
-        async confirmAddHistory() {
+    async confirmAddHistory() {
+      this.modalError = null;
+
       try {
-        if (!this.selectedNote) {
-          this.message = "Elegí una opción antes de guardar.";
-          this.messageType = "history";
-          setTimeout(() => (this.message = null), 3000);
+        const extra = (this.customNote || "").trim();
+
+        if (this.selectedNote && extra) {
+          this.modalError = "Por favor, elegí una opción predeterminada O escribí una nota, pero no ambas.";
           return;
         }
 
-        const extra = (this.customNote || "").trim();
+        if (!this.selectedNote && !extra) {
+          this.modalError = "Elegí una opción o escribí una nota antes de guardar.";
+          return;
+        }
 
-        // Guardamos mensaje + nota extra (si existe)
-        const noteToSave = extra
-          ? `${this.selectedNote} — Nota: ${extra}`
-          : this.selectedNote;
+        if (extra && extra.length < 10) {
+          this.modalError = "La nota extra debe tener al menos 10 caracteres.";
+          return;
+        }
+
+        // 2. Armamos la nota según lo que completó el usuario
+        let noteToSave = "";
+        if (this.selectedNote && extra) {
+          noteToSave = `${this.selectedNote} — Nota: ${extra}`;
+        } else if (this.selectedNote) {
+          noteToSave = this.selectedNote;
+        } else {
+          noteToSave = extra; // Solo escribió la nota
+        }
 
         await addHistory(this.user.id, this.vino.id, noteToSave);
+
+        this.isInHistory = true;
 
         this.message = "Agregado a tu Historial";
         this.messageType = "history";
@@ -171,6 +198,7 @@ export default {
     this.showModal = false;
     this.selectedNote = "";
     this.customNote = "";
+    this.modalError = null;
   },
 
     // metodo para estrellas
@@ -181,15 +209,32 @@ export default {
     async handleAddReview() {
       if (!this.user) return;
 
-      //validacion
+      // 1. Limpiamos cualquier mensaje previo
+      this.reviewMessage = null;
+
+      // 2. Validar que haya tocado las estrellas
       if (this.newReview.rating === 0) {
-        this.reviewMessage = "¡Por favor elegí una puntuación!";
-        setTimeout(() => (this.reviewMessage = null), 3000);
+        this.reviewMessage = "Por favor, elegí una puntuación (estrellas).";
         return;
       }
 
+      // 3. Limpiamos los espacios en blanco del comentario
+      const comentarioLimpiado = this.newReview.comment.trim();
+
+      // 4. Validar que el comentario no esté vacío
+      if (!comentarioLimpiado) {
+        this.reviewMessage = "Por favor, escribí un comentario.";
+        return;
+      }
+
+      // 5. Validar que tenga al menos 10 caracteres
+      if (comentarioLimpiado.length < 10) {
+        this.reviewMessage = "El comentario debe tener al menos 10 caracteres.";
+        return;
+      }
+
+      // Si todo está bien, avanzamos
       try {
-        // nombre de usuario o uno x default
         const fullProfile = getAuthUser();
         const userName =
           fullProfile.display_name ||
@@ -197,27 +242,24 @@ export default {
           this.user.email.split("@")[0] ||
           "Usuario";
 
-        // guardo
+        // Pasamos el comentarioLimpiado a la base de datos
         const savedReview = await addReview(
           this.user.id,
           this.vino.id,
           userName,
           this.newReview.rating,
-          this.newReview.comment,
+          comentarioLimpiado
         );
 
-        // agrego reseña a la lista local
         this.reviews.unshift(savedReview);
-
-        // PAGINACIÓN RESEÑAS (NUEVO) - volver a página 1
         this.reviewsCurrentPage = 1;
 
-        // limpio
+        // Limpiamos los campos y mostramos el éxito
         this.newReview.rating = 0;
         this.newReview.comment = "";
         this.reviewMessage = "¡Gracias por tu reseña!";
 
-        setTimeout(() => (this.reviewMessage = null), 3000);
+        setTimeout(() => (this.reviewMessage = null), 4000);
       } catch (e) {
         console.error(e);
         this.reviewMessage = "Error al guardar la reseña.";
@@ -409,12 +451,19 @@ export default {
             <!-- registrar consumo -->
             <div class="mt-6">
               <button
-                v-if="!isAdmin"
+                v-if="!isAdmin && !isInHistory"
                 @click="handleAddHistory"
                 class="w-full sm:w-auto px-5 py-3 rounded-xl border border-[#3c490b]/40 bg-[#3c490b]/5 text-[#3c490b] font-semibold hover:bg-[#3c490b]/10 transition"
               >
                 Registrar consumo ↗
               </button>
+
+              <div 
+                v-else-if="!isAdmin && isInHistory" 
+                class="inline-block w-full sm:w-auto px-5 py-3 rounded-xl border border-[#4e0d05]/20 bg-white/60 text-[#4e0d05] font-semibold opacity-70 cursor-not-allowed text-center"
+              >
+                ✓ Vino registrado
+              </div>
 
               <p class="text-xs text-[#4e0d05]/60 mt-2">
                 Agregá una nota para recordar cuándo y cómo lo tomaste.
@@ -486,6 +535,18 @@ export default {
                 >
                   ★
                 </button>
+              </div>
+
+              <div
+                v-if="reviewMessage"
+                class="text-center font-semibold rounded-xl py-2 px-4 text-sm mb-3 border"
+                :class="
+                  reviewMessage.includes('Gracias')
+                    ? 'bg-[#3c490b]/10 text-[#3c490b] border-[#3c490b]/30'
+                    : 'bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]/50'
+                "
+              >
+                {{ reviewMessage }}
               </div>
 
               <textarea
@@ -614,7 +675,7 @@ export default {
         v-for="(opt, i) in noteOptions.slice(0, 4)"
         :key="i"
         type="button"
-        @click="selectedNote = opt"
+        @click="selectedNote = selectedNote === opt ? '' : opt" 
         class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
         :class="
           selectedNote === opt
@@ -629,7 +690,7 @@ export default {
       <div class="col-span-2 flex justify-center">
         <button
           type="button"
-          @click="selectedNote = noteOptions[4]"
+          @click="selectedNote = selectedNote === noteOptions[4] ? '' : noteOptions[4]"
           class="h-20 w-full sm:w-[70%] flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
           :class="
             selectedNote === noteOptions[4]
@@ -653,6 +714,11 @@ export default {
           placeholder="Ej: Lo tomé con amigos..."
           class="w-full border border-[#e099a8]/50 rounded-xl p-3 bg-[#f6f6eb] text-[#4e0d05] outline-none focus:ring-1 focus:ring-[#e099a8]"
         ></textarea>
+      </div>
+      <div v-if="modalError" class="col-span-2 mt-3">
+        <div class="text-center font-semibold rounded-xl py-2 px-4 text-sm border bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]/50">
+          {{ modalError }}
+        </div>
       </div>
     </div>
 
