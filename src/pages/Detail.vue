@@ -30,7 +30,7 @@ export default {
       noteText: "",
 
       selectedNote: "",
-      customNote: "", 
+      customNote: "",
 
       noteOptions: [
         "Me encantó",
@@ -40,14 +40,13 @@ export default {
         "No me gustó",
       ],
 
-      reviews: [], // lista de reseñas
+      reviews: [], 
       newReview: {
         rating: 0,
         comment: "",
       },
-      reviewMessage: null, 
+      reviewMessage: null,
 
-      // PAGINACIÓN RESEÑAS
       reviewsCurrentPage: 1,
       reviewsPerPage: 3,
     };
@@ -83,9 +82,8 @@ export default {
           favIds.includes(Number(this.vino.id)) ||
           favIds.includes(String(this.vino.id));
 
-        // Verificar Historial 
+        // Verificar Historial
         const historyData = await getHistory(this.user.id);
-        // getHistory devuelve objetos tipo { vino_id: 123, note: "..." }
         this.isInHistory = historyData.some(
           (h) => String(h.vino_id) === String(this.vino.id)
         );
@@ -99,7 +97,7 @@ export default {
   },
 
   watch: {
-    // PAGINACIÓN RESEÑAS (NUEVO) - si quedaste en una página que ya no existe
+    // Paginación reseñas
     totalReviewPages() {
       if (this.reviewsCurrentPage > this.totalReviewPages) {
         this.reviewsCurrentPage = this.totalReviewPages;
@@ -140,58 +138,50 @@ export default {
       this.showModal = true;
     },
 
-      async confirmAddHistory() {
-    this.modalError = null;
+    async confirmAddHistory() {
+      this.modalError = null;
 
-    try {
-      const extra = (this.customNote || "").trim();
+      try {
+        const selected = (this.selectedNote || "").trim();
+        const extra = (this.customNote || "").trim();
 
-      if (this.selectedNote && extra) {
-        this.modalError =
-          "Por favor, elegí una opción predeterminada O escribí una nota, pero no ambas.";
-        return;
+        // Si no puso nada, no guardamos
+        if (!selected && !extra) {
+          this.showModal = false;
+          return;
+        }
+
+        let noteToSave = "";
+
+        if (selected && extra) {
+          noteToSave = `${selected} — Nota: ${extra}`;
+        } else if (selected) {
+          noteToSave = selected;
+        } else {
+          noteToSave = extra;
+        }
+
+        await addHistory(this.user.id, this.vino.id, noteToSave);
+
+        this.isInHistory = true;
+        this.showModal = false;
+
+        this.selectedNote = "";
+        this.customNote = "";
+
+        toast.success("Agregado a tu Historial");
+      } catch (e) {
+        console.error(e);
+        toast.error("Error al agregar al Historial");
       }
-
-      if (!this.selectedNote && !extra) {
-        this.modalError = "Elegí una opción o escribí una nota antes de guardar.";
-        return;
-      }
-
-      if (extra && extra.length < 10) {
-        this.modalError = "La nota extra debe tener al menos 10 caracteres.";
-        return;
-      }
-
-      let noteToSave = "";
-      if (this.selectedNote && extra) {
-        noteToSave = `${this.selectedNote} — Nota: ${extra}`;
-      } else if (this.selectedNote) {
-        noteToSave = this.selectedNote;
-      } else {
-        noteToSave = extra;
-      }
-
-      await addHistory(this.user.id, this.vino.id, noteToSave);
-
-      this.isInHistory = true;
-      this.showModal = false;
-
-      this.selectedNote = "";
-      this.customNote = "";
-
-      toast.success("Agregado a tu Historial");
-    } catch (e) {
-      console.error(e);
-      toast.error("Error al agregar al Historial");
-    }
-  },
+    },
 
     cancelModal() {
-    this.showModal = false;
-    this.selectedNote = "";
-    this.customNote = "";
-    this.modalError = null;
-  },
+      this.showModal = false;
+      this.selectedNote = "";
+      this.customNote = "";
+      this.modalError = null;
+    },
 
     // metodo para estrellas
     setRating(star) {
@@ -199,64 +189,65 @@ export default {
     },
 
     async handleAddReview() {
-  if (!this.user) {
-    toast.info("Iniciá sesión para dejar tu reseña");
-    return;
-  }
+      if (!this.user) {
+        toast.info("Iniciá sesión para dejar tu reseña");
+        return;
+      }
 
-  if (this.newReview.rating === 0) {
-    toast.info("Elegí una puntuación (estrellas)");
-    return;
-  }
+      if (this.newReview.rating === 0) {
+        toast.info("Elegí una puntuación (estrellas)");
+        return;
+      }
 
-  const comentarioLimpiado = this.newReview.comment.trim();
+      const comentarioLimpiado = this.newReview.comment.trim();
 
-  if (!comentarioLimpiado) {
-    toast.info("Escribí un comentario");
-    return;
-  }
+      if (!comentarioLimpiado) {
+        toast.info("Escribí un comentario");
+        return;
+      }
 
-  if (comentarioLimpiado.length < 10) {
-    toast.info("El comentario debe tener al menos 10 caracteres");
-    return;
-  }
+      if (comentarioLimpiado.length < 10) {
+        toast.info("El comentario debe tener al menos 10 caracteres");
+        return;
+      }
 
-  try {
-    const fullProfile = getAuthUser();
-    const userName =
-      fullProfile.display_name ||
-      fullProfile.nombre ||
-      this.user.email.split("@")[0] ||
-      "Usuario";
+      try {
+        const fullProfile = getAuthUser();
+        const userName =
+          fullProfile.display_name ||
+          fullProfile.nombre ||
+          this.user.email.split("@")[0] ||
+          "Usuario";
 
-    const savedReview = await addReview(
-      this.user.id,
-      this.vino.id,
-      userName,
-      this.newReview.rating,
-      comentarioLimpiado
-    );
+        const savedReview = await addReview(
+          this.user.id,
+          this.vino.id,
+          userName,
+          this.newReview.rating,
+          comentarioLimpiado
+        );
 
-    this.reviews.unshift(savedReview);
-    this.reviewsCurrentPage = 1;
+        this.reviews.unshift(savedReview);
+        this.reviewsCurrentPage = 1;
 
-    this.newReview.rating = 0;
-    this.newReview.comment = "";
+        this.newReview.rating = 0;
+        this.newReview.comment = "";
 
-    toast.success("¡Gracias por tu reseña!");
-  } catch (e) {
-    console.error(e);
-    toast.error("Error al guardar la reseña");
-  }
-},
+        toast.success("¡Gracias por tu reseña!");
+      } catch (e) {
+        console.error(e);
+        toast.error("Error al guardar la reseña");
+      }
+    },
 
-    // PAGINACIÓN RESEÑAS
+    // Paginación reseñas
     goToReviewPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
 
       if (page < 1) this.reviewsCurrentPage = 1;
-      else if (page > this.totalReviewPages) this.reviewsCurrentPage = this.totalReviewPages;
+      else if (page > this.totalReviewPages)
+        this.reviewsCurrentPage = this.totalReviewPages;
       else this.reviewsCurrentPage = page;
     },
     nextReviewPage() {
@@ -275,7 +266,10 @@ export default {
     averageRating() {
       if (!this.reviews || this.reviews.length === 0) return 0;
 
-      const sum = this.reviews.reduce((acc, r) => acc + Number(r.rating || 0), 0);
+      const sum = this.reviews.reduce(
+        (acc, r) => acc + Number(r.rating || 0),
+        0
+      );
       return sum / this.reviews.length;
     },
 
@@ -284,7 +278,7 @@ export default {
       return this.averageRating.toFixed(1);
     },
 
-    // PAGINACIÓN RESEÑAS (NUEVO)
+    // Paginación reseñas
     totalReviewPages() {
       return Math.max(1, Math.ceil(this.reviews.length / this.reviewsPerPage));
     },
@@ -301,7 +295,6 @@ export default {
   <section
     class="min-h-screen bg-[#f6f6eb] relative overflow-hidden flex flex-col items-center md:py-16 pt-10 pb-20"
   >
-    <!-- decorativos -->
     <div
       class="absolute top-0 left-0 right-0 h-[60%] pointer-events-none overflow-hidden"
     >
@@ -323,7 +316,6 @@ export default {
     </div>
 
     <div class="relative z-10 w-full px-5 md:px-10">
-      <!-- loader -->
       <div
         v-if="loading"
         class="w-full flex items-center justify-center min-h-[200px]"
@@ -331,12 +323,11 @@ export default {
         <AppLoader />
       </div>
 
-      <!-- error -->
       <div v-else-if="error" class="w-full text-center text-red-600 mt-6">
         {{ error }}
       </div>
 
-      <!-- contenido -->
+      <!-- Contenido -->
       <div
         v-if="vino"
         class="w-full max-w-7xl flex flex-col md:flex-row gap-8 md:gap-10 mx-auto"
@@ -350,16 +341,17 @@ export default {
           />
         </div>
 
-        <!-- info -->
+        <!-- Info -->
         <div class="flex-1 text-left space-y-6 mt-6 md:mt-0">
-          <!-- titulo y promedio + wishlist  -->
           <div
             class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           >
             <div class="flex items-center gap-3">
-              <h2 class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]">
+              <AppH1
+                class="text-2xl sm:text-3xl md:text-3xl font-bold text-[#4e0d05]"
+              >
                 {{ vino.nombre }}
-              </h2>
+              </AppH1>
 
               <div
                 v-if="averageRatingText"
@@ -387,40 +379,41 @@ export default {
             </button>
           </div>
 
-          <!-- descripcion -->
+          <!-- Descripcion -->
           <p class="text-[#4e0d05]/90">
             {{ vino.descripcion }}
           </p>
 
           <hr class="border-t border-[#4e0d05]/30" />
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-2 text-[#4e0d05] max-w-2xl">
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-2 text-[#4e0d05] max-w-2xl"
+          >
+            <!-- Columna 1 -->
+            <div class="space-y-1">
+              <p><strong>Bodega:</strong> {{ vino.bodega }}</p>
+              <p><strong>Uva:</strong> {{ vino.uva }}</p>
+            </div>
 
-          <!-- Columna 1 -->
-          <div class="space-y-1">
-            <p><strong>Bodega:</strong> {{ vino.bodega }}</p>
-            <p><strong>Uva:</strong> {{ vino.uva }}</p>
-          </div>
+            <!-- Columna 2 -->
+            <div class="space-y-1">
+              <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
+              <p><strong>Año:</strong> {{ vino["año"] }}</p>
+            </div>
 
-          <!-- Columna 2 -->
-          <div class="space-y-1">
-            <p><strong>Tipo:</strong> {{ vino.tipo }}</p>
-            <p><strong>Año:</strong> {{ vino["año"] }}</p>
-          </div>
-
-          <!-- Columna 3 -->
-          <div class="space-y-1">
-            <p><strong>Región:</strong> {{ vino.region }}</p>
-            <p><strong>Precio aprox.:</strong> ${{ vino.precio_aproximado }}</p>
-          </div>
-
+            <!-- Columna 3 -->
+            <div class="space-y-1">
+              <p><strong>Región:</strong> {{ vino.region }}</p>
+              <p>
+                <strong>Precio aprox.:</strong> ${{ vino.precio_aproximado }}
+              </p>
+            </div>
           </div>
 
           <hr class="border-t border-[#4e0d05]/30" />
 
-          <!-- maridajes -->
           <div>
-            <h3 class="text-lg font-semibold text-[#3c490b] mb-3">Maridajes</h3>
+            <h2 class="text-lg font-semibold text-[#3c490b] mb-3">Maridajes</h2>
 
             <div class="flex flex-wrap gap-2">
               <span
@@ -432,7 +425,6 @@ export default {
               </span>
             </div>
 
-            <!-- registrar consumo -->
             <div class="mt-6">
               <button
                 v-if="!isAdmin && !isInHistory"
@@ -442,8 +434,8 @@ export default {
                 Registrar consumo ↗
               </button>
 
-              <div 
-                v-else-if="!isAdmin && isInHistory" 
+              <div
+                v-else-if="!isAdmin && isInHistory"
                 class="inline-block w-full sm:w-auto px-5 py-3 rounded-xl border border-[#4e0d05]/20 bg-white/60 text-[#4e0d05] font-semibold opacity-70 cursor-not-allowed text-center"
               >
                 ✓ Vino registrado
@@ -455,7 +447,7 @@ export default {
             </div>
           </div>
 
-          <!-- mensaje -->
+          <!-- Mensaje -->
           <p
             v-if="message"
             class="mt-3 rounded-full px-4 py-2 text-xs text-center border"
@@ -468,7 +460,6 @@ export default {
             {{ message }}
           </p>
 
-          <!-- volver -->
           <div class="flex justify-end pt-4">
             <RouterLink
               to="/social"
@@ -480,19 +471,17 @@ export default {
         </div>
       </div>
 
-      <!-- RESEÑAS -->
+      <!-- Reseñas -->
       <div class="w-full mt-14">
-        <h3 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-8">
           Reseñas de la comunidad
-        </h3>
+        </h2>
 
-        <!-- formulario reseña -->
         <div
           v-if="user"
           class="bg-[#e099a8]/10 p-6 rounded-xl border border-[#e099a8]/30 mb-8"
         >
           <div class="flex flex-col md:flex-row gap-4 items-start">
-            <!-- Nysito  -->
             <div class="w-full md:w-1/4">
               <img
                 src="/nysito-estrella.png"
@@ -501,7 +490,7 @@ export default {
               />
             </div>
 
-            <!-- formulario -->
+            <!-- Formulario -->
             <div class="w-full md:w-3/4">
               <p class="font-medium mb-3 text-[#4e0d05]">Dejá tu opinión:</p>
 
@@ -553,10 +542,12 @@ export default {
         </div>
 
         <div v-else class="text-center py-4 bg-[#e099a8]/10 rounded-xl">
-          <p class="text-sm text-[#4e0d05]">Iniciá sesión para dejar tu reseña.</p>
+          <p class="text-sm text-[#4e0d05]">
+            Iniciá sesión para dejar tu reseña.
+          </p>
         </div>
 
-        <!-- listado reseñas-->
+        <!-- Listado reseñas -->
         <div v-if="reviews.length" class="mt-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
@@ -583,13 +574,15 @@ export default {
                 </span>
               </div>
 
-              <p class="text-sm mt-3 text-[#4e0d05]/80 overflow-hidden text-ellipsis">
+              <p
+                class="text-sm mt-3 text-[#4e0d05]/80 overflow-hidden text-ellipsis"
+              >
                 {{ review.comment }}
               </p>
             </div>
           </div>
 
-          <!--  Paginación reseñas (NUEVO)  -->
+          <!-- Paginación reseñas -->
           <div
             v-if="reviews.length > 0 && totalReviewPages > 1"
             class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
@@ -598,7 +591,9 @@ export default {
               Página {{ reviewsCurrentPage }} de {{ totalReviewPages }}
             </p>
 
-            <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
+            <div
+              class="flex flex-wrap items-center justify-center lg:justify-end gap-2"
+            >
               <button
                 type="button"
                 @click="prevReviewPage"
@@ -617,7 +612,7 @@ export default {
                   'w-10 h-10 rounded-full border text-sm font-semibold transition',
                   p === reviewsCurrentPage
                     ? 'bg-[#3c490b] text-white border-[#3c490b]'
-                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white',
                 ]"
               >
                 {{ p }}
@@ -635,7 +630,6 @@ export default {
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- modal historial -->
@@ -646,65 +640,68 @@ export default {
       <div
         class="bg-[#ede8d7] p-6 rounded-2xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20"
       >
-        <h3 class="text-xl font-semibold text-[#3c490b] mb-3">Agregá una nota</h3>
+        <h2 class="text-xl font-semibold text-[#3c490b] mb-3">Agregá una nota</h2>
 
         <p class="text-sm text-[#4e0d05]/70 mb-4">
           Elegí una opción para guardar en tu historial:
         </p>
 
-    <!-- Opciones: 2 + 2 + 1 centrada -->
-    <div class="grid grid-cols-2 gap-4">
-      <!-- primeras 4 en 2x2 -->
-      <button
-        v-for="(opt, i) in noteOptions.slice(0, 4)"
-        :key="i"
-        type="button"
-        @click="selectedNote = selectedNote === opt ? '' : opt" 
-        class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
-        :class="
-          selectedNote === opt
-            ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
-            : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
-        "
-      >
-        <span class="leading-snug">{{ opt }}</span>
-      </button>
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            v-for="(opt, i) in noteOptions.slice(0, 4)"
+            :key="i"
+            type="button"
+            @click="selectedNote = selectedNote === opt ? '' : opt"
+            class="h-20 flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+            :class="
+              selectedNote === opt
+                ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+                : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+            "
+          >
+            <span class="leading-snug">{{ opt }}</span>
+          </button>
 
-      <!-- 5ta centrada -->
-      <div class="col-span-2 flex justify-center">
-        <button
-          type="button"
-          @click="selectedNote = selectedNote === noteOptions[4] ? '' : noteOptions[4]"
-          class="h-20 w-full sm:w-[70%] flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
-          :class="
-            selectedNote === noteOptions[4]
-              ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
-              : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
-          "
-        >
-          <span class="leading-snug">{{ noteOptions[4] }}</span>
-        </button>
-      </div>
+          <div class="col-span-2 flex justify-center">
+            <button
+              type="button"
+              @click="
+                selectedNote =
+                  selectedNote === noteOptions[4] ? '' : noteOptions[4]
+              "
+              class="h-20 w-full sm:w-[70%] flex items-center justify-center text-center px-4 rounded-2xl border text-sm transition"
+              :class="
+                selectedNote === noteOptions[4]
+                  ? 'border-[#3c490b] bg-[#3c490b]/10 text-[#3c490b] font-semibold'
+                  : 'border-[#e099a8]/50 bg-[#f6f6eb] text-[#4e0d05] hover:bg-[#e099a8]/10'
+              "
+            >
+              <span class="leading-snug">{{ noteOptions[4] }}</span>
+            </button>
+          </div>
 
-      <!-- textarea debajo del 5to -->
-      <div class="col-span-2 mt-2">
-        <label class="text-sm font-medium text-[#4e0d05]/80 block mb-2">
-          Nota extra:
-        </label>
+          <!-- Nota extra-->
+          <div class="col-span-2 mt-2">
+            <label class="text-sm font-medium text-[#4e0d05]/80 block mb-2">
+              Nota extra:
+            </label>
 
-        <textarea
-          v-model="customNote"
-          rows="3"
-          placeholder="Ej: Lo tomé con amigos..."
-          class="w-full border border-[#e099a8]/50 rounded-xl p-3 bg-[#f6f6eb] text-[#4e0d05] outline-none focus:ring-1 focus:ring-[#e099a8]"
-        ></textarea>
-      </div>
-      <div v-if="modalError" class="col-span-2 mt-3">
-        <div class="text-center font-semibold rounded-xl py-2 px-4 text-sm border bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]/50">
-          {{ modalError }}
+            <textarea
+              v-model="customNote"
+              rows="3"
+              placeholder="Ej: Lo tomé con amigos..."
+              class="w-full border border-[#e099a8]/50 rounded-xl p-3 bg-[#f6f6eb] text-[#4e0d05] outline-none focus:ring-1 focus:ring-[#e099a8]"
+            ></textarea>
+          </div>
+
+          <div v-if="modalError" class="col-span-2 mt-3">
+            <div
+              class="text-center font-semibold rounded-xl py-2 px-4 text-sm border bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]/50"
+            >
+              {{ modalError }}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
         <div class="flex justify-end gap-3 mt-4">
           <button

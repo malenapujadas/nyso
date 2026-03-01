@@ -98,7 +98,6 @@ export default {
     <section
       class="min-h-screen bg-[#f6f6eb] flex flex-col items-center px-6 py-16 relative overflow-hidden"
     >
-      <!-- Botón volver -->
       <div class="w-full max-w-3xl z-10 mb-6">
         <RouterLink
           to="/red-social"
@@ -170,12 +169,11 @@ export default {
                     : "?"
                 }}
               </div>
-              <h2 class="text-2xl font-bold text-[#4e0d05] mb-1">
+              <AppH1 class="text-2xl text-[#4e0d05] mb-1">
                 {{ profile.display_name || "Sin nombre" }}
-              </h2>
+              </AppH1>
               <p class="text-sm text-[#4e0d05]/70">{{ profile.email }}</p>
 
-              <!-- BOTÓN CONECTAR -->
               <div v-if="canShowConnectButton" class="mt-4">
                 <button
                   v-if="!alreadySent"

@@ -16,7 +16,6 @@ export default {
       loading: true,
       error: null,
 
-      // --- DATOS DE PAGINACIÓN ---
       currentPage: 1,
       perPage: 8,
     };
@@ -34,7 +33,7 @@ export default {
       });
     },
 
-    // --- COMPUTADAS DE PAGINACIÓN ---
+    // --- Paginación ---
     totalPages() {
       return Math.max(1, Math.ceil(this.usersWithData.length / this.perPage));
     },
@@ -101,7 +100,7 @@ export default {
     async handleToggleStatus(user) {
       try {
         const updated = await toggleUserActiveStatus(user.id, user.is_active);
-        // Actualizamos la lista local para que el cambio se vea al instante
+        // Actualizamos la lista local para que el cambio se vea 
         const index = this.users.findIndex((u) => u.id === user.id);
         if (index !== -1) {
           this.users[index].is_active = updated.is_active;
@@ -118,7 +117,6 @@ export default {
   <section
     class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8"
   >
-    <!-- Iconos decorativos -->
     <img
       src="/icono1.png"
       alt="icono"
@@ -238,7 +236,6 @@ export default {
           </div>
         </div>
 
-        <!-- Contenedor listado -->
         <div
           class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-sm overflow-hidden"
         >
@@ -250,7 +247,7 @@ export default {
             </h3>
           </div>
 
-          <!-- MOBILE: cards -->
+          <!-- Mobile cards -->
           <div class="md:hidden p-4 space-y-4">
             <div
               v-for="u in paginatedUsers"
@@ -319,7 +316,7 @@ export default {
             </div>
           </div>
 
-          <!-- DESKTOP: tabla -->
+          <!-- Desktop tabla-->
           <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
@@ -419,20 +416,17 @@ export default {
             </table>
           </div>
 
-          <!-- PAGINACIÓN -->
+          <!-- Paginación -->
           <div
             v-if="usersWithData.length > 0 && totalPages > 1"
             class="w-full flex flex-col items-center p-4 gap-2 bg-white/40 border-t border-[#4e0d05]/10"
           >
-            <!-- TEXTO -->
             <p class="text-[11px] text-[#4e0d05]/70">
               Página {{ currentPage }} de {{ totalPages }}
             </p>
 
-            <!-- MOBILE (simple y prolijo) -->
-            <div
-              class="flex sm:hidden items-center justify-center gap-4 w-full"
-            >
+            <!-- Mobile -->
+            <div class="flex sm:hidden items-center justify-center gap-4 w-full">
               <button
                 type="button"
                 @click="prevPage"
@@ -456,10 +450,8 @@ export default {
               </button>
             </div>
 
-            <!-- DESKTOP (tu versión original intacta) -->
-            <div
-              class="hidden sm:flex flex-wrap items-center justify-center gap-2"
-            >
+            <!-- Desktop -->
+            <div class="hidden sm:flex flex-wrap items-center justify-center gap-2">
               <button
                 type="button"
                 @click="prevPage"

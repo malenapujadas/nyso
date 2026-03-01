@@ -8,10 +8,12 @@ import {
 } from "../../services/blog.js";
 import { subscribeToAuthChanges } from "../../services/auth.js";
 import AppH1 from "../../components/AppH1.vue";
+import AppLoader from "../../components/AppLoader.vue";
 
 export default {
   name: "AdminBlog",
-  components: { AppH1 },
+  components: { AppH1, AppLoader },
+
   data() {
     return {
       suggestions: [],
@@ -21,7 +23,6 @@ export default {
       error: null,
       postsError: null,
 
-      // buscador + paginación
       suggSearchQuery: "",
       postsSearchQuery: "",
       suggCurrentPage: 1,
@@ -40,7 +41,7 @@ export default {
   },
 
   computed: {
-    // SUGERENCIAS (solo no respondidas, como ya mostrás)
+    // Sugerenicas - no respondidas
     filteredSuggestions() {
       const query = this.suggSearchQuery?.toLowerCase() || "";
       return this.suggestions
@@ -98,7 +99,6 @@ export default {
   },
 
   watch: {
-    // reset a página 1 cuando buscás
     suggSearchQuery() {
       this.suggCurrentPage = 1;
     },
@@ -106,7 +106,6 @@ export default {
       this.postsCurrentPage = 1;
     },
 
-    // si quedaste en una página que ya no existe
     suggTotalPages() {
       if (this.suggCurrentPage > this.suggTotalPages) {
         this.suggCurrentPage = this.suggTotalPages;
@@ -133,19 +132,38 @@ export default {
     async load() {
       this.loading = true;
       this.postsLoading = true;
+      this.error = null;
+      this.postsError = null;
 
-      try {
-        [this.suggestions, this.posts] = await Promise.all([
-          fetchSuggestions(),
-          fetchLastPost(50),
-        ]);
-      } catch (err) {
-        console.error(err);
-        this.error = err.message || "Error al cargar los datos";
-      } finally {
-        this.loading = false;
-        this.postsLoading = false;
-      }
+      // Sugerencias
+      const suggPromise = fetchSuggestions()
+        .then((data) => {
+          this.suggestions = data || [];
+        })
+        .catch((err) => {
+          console.error(err);
+          this.error = err.message || "Error al cargar las sugerencias";
+          this.suggestions = [];
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+
+      // Posts
+      const postsPromise = fetchLastPost(50)
+        .then((data) => {
+          this.posts = data || [];
+        })
+        .catch((err) => {
+          console.error(err);
+          this.postsError = err.message || "Error al cargar las publicaciones";
+          this.posts = [];
+        })
+        .finally(() => {
+          this.postsLoading = false;
+        });
+
+      await Promise.all([suggPromise, postsPromise]);
     },
 
     async reply(sugg) {
@@ -200,7 +218,7 @@ export default {
       );
     },
 
-    // PAGINACIÓN (misma lógica que Vinos.vue) + scroll arriba
+    // paginación 
     goToSuggPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
@@ -244,7 +262,6 @@ export default {
   <section
     class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8 overflow-hidden"
   >
-    <!-- Ocultar decoraciones en mobile -->
     <img
       src="/icono1.png"
       alt="icono"
@@ -293,16 +310,16 @@ export default {
 
     <div class="relative z-10 max-w-5xl mx-auto">
       <AppH1
-      class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-3 sm:mb-4 text-center tracking-wide"
-    >
-      Gestión del Blog
-    </AppH1>
+        class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-3 sm:mb-4 text-center tracking-wide"
+      >
+        Gestión del Blog
+      </AppH1>
 
-    <p class="text-[#4e0d05]/60 text-center mb-8 sm:mb-10">
-      Administrá las sugerencias y publicaciones activas.
-    </p>
+      <p class="text-[#4e0d05]/60 text-center mb-8 sm:mb-10">
+        Administrá las sugerencias y publicaciones activas.
+      </p>
 
-      <!-- sugerencias -->
+      <!-- Sugerencias -->
       <div
         class="bg-[#ede8d7] rounded-3xl border border-[#4e0d05]/20 shadow-lg p-6 sm:p-8 mb-12"
       >
@@ -312,7 +329,7 @@ export default {
           Sugerencias del blog
         </h2>
 
-        <!-- BUSCADOR SUGERENCIAS -->
+        <!-- Buscador sugerencias -->
         <div class="relative w-full max-w-lg mb-6">
           <input
             v-model="suggSearchQuery"
@@ -322,8 +339,11 @@ export default {
           />
         </div>
 
-        <div v-if="loading" class="text-[#e099a8] text-center py-4">
-          Cargando sugerencias...
+        <div
+          v-if="loading"
+          class="min-h-[120px] flex items-center justify-center"
+        >
+          <AppLoader />
         </div>
 
         <div v-else-if="error" class="text-red-600">
@@ -393,7 +413,7 @@ export default {
             </div>
           </div>
 
-          <!-- PAGINACIÓN SUGERENCIAS -->
+          <!-- Paginación sugerencias -->
           <div
             v-if="filteredSuggestions.length > 0 && suggTotalPages > 1"
             class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
@@ -423,7 +443,7 @@ export default {
                   'w-10 h-10 rounded-full border text-sm font-semibold transition',
                   p === suggCurrentPage
                     ? 'bg-[#3c490b] text-white border-[#3c490b]'
-                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white',
                 ]"
               >
                 {{ p }}
@@ -450,7 +470,7 @@ export default {
           Publicaciones del blog
         </h2>
 
-        <!-- BUSCADOR POSTS -->
+        <!-- Buscador posts-->
         <div class="relative w-full max-w-lg mb-6">
           <input
             v-model="postsSearchQuery"
@@ -460,8 +480,11 @@ export default {
           />
         </div>
 
-        <div v-if="postsLoading" class="text-[#e099a8] text-center py-4">
-          Cargando publicaciones...
+        <div
+          v-if="postsLoading"
+          class="min-h-[120px] flex items-center justify-center"
+        >
+          <AppLoader />
         </div>
 
         <div v-else-if="postsError" class="text-red-600">
@@ -469,10 +492,7 @@ export default {
         </div>
 
         <div v-else>
-          <p
-            v-if="filteredPosts.length === 0"
-            class="text-[#4e0d05]/60 italic"
-          >
+          <p v-if="filteredPosts.length === 0" class="text-[#4e0d05]/60 italic">
             No hay publicaciones aún
           </p>
 
@@ -498,7 +518,7 @@ export default {
             </button>
           </div>
 
-          <!-- PAGINACIÓN POSTS -->
+          <!-- Paginación posts-->
           <div
             v-if="filteredPosts.length > 0 && postsTotalPages > 1"
             class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
@@ -528,7 +548,7 @@ export default {
                   'w-10 h-10 rounded-full border text-sm font-semibold transition',
                   p === postsCurrentPage
                     ? 'bg-[#3c490b] text-white border-[#3c490b]'
-                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
+                    : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white',
                 ]"
               >
                 {{ p }}
@@ -548,7 +568,7 @@ export default {
       </div>
     </div>
 
-    <!-- confirmación -->
+    <!-- Confirmación -->
     <div
       v-if="showConfirmModal"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"

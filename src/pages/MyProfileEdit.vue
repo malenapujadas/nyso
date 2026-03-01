@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     chipClass(selected) {
-      //clase dinamica, si esta seleccionado me lo pinta de rosa
+      // clase dinamica, si esta seleccionado me lo pinta de rosa
       return [
         "px-3 py-1 rounded-full border",
         selected ? "bg-[#e099a8] text-white" : "bg-white text-[#3c490b]",
@@ -59,30 +59,31 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
-        // 1. Guardar preferencias
+        // Guardar preferencias
         await savePreferencesForUser(user.id, this.answers);
 
-        // 2. Armamos el objeto con TODOS los datos del perfil
+        // Armamos el objeto con todos los datos del perfil
         const profileData = {
           display_name: this.display_name,
-          avatar_url: this.avatar_url, 
+          avatar_url: this.avatar_url,
         };
 
-        // 3. Guardamos en la tabla user_profiles
+        // Guardamos en la tabla user_profiles
         await updateUserProfile(user.id, profileData);
 
-        // 4. Guardar nombre de usuario en Auth (esto dejalo como lo tenías)
+        // Guardar nombre de usuario en Auth 
         if (this.display_name) {
           await updateAuthUserData({ display_name: this.display_name });
         }
 
-        // 5. Redirigir
+        // Redirigir
         this.$router.push("/mi-perfil");
       } catch (error) {
         console.error("[MyProfileEdit] Error al editar datos:", error);
         alert("Ocurrió un error al guardar los cambios. Intentá nuevamente.");
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
   },
   async mounted() {
@@ -106,7 +107,6 @@ export default {
           frecuencia: prefs.frecuencia ?? "",
           con_quien: prefs.con_quien ?? "",
           temas: Array.isArray(prefs.temas) ? prefs.temas : [],
-          /* temas_libre: prefs.temas_libre ?? '', */
         };
       }
     }
@@ -151,6 +151,10 @@ export default {
       @submit.prevent="handleSubmit"
       class="relative z-10 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-10 w-full max-w-xl"
     >
+      <AppH1 class="text-[#3c490b] text-2xl md:text-3xl font-extrabold mb-6 text-center">
+        Editar mi perfil
+      </AppH1>
+
       <div class="space-y-6">
         <div>
           <label
@@ -167,11 +171,11 @@ export default {
           />
         </div>
 
-        <!-- AVATAR -->
+        <!-- Avatar -->
         <div class="mb-6">
-          <label class="block text-sm font-bold text-[#4e0d05] mb-3"
-            >Elegí tu Avatar</label
-          >
+          <label class="block text-sm font-bold text-[#4e0d05] mb-3">
+            Elegí tu Avatar
+          </label>
 
           <div class="flex flex-wrap gap-4 items-center">
             <button
@@ -230,9 +234,9 @@ export default {
           </h3>
           <div class="flex gap-2 flex-wrap">
             <button
-              type="button"
               v-for="opt in gustoOpc"
               :key="opt.value"
+              type="button"
               @click="answers.gusto = opt.value"
               :class="chipClass(answers.gusto === opt.value)"
             >

@@ -15,7 +15,7 @@ export default {
 
   data() {
     return {
-      allUsers: [], // Guardamos todos aquí, pero no los mostramos directo
+      allUsers: [], // Guardamos todos, pero no los mostramos directo
       suggestedUsers: [], // Para las sugerencias iniciales
       loading: true,
       searchQuery: "",
@@ -23,18 +23,18 @@ export default {
       sentRequests: [],
       avatar_url: null,
 
-      // paginacion (Solo aplica a los resultados de búsqueda)
+      // paginacion 
       currentPage: 1,
-      perPage: 6, // Bajé un poco el número para que se vea mejor la búsqueda
+      perPage: 6, 
     };
   },
 
   computed: {
-    // ESTA ES LA CLAVE: Si no hay búsqueda, devolvemos vacío.
+    // Si no hay búsqueda, devolvemos vacío.
     filteredUsers() {
       const q = this.searchQuery.trim().toLowerCase();
 
-      // Si el buscador está vacío o tiene menos de 2 letras, no mostramos la lista general
+      // Si el buscador está vacío no mostramos la lista general
       if (q.length < 1) return [];
 
       return this.allUsers.filter((u) =>
@@ -62,31 +62,33 @@ export default {
       this.currentPage = 1;
     },
     totalPages() {
-      if (this.currentPage > this.totalPages)
+      if (this.currentPage > this.totalPages) {
         this.currentPage = this.totalPages;
+      }
     },
   },
 
   methods: {
-      async handleConnect(receiverId) {
-    if (!this.user || !this.user.id) {
-      toast.info("Iniciá sesión para conectar");
-      return;
-    }
-
-    try {
-      await sendConnectionRequest(this.user.id, receiverId);
-
-      if (!this.sentRequests.includes(receiverId)) {
-        this.sentRequests.push(receiverId);
+    async handleConnect(receiverId) {
+      if (!this.user || !this.user.id) {
+        toast.info("Iniciá sesión para conectar");
+        return;
       }
 
-      toast.success("Solicitud enviada");
-    } catch (err) {
-      console.error("Error enviando solicitud:", err);
-      toast.error("No se pudo enviar la solicitud");
-    }
-  },
+      try {
+        await sendConnectionRequest(this.user.id, receiverId);
+
+        if (!this.sentRequests.includes(receiverId)) {
+          this.sentRequests.push(receiverId);
+        }
+
+        toast.success("Solicitud enviada");
+      } catch (err) {
+        console.error("Error enviando solicitud:", err);
+        toast.error("No se pudo enviar la solicitud");
+      }
+    },
+
     // Lógica para mezclar y obtener sugerencias aleatorias
     generateSuggestions() {
       // Filtramos para no sugerir al admin ni al usuario mismo
@@ -94,7 +96,7 @@ export default {
         (u) => u.id !== this.user?.id && u.role !== "admin",
       );
 
-      // Algoritmo simple para desordenar el array (Fisher-Yates simplificado)
+      // Algoritmo simple para desordenar el array 
       candidates = candidates.sort(() => 0.5 - Math.random());
 
       // Tomamos los primeros 3
@@ -104,9 +106,11 @@ export default {
     goToPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
+
       if (page < 1) this.currentPage = 1;
       else if (page > this.totalPages) this.currentPage = this.totalPages;
       else this.currentPage = page;
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
     nextPage() {
@@ -124,19 +128,17 @@ export default {
     try {
       this.user = await getCurrentUser();
 
-      // 1. Traemos TODOS los usuarios
+      // Traemos todos los usuarios
       const usersFromDB = await getAllUsers();
 
-      // 2. FILTRO DE SEGURIDAD:
-      // Guardamos en 'allUsers' solamente los que NO son admin.
-      // También podés filtrar por email si preferís: u.email !== 'admin@admin.com'
+      // Filtrado de seguridad
       this.allUsers = usersFromDB.filter((u) => u.role !== "admin");
 
       if (this.user) {
         this.sentRequests = await getPendingRequestsSent(this.user.id);
       }
 
-      // 3. Generamos sugerencias (ya sin el admin en la lista)
+      // Generamos sugerencias 
       this.generateSuggestions();
 
       subscribeToAuthChanges((userState) => {
@@ -158,8 +160,8 @@ export default {
     class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden pb-20"
   >
     <section
-    class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
-  >
+      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+    >
       <img
         src="/icono3.png"
         alt="icono"
@@ -170,21 +172,23 @@ export default {
         alt="icono"
         class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
       />
+
       <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
         <img src="/nysito3.png" alt="Nysito" class="w-28 sm:w-32 md:w-56" />
       </div>
+
       <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
           Red Social
         </h1>
+
         <p class="text-base sm:text-lg font-medium leading-relaxed">
           Conectá con amigos
           <br class="sm:hidden" />
-
           y enterate cuáles son sus preferencias
           <br />
-
-          y <span class="whitespace-nowrap font-bold text-[#3c490b]">
+          y
+          <span class="whitespace-nowrap font-bold text-[#3c490b]">
             vinos favoritos.
           </span>
         </p>
@@ -206,6 +210,7 @@ export default {
           d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
         />
       </svg>
+
       <input
         v-model="searchQuery"
         type="search"
@@ -248,6 +253,7 @@ export default {
                 alt="Avatar"
                 class="w-12 h-12 rounded-full object-cover border border-[#4e0d05]/20 shadow-sm"
               />
+
               <div
                 v-else
                 class="w-12 h-12 rounded-full bg-[#ede8d7] flex items-center justify-center text-lg font-bold text-[#4e0d05] border border-[#4e0d05]/10"
@@ -277,11 +283,13 @@ export default {
                 >
                   Conectar
                 </button>
-                <span 
+
+                <span
                   v-else-if="isRegularUser && sentRequests.includes(u.id)"
                   class="text-xs text-[#3c490b] font-medium py-2"
-                  >Solicitud enviada</span
                 >
+                  Solicitud enviada
+                </span>
               </div>
             </div>
           </div>
@@ -325,7 +333,11 @@ export default {
               </router-link>
 
               <button
-                v-if="isRegularUser && user.id !== u.id && !sentRequests.includes(u.id)"
+                v-if="
+                  isRegularUser &&
+                  user.id !== u.id &&
+                  !sentRequests.includes(u.id)
+                "
                 @click="handleConnect(u.id)"
                 class="px-5 py-1.5 rounded-full bg-[#3c490b] text-white text-sm font-medium hover:bg-[#4e0d05] transition-colors shadow-md shadow-[#3c490b]/20"
               >
@@ -354,50 +366,52 @@ export default {
           </p>
         </div>
 
-       <!--  Paginación  -->
-    <div
-      v-if="filteredUsers.length > 0 && totalPages > 1"
-      class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
-    >
-      <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
-        Página {{ currentPage }} de {{ totalPages }}
-      </p>
-
-      <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2">
-        <button
-          type="button"
-          @click="prevPage"
-          :disabled="currentPage === 1"
-          class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+        <!--  Paginación  -->
+        <div
+          v-if="filteredUsers.length > 0 && totalPages > 1"
+          class="w-full flex flex-col items-center lg:items-end mt-10 gap-3"
         >
-          Anterior
-        </button>
+          <p class="text-xs text-[#4e0d05]/70 text-center lg:text-right">
+            Página {{ currentPage }} de {{ totalPages }}
+          </p>
 
-        <button
-          v-for="p in totalPages"
-          :key="p"
-          type="button"
-          @click="goToPage(p)"
-          :class="[
-            'w-10 h-10 rounded-full border text-sm font-semibold transition',
-            p === currentPage
-              ? 'bg-[#3c490b] text-white border-[#3c490b]'
-              : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white'
-          ]"
-        >
-          {{ p }}
-        </button>
+          <div
+            class="flex flex-wrap items-center justify-center lg:justify-end gap-2"
+          >
+            <button
+              type="button"
+              @click="prevPage"
+              :disabled="currentPage === 1"
+              class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+            >
+              Anterior
+            </button>
 
-        <button
-          type="button"
-          @click="nextPage"
-          :disabled="currentPage === totalPages"
-          class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
-        >
-          Siguiente
-        </button>
-      </div>
-    </div>
+            <button
+              v-for="p in totalPages"
+              :key="p"
+              type="button"
+              @click="goToPage(p)"
+              :class="[
+                'w-10 h-10 rounded-full border text-sm font-semibold transition',
+                p === currentPage
+                  ? 'bg-[#3c490b] text-white border-[#3c490b]'
+                  : 'bg-white/60 text-[#4e0d05] border-[#4e0d05]/30 hover:bg-white',
+              ]"
+            >
+              {{ p }}
+            </button>
+
+            <button
+              type="button"
+              @click="nextPage"
+              :disabled="currentPage === totalPages"
+              class="px-4 py-2 rounded-full border border-[#4e0d05]/30 bg-white/60 text-[#4e0d05] disabled:opacity-40"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   </div>

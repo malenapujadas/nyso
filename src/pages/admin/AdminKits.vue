@@ -61,8 +61,9 @@ export default {
 </script>
 
 <template>
-  <section class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8">
-    <!-- Iconos decorativos -->
+  <section
+    class="relative min-h-screen bg-[#f6f6eb] text-[#4e0d05] py-10 px-4 sm:py-16 sm:px-8"
+  >
     <img
       src="/icono1.png"
       alt="icono"
@@ -110,14 +111,13 @@ export default {
     />
 
     <div class="relative z-10 max-w-7xl mx-auto pb-20 px-4 md:px-0">
-      <!-- Header centrado (H1 correcto) -->
       <div class="mb-10 text-center">
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide">
+        <h1
+          class="text-3xl sm:text-4xl font-bold text-[#3c490b] mb-4 tracking-wide"
+        >
           Gestión de Kits & Suscripciones
         </h1>
-        <p class="text-[#4e0d05]/60">
-          Administrá los pedidos de cajas mensuales.
-        </p>
+        <p class="text-[#4e0d05]/60">Administrá los pedidos de cajas mensuales.</p>
       </div>
 
       <div v-if="loading" class="flex justify-center py-10">
@@ -140,7 +140,7 @@ export default {
         </div>
 
         <template v-else>
-          <!-- CARDS MOBILE -->
+          <!-- Cards mobile -->
           <div class="md:hidden p-4 space-y-4">
             <div
               v-for="sub in subscriptions"
@@ -193,11 +193,10 @@ export default {
 
               <div class="mt-3">
                 <p
-                  
                   target="_blank"
                   class="inline-flex items-center gap-2 text-[#3c490b] font-semibold hover:underline break-all"
                 >
-                  <!-- ícono whatsapp simple (no emoji) -->
+                  <!-- Icono tel -->
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="w-5 h-5"
@@ -208,7 +207,9 @@ export default {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.09a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92z"/>
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.09a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92z"
+                    />
                   </svg>
                   <span>{{ sub.phone }}</span>
                 </p>
@@ -235,12 +236,14 @@ export default {
                   </button>
                 </template>
 
-                <span v-else class="text-sm text-[#4e0d05]/50">Procesando...</span>
+                <span v-else class="text-sm text-[#4e0d05]/50">
+                  Procesando...
+                </span>
               </div>
             </div>
           </div>
 
-          <!-- TABLA ESCRITORIO -->
+          <!-- Tabla escritorio -->
           <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead>
@@ -280,11 +283,10 @@ export default {
 
                   <td class="p-4">
                     <p
-                      
                       target="_blank"
                       class="inline-flex items-center gap-2 text-[#3c490b] font-semibold hover:underline break-all"
                     >
-                      <!-- ícono simple (no emoji) -->
+                      <!-- Icono -->
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="w-5 h-5"
@@ -295,7 +297,9 @@ export default {
                         stroke-linecap="round"
                         stroke-linejoin="round"
                       >
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.09a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92z"/>
+                        <path
+                          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.86.31 1.7.57 2.5a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.58-1.09a2 2 0 0 1 2.11-.45c.8.26 1.64.45 2.5.57A2 2 0 0 1 22 16.92z"
+                        />
                       </svg>
                       <span>{{ sub.phone }}</span>
                     </p>
@@ -324,9 +328,14 @@ export default {
                   </td>
 
                   <td class="p-4 text-center">
-                    <div class="flex justify-center gap-2" v-if="processingId !== sub.id">
+                    <div
+                      v-if="processingId !== sub.id"
+                      class="flex justify-center gap-2"
+                    >
                       <button
-                        v-if="sub.status === 'pending' || sub.status === 'cancelled'"
+                        v-if="
+                          sub.status === 'pending' || sub.status === 'cancelled'
+                        "
                         @click="changeStatus(sub, 'active')"
                         class="w-9 h-9 rounded-lg bg-[#3c490b] text-white text-sm font-semibold hover:bg-[#4e0d05] transition flex items-center justify-center"
                         title="Aceptar / activar"
@@ -343,7 +352,9 @@ export default {
                         ✕
                       </button>
                     </div>
-                    <span v-else class="text-xs text-[#4e0d05]/50">Procesando...</span>
+                    <span v-else class="text-xs text-[#4e0d05]/50">
+                      Procesando...
+                    </span>
                   </td>
                 </tr>
               </tbody>

@@ -1,5 +1,6 @@
 <script>
 import * as opciones from "../data/preferences-options.js";
+
 export default {
   name: "ProfilePreferences",
   props: {
@@ -21,6 +22,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div

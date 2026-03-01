@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       answers: {
-        //rtas del usuario
+        // rtas del usuario
         gusto: null,
         como: null,
         intensidad: null,
@@ -20,7 +20,8 @@ export default {
         con_quien: null,
         temas: [],
       },
-      //opciones
+
+      // opciones
       gustoOpc: opciones.gustoOpc,
       comoOpc: opciones.comoOpc,
       intensidadOpc: opciones.intensidadOpc,
@@ -78,7 +79,7 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
-        /* guardo todo vacio por si aprieto "saltar" */
+        /* Guardo todo vacio por si aprieto saltar */
         await savePreferencesForUser(user.id, {
           gusto: null,
           como: null,
@@ -149,6 +150,15 @@ export default {
       @submit.prevent="saveAnswers"
       class="w-full max-w-3xl bg-[#ede8d7] border border-[#4e0d05]/25 rounded-[30px] shadow-xl pt-10 pb-12 px-0 md:px-0 z-10"
     >
+      <div class="px-8 md:px-10 mb-10">
+        <AppH1 class="text-[#3c490b] text-2xl md:text-3xl font-extrabold text-center">
+          Contanos un poco sobre vos
+        </AppH1>
+        <p class="text-center text-[#4e0d05]/60 mt-2 text-sm md:text-base">
+          Esto nos ayuda a sugerirte vinos y contenido que te va a gustar.
+        </p>
+      </div>
+
       <!-- Sección 1 -->
       <div class="px-8 md:px-10 space-y-12">
         <div>
@@ -188,7 +198,6 @@ export default {
 
       <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
-      <!-- Sección 2 -->
       <div class="px-8 md:px-10 space-y-12">
         <div>
           <h3 class="font-semibold text-[#3c490b] text-lg mb-4">
@@ -227,7 +236,6 @@ export default {
 
       <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
-      <!-- Sección 3 -->
       <div class="px-8 md:px-10 space-y-12">
         <div>
           <h3 class="font-semibold text-[#3c490b] text-lg mb-4">
@@ -266,7 +274,6 @@ export default {
 
       <img src="/lineacuadros.png" alt="linea" class="w-full block my-10" />
 
-      <!-- Sección 4 -->
       <div class="px-8 md:px-10 space-y-12">
         <div>
           <h3 class="font-semibold text-[#3c490b] text-lg mb-4">
@@ -287,7 +294,6 @@ export default {
         </div>
       </div>
 
-      <!-- Botones -->
       <div
         class="px-8 md:px-10 mt-12 flex flex-col sm:flex-row justify-between items-center gap-4"
       >

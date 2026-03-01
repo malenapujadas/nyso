@@ -15,7 +15,7 @@ export default {
       user: null,
       showModal: false,
       loading: false,
-      success: false, // Para mostrar el mensaje final de "Gracias"
+      success: false, 
       errorMsg: "",
 
       // Datos del formulario
@@ -30,15 +30,13 @@ export default {
   },
   async mounted() {
     this.user = await getCurrentUser();
-    // Opcional: Podrías pre-llenar el nombre si ya lo tenés en el usuario
     if (this.user) {
-      // Chequear si ya está suscrito para cambiar el botón (opcional)
     }
   },
   methods: {
     openSubscribeModal() {
       if (!this.user) {
-        this.$router.push("/ingresar"); // O mostrá un mensaje de "Iniciá sesión"
+        this.$router.push("/ingresar"); 
         return;
       }
       this.showModal = true;
@@ -47,26 +45,25 @@ export default {
     async handleSubscribe() {
       this.errorMsg = "";
 
-      // Limpiamos los espacios en blanco de los extremos para que no nos engañen con "   "
       const nombre = this.form.full_name.trim();
       const direccion = this.form.address.trim();
       const ciudad = this.form.city.trim();
       const cp = this.form.zip_code.trim();
       const telefono = this.form.phone.trim();
 
-      // 1. Validamos que no haya campos vacíos
+      // Validamos que no haya campos vacíos
       if (!nombre || !direccion || !ciudad || !cp || !telefono) {
         this.errorMsg = "Por favor, completá todos los campos.";
         return;
       }
 
-      // 2. Validar Nombre
+      // Validar Nombre
       if (nombre.length < 3) {
         this.errorMsg = "El nombre debe tener al menos 3 caracteres.";
         return;
       }
 
-      // 3. Validar Dirección
+      // Validar Dirección
       if (direccion.length < 5) {
         this.errorMsg = "La dirección debe tener al menos 5 caracteres.";
         return;
@@ -78,30 +75,29 @@ export default {
         return;
       }
 
-      // 5. Validar Código Postal (Longitud y que sean números)
+      //  Validar Código Postal
       if (cp.length !== 4) {
-        this.errorMsg = "El código postal debe contener exactamente 4 caracteres.";
+        this.errorMsg =
+          "El código postal debe contener exactamente 4 caracteres.";
         return;
       }
-      
-      // isNaN pregunta "¿Esto NO es un número?". Si es texto (ej: "asda"), devuelve true y entra al error.
+
       if (isNaN(cp)) {
         this.errorMsg = "El código postal debe contener únicamente números.";
         return;
       }
 
-      // 6. Validar Teléfono (Longitud y que sean números)
+      //  Validar Teléfono
       if (telefono.length !== 10) {
         this.errorMsg = "El teléfono debe contener exactamente 10 números.";
         return;
       }
-      
+
       if (isNaN(telefono)) {
         this.errorMsg = "El teléfono debe contener únicamente números.";
         return;
       }
 
-      // Si llegó hasta acá, es porque pasó todas las pruebas manuales
       this.loading = true;
       try {
         await createSubscription({
@@ -111,10 +107,10 @@ export default {
           city: ciudad,
           zip_code: cp,
           phone: telefono,
-          status: "pending", 
+          status: "pending",
         });
 
-        this.success = true; 
+        this.success = true;
       } catch (error) {
         this.errorMsg = "Hubo un error al procesar tu solicitud.";
       } finally {
@@ -164,11 +160,12 @@ export default {
           </p>
 
           <div class="mt-6 flex items-end gap-3">
-            <p class="text-3xl md:text-4xl font-extrabold text-[#4e0d05]">$30.000</p>
+            <p class="text-3xl md:text-4xl font-extrabold text-[#4e0d05]">
+              $30.000
+            </p>
             <p class="text-sm text-[#4e0d05]/60">por mes</p>
           </div>
 
-          <!-- boton comprar-->
           <div class="mt-7 flex flex-col sm:flex-row gap-3">
             <button
               @click="openSubscribeModal"
@@ -178,7 +175,7 @@ export default {
             </button>
           </div>
 
-          <!--  info -->
+          <!-- Info -->
           <div class="mt-8 grid grid-cols-3 gap-3 max-w-xl">
             <div
               class="rounded-2xl bg-white/40 border border-[#4e0d05]/10 px-4 py-3"
@@ -201,7 +198,7 @@ export default {
           </div>
         </div>
 
-        <!-- Imágenes  -->
+        <!-- Imágenes -->
         <div class="lg:col-span-6">
           <div class="grid grid-cols-12 gap-4">
             <div
@@ -247,7 +244,6 @@ export default {
         </div>
       </div>
 
-      <!-- que incluye-->
       <div
         class="mt-14 rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/60 p-7 md:p-10"
       >
@@ -324,10 +320,9 @@ export default {
             </div>
 
             <div>
-              <label
-                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
-                >Nombre Completo</label
-              >
+              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                Nombre Completo
+              </label>
               <input
                 v-model="form.full_name"
                 required
@@ -338,10 +333,9 @@ export default {
             </div>
 
             <div>
-              <label
-                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
-                >Dirección de Entrega</label
-              >
+              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                Dirección de Entrega
+              </label>
               <input
                 v-model="form.address"
                 required
@@ -353,10 +347,9 @@ export default {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
-                  >Ciudad</label
-                >
+                <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                  Ciudad
+                </label>
                 <input
                   v-model="form.city"
                   required
@@ -365,10 +358,9 @@ export default {
                 />
               </div>
               <div>
-                <label
-                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
-                  >C.P.</label
-                >
+                <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                  C.P.
+                </label>
                 <input
                   v-model="form.zip_code"
                   required
@@ -379,10 +371,9 @@ export default {
             </div>
 
             <div>
-              <label
-                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
-                >Teléfono / WhatsApp</label
-              >
+              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                Teléfono / WhatsApp
+              </label>
               <input
                 v-model="form.phone"
                 required
@@ -403,14 +394,9 @@ export default {
         </div>
 
         <div v-else class="text-center py-6">
-          <div
-            class="w-16 h-16 bg-[#3c490b]/10 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl"
-          >
-            🎉
-          </div>
-          <h3 class="text-2xl font-bold text-[#3c490b] mb-2">
-            ¡Solicitud Enviada!
-          </h3>
+            <h3 class="text-2xl font-bold text-[#3c490b] mb-2">
+              ¡Solicitud Enviada!
+            </h3>
           <p class="text-[#4e0d05]/80 mb-6">
             Ya recibimos tus datos. En las próximas 24hs te vamos a escribir al
             WhatsApp/Mail que nos dejaste para finalizar la suscripción.

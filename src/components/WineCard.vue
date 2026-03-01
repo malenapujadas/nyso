@@ -1,6 +1,9 @@
 <script>
+import { RouterLink } from "vue-router";
+
 export default {
   name: "WineCard",
+  components: { RouterLink },
   props: {
     vino: {
       type: Object,
@@ -36,7 +39,7 @@ export default {
           {{ vino.nombre }}
         </h2>
 
-        <!-- PROMEDIO -->
+        <!-- Promedio -->
         <div
           v-if="reviewCount > 0"
           class="flex items-center justify-center gap-1 mb-2"

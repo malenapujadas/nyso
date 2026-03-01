@@ -18,7 +18,6 @@ export default {
   <section
     class="relative flex flex-col justify-center items-center text-center py-32 bg-[#f6f6eb] overflow-hidden"
   >
-    <!-- iconos en mobile-->
     <img
       src="/icono1.png"
       alt="icono"
@@ -42,7 +41,8 @@ export default {
     />
 
     <AppH1
-    class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl md:uppercase tracking-tight font-[Poppins] relative z-10 px-4"    >
+      class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl md:uppercase tracking-tight font-[Poppins] relative z-10 px-4"
+    >
       Descubrir,
       <span class="text-[#3c490b]">guardar</span> y compartir
       <span class="text-[#e099a8]">vinos</span>
@@ -50,7 +50,10 @@ export default {
       <span class="text-[#e099a8]">experto.</span>
     </AppH1>
 
-    <RouterLink to="/box" class="mt-10 inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300 relative z-10">
+    <RouterLink
+      to="/box"
+      class="mt-10 inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300 relative z-10"
+    >
       COMPRAR BOX MENSUAL
     </RouterLink>
   </section>
@@ -63,96 +66,88 @@ export default {
     />
   </section>
 
- <!-- Nysito -->
-<section
-  class="relative w-full bg-[#e099a8] text-[#4e0d05] py-12 md:py-20 px-6 md:px-8 overflow-hidden rounded-b-4xl"
->
-  <!-- iconos decorativos -->
-  <img
-    src="/icono1.png"
-    alt="icono"
-    class="absolute top-4 left-3 w-10 md:w-28 opacity-100"
-  />
-  <img
-    src="/icono2.png"
-    alt="icono"
-    class="absolute bottom-2 right-4 w-12 md:w-32 opacity-100 rotate-12"
-  />
-  <img
-    src="/icono4.png"
-    alt="icono"
-    class="absolute top-5 right-6 w-12 md:w-16 rotate-12 opacity-100"
-  />
-
-
-  <!-- FILA 1: Nysito + texto -->
-  <div
-    class="relative z-10 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10"
+  <section
+    class="relative w-full bg-[#e099a8] text-[#4e0d05] py-12 md:py-20 px-6 md:px-8 overflow-hidden rounded-b-4xl"
   >
     <img
-      src="/nysito.png"
-      alt="Nysito"
-      class="w-28 md:w-56 flex-shrink-0"
+      src="/icono1.png"
+      alt="icono"
+      class="absolute top-4 left-3 w-10 md:w-28 opacity-100"
     />
-
-    <div class="text-left max-w-xs md:max-w-md">
-      <h2 class="text-2xl md:text-3xl font-extrabold mb-2 md:mb-3">
-        ¡Hola, soy Nysito!
-      </h2>
-
-      <p class="text-base md:text-lg font-medium leading-snug">
-        Voy a ayudarte a moverte por el mundo del vino.
-      </p>
-
-      <p class="text-base md:text-lg font-light py-2 leading-snug">
-        En Nyso vas a poder encontrar nuevos vinos, aprender de la comunidad y
-        compartir tus experiencias.
-      </p>
-    </div>
-  </div>
-
-  <!-- FILA 2: Nysiitos juntos -->
-  <div class="relative z-10 mt-12 md:mt-16">
     <img
-      src="/nysiitos-juntos.png"
-      alt="Nysiitos juntos"
-      class="w-full max-w-6xl mx-auto h-auto object-contain"
+      src="/icono2.png"
+      alt="icono"
+      class="absolute bottom-2 right-4 w-12 md:w-32 opacity-100 rotate-12"
+    />
+    <img
+      src="/icono4.png"
+      alt="icono"
+      class="absolute top-5 right-6 w-12 md:w-16 rotate-12 opacity-100"
     />
 
-    <!-- icono + texto desktop -->
-    <div class="mt-6 flex flex-col items-center hidden md:flex">
+    <div
+      class="relative z-10 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10"
+    >
       <img
-        src="/icono3.png"
-        alt="icono"
-        class="w-6 h-6 mb-3 opacity-90"
+        src="/nysito.png"
+        alt="Nysito"
+        class="w-28 md:w-56 flex-shrink-0"
       />
 
-      <p
-        class="text-center text-xl font-bold text-[#4e0d05]/95
-               max-w-5xl mx-auto whitespace-nowrap"
-      >
-        Cada vino tiene un momento y Nysito está ahí para acompañarlo.
-      </p>
+      <div class="text-left max-w-xs md:max-w-md">
+        <h2 class="text-2xl md:text-3xl font-extrabold mb-2 md:mb-3">
+          ¡Hola, soy Nysito!
+        </h2>
+
+        <p class="text-base md:text-lg font-medium leading-snug">
+          Voy a ayudarte a moverte por el mundo del vino.
+        </p>
+
+        <p class="text-base md:text-lg font-light py-2 leading-snug">
+          En Nyso vas a poder encontrar nuevos vinos, aprender de la comunidad y
+          compartir tus experiencias.
+        </p>
+      </div>
     </div>
 
-    <!-- icono + texto mobile -->
-    <div class="mt-6 flex flex-col items-center md:hidden">
+    <div class="relative z-10 mt-12 md:mt-16">
       <img
-        src="/icono3.png"
-        alt="icono"
-        class="w-5 h-5 mb-2 opacity-90"
+        src="/nysiitos-juntos.png"
+        alt="Nysiitos juntos"
+        class="w-full max-w-6xl mx-auto h-auto object-contain"
       />
 
-      <p
-        class="text-center text-lg font-bold text-[#4e0d05]/95
-               max-w-sm mx-auto"
-      >
-        Cada vino tiene un momento, y Nysito está ahí para acompañarlo.
-      </p>
-    </div>
-  </div>
-</section>
+      <!-- icono + texto desktop -->
+      <div class="mt-6 flex flex-col items-center hidden md:flex">
+        <img
+          src="/icono3.png"
+          alt="icono"
+          class="w-6 h-6 mb-3 opacity-90"
+        />
 
+        <p
+          class="text-center text-xl font-bold text-[#4e0d05]/95 max-w-5xl mx-auto whitespace-nowrap"
+        >
+          Cada vino tiene un momento y Nysito está ahí para acompañarlo.
+        </p>
+      </div>
+
+      <!-- icono + texto mobile -->
+      <div class="mt-6 flex flex-col items-center md:hidden">
+        <img
+          src="/icono3.png"
+          alt="icono"
+          class="w-5 h-5 mb-2 opacity-90"
+        />
+
+        <p
+          class="text-center text-lg font-bold text-[#4e0d05]/95 max-w-sm mx-auto"
+        >
+          Cada vino tiene un momento, y Nysito está ahí para acompañarlo.
+        </p>
+      </div>
+    </div>
+  </section>
 
   <!-- Sección 2 -->
   <section
@@ -232,10 +227,10 @@ export default {
     />
 
     <div class="w-full max-w-2xl z-10 text-center md:text-left">
-            <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
-  <span class="block">Creá tu perfil para guardar tus favoritos,</span>
-  <span class="block">compartir y conectar con gente como vos.</span>
-</p>
+      <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
+        <span class="block">Creá tu perfil para guardar tus favoritos,</span>
+        <span class="block">compartir y conectar con gente como vos.</span>
+      </p>
 
       <RouterLink
         to="/crear-cuenta"
@@ -246,33 +241,30 @@ export default {
     </div>
   </section>
 
-  <!-- Banner  -->
-<section class="w-full mb-0 pb-0">
-  <RouterLink
-    to="/crear-cuenta"
-    class="block w-full cursor-pointer"
-    aria-label="Ir a registro"
-  >
-    <!-- desktop -->
-    <img
-      src="/KITMENS.png"
-      alt="KITMENS"
-      class="hidden md:block w-full h-auto object-cover"
-    />
+  <!-- Banner -->
+  <section class="w-full mb-0 pb-0">
+    <RouterLink
+      to="/crear-cuenta"
+      class="block w-full cursor-pointer"
+      aria-label="Ir a registro"
+    >
+      <!-- Desktop -->
+      <img
+        src="/KITMENS.png"
+        alt="KITMENS"
+        class="hidden md:block w-full h-auto object-cover"
+      />
 
-    <!-- mobile -->
-    <img
-      src="/KITMENS-mobile.png"
-      alt="KITMENS"
-      class="block md:hidden w-full h-auto object-cover"
-    />
-  </RouterLink>
-</section>
-
+      <!-- Mobile -->
+      <img
+        src="/KITMENS-mobile.png"
+        alt="KITMENS"
+        class="block md:hidden w-full h-auto object-cover"
+      />
+    </RouterLink>
+  </section>
 
   <section
     class="relative w-full h-16 md:h-20 bg-[#f6f6eb] mt-[-12px] overflow-hidden"
-  >
-  
-  </section>
+  ></section>
 </template>

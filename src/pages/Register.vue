@@ -23,7 +23,7 @@ export default {
     async handleSubmit() {
       this.errorMsg = "";
 
-      // validaciones
+      // Validaciones
       if (!this.user.nacimiento) {
         this.errorMsg = "Por favor, ingresá tu fecha de nacimiento.";
         return;
@@ -124,26 +124,26 @@ export default {
 
         <input
           id="email"
+          v-model="user.email"
           type="email"
           placeholder="mail@gmail.com"
-          v-model="user.email"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
 
       <div>
         <label
-          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
           for="nombre"
+          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
         >
           Nombre
         </label>
 
         <input
           id="nombre"
+          v-model="user.nombre"
           type="text"
           placeholder="Tu nombre"
-          v-model="user.nombre"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
@@ -158,8 +158,8 @@ export default {
 
         <input
           id="nacimiento"
-          type="date"
           v-model="user.nacimiento"
+          type="date"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] bg-white focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
@@ -174,9 +174,9 @@ export default {
 
         <input
           id="password"
+          v-model="user.password"
           type="password"
           placeholder="••••••••"
-          v-model="user.password"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
 

@@ -34,20 +34,11 @@ export default {
 
 <template>
   <div class="min-h-screen bg-[#f6f6eb] flex flex-col">
-
-    <!-- HEADER ADMIN -->
     <div class="bg-[#4e0d05] text-[#f6f6eb] py-6 px-6 shadow-md">
       <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between"></div>
 
-        <!-- Título + salir -->
-        <div class="flex items-center justify-between">
-    
-        </div>
-
-        <!-- Navegación interna -->
         <div class="mt-6 flex justify-center gap-8 text-sm sm:text-base font-semibold">
-          
-          <!-- BLOG -->
           <router-link
             to="/admin/blog"
             class="relative pb-1 transition hover:text-white/80"
@@ -62,7 +53,6 @@ export default {
             </span>
           </router-link>
 
-          <!-- USUARIOS -->
           <router-link
             to="/admin/usuarios"
             class="pb-1 transition hover:text-white/80"
@@ -71,7 +61,6 @@ export default {
             Usuarios
           </router-link>
 
-          <!-- KITS -->
           <router-link
             to="/admin/kits"
             class="relative pb-1 transition hover:text-white/80"
@@ -85,15 +74,13 @@ export default {
               {{ pendingKitsCount }}
             </span>
           </router-link>
-
         </div>
       </div>
     </div>
 
-    <!-- CONTENIDO -->
+    <!-- Contenido -->
     <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
       <router-view />
     </div>
-
   </div>
 </template>

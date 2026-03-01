@@ -68,7 +68,7 @@ export default {
       }
     },
 
-    // Mobile: toggle con stopPropagation para que no se cierre 
+    // Mobile
     toggleNotifications(e) {
       e?.stopPropagation();
       this.notifOpen = !this.notifOpen;
@@ -84,7 +84,7 @@ export default {
       this.loadPending();
     },
 
-    // Ir a solicitudes + scroll suave al #solicitudes
+    // Ir a solicitudes 
     goToFriendRequests() {
       this.menuOpen = false;
       this.notifOpen = false;
@@ -95,8 +95,9 @@ export default {
             const el = document.getElementById("solicitudes");
             if (!el) return;
 
-            const yOffset = 90; // ajustá si el navbar tapa (60/80/100)
-            const y = el.getBoundingClientRect().top + window.pageYOffset - yOffset;
+            const yOffset = 90; 
+            const y =
+              el.getBoundingClientRect().top + window.pageYOffset - yOffset;
 
             window.scrollTo({ top: y, behavior: "smooth" });
           });
@@ -104,7 +105,7 @@ export default {
       });
     },
 
-    // cerrar dropdown clic afuera
+    // cerrar 
     onDocClick(e) {
       if (!this.notifOpen) return;
       const root = this.$refs?.notifRoot;
@@ -142,7 +143,7 @@ export default {
 
     <!--  MOBILE -->
     <div class="flex lg:hidden items-center justify-between w-full">
-      <!-- Izq: Notificaciones -->
+  
       <div class="w-12 flex justify-start">
         <div v-if="user && !isAdmin" ref="notifRoot" class="relative">
           <button
@@ -162,7 +163,9 @@ export default {
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+              <path
+                d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"
+              />
               <path d="M13.73 21a2 2 0 01-3.46 0" />
             </svg>
 
@@ -199,7 +202,9 @@ export default {
                 <p class="text-sm text-[#4e0d05] font-semibold truncate">
                   {{
                     r?.requester?.display_name ||
-                    (r?.requester?.email ? r.requester.email.split('@')[0] : null) ||
+                    (r?.requester?.email
+                      ? r.requester.email.split("@")[0]
+                      : null) ||
                     r.requester_id ||
                     "Alguien"
                   }}
@@ -222,16 +227,15 @@ export default {
           </div>
         </div>
 
-        <!-- si no hay user, dejamos el espacio -->
         <div v-else class="w-10 h-10"></div>
       </div>
 
-      <!-- Centro: Logo -->
+      <!-- Logo -->
       <RouterLink to="/" class="flex justify-center flex-1">
         <img src="/logo.png" alt="NYSO" class="w-22" />
       </RouterLink>
 
-      <!-- Derecha: menú -->
+      <!-- Menu-->
       <div class="w-12 flex justify-end">
         <button
           @click="menuOpen = !menuOpen"
@@ -340,7 +344,9 @@ export default {
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
+              <path
+                d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"
+              />
               <path d="M13.73 21a2 2 0 01-3.46 0" />
             </svg>
 
@@ -377,7 +383,9 @@ export default {
                 <p class="text-sm text-[#4e0d05] font-semibold truncate">
                   {{
                     r?.requester?.display_name ||
-                    (r?.requester?.email ? r.requester.email.split('@')[0] : null) ||
+                    (r?.requester?.email
+                      ? r.requester.email.split("@")[0]
+                      : null) ||
                     r.requester_id ||
                     "Alguien"
                   }}
@@ -409,7 +417,10 @@ export default {
       </template>
 
       <template v-else>
-        <RouterLink to="/ingresar" class="text-sm font-medium hover:text-[#e099a8]">
+        <RouterLink
+          to="/ingresar"
+          class="text-sm font-medium hover:text-[#e099a8]"
+        >
           Login
         </RouterLink>
 
@@ -423,7 +434,7 @@ export default {
     </div>
   </nav>
 
-  <!-- Menu mobile-->
+  <!-- Menu mobile -->
   <div
     v-if="menuOpen"
     class="lg:hidden w-full bg-[#f6f6eb] border-b border-[#4e0d05]/30 px-8 py-6 space-y-5"
@@ -433,7 +444,9 @@ export default {
       <RouterLink @click="menuOpen = false" to="/social">Vinos</RouterLink>
       <RouterLink @click="menuOpen = false" to="/blog">Blog</RouterLink>
       <RouterLink @click="menuOpen = false" to="/BOX">Box NYSO</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/red-social">Red Social</RouterLink>
+      <RouterLink @click="menuOpen = false" to="/red-social">
+        Red Social
+      </RouterLink>
       <RouterLink
         v-if="user && user.role === 'admin'"
         @click="menuOpen = false"
@@ -447,7 +460,9 @@ export default {
 
     <div class="flex flex-col gap-3">
       <template v-if="user">
-        <RouterLink @click="menuOpen = false" to="/mi-perfil">Mi perfil</RouterLink>
+        <RouterLink @click="menuOpen = false" to="/mi-perfil">
+          Mi perfil
+        </RouterLink>
 
         <button
           @click="handleLogOut"

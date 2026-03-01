@@ -1,5 +1,5 @@
 <script>
-import { toast } from 'vue3-toastify';
+import { toast } from "vue3-toastify";
 import AppH1 from "../components/AppH1.vue";
 import { subscribeToAuthChanges, getCurrentUser } from "../services/auth.js";
 import { getFavorites, removeFavorite } from "../services/favorites.js";
@@ -58,7 +58,9 @@ export default {
 
         this.history = vinosDB
           .map((v) => {
-            const match = hisIds.find((h) => String(h.vino_id) === String(v.id));
+            const match = hisIds.find(
+              (h) => String(h.vino_id) === String(v.id),
+            );
             if (match) {
               return { ...v, note: match.note };
             }
@@ -68,7 +70,7 @@ export default {
 
         this.preferences = await getPreferencesForUser(this.user.id);
       } else {
-        // Si no hay usuario (cerró sesión)
+        // Si no hay usuario cerró sesión
         this.user = {
           id: null,
           email: null,
@@ -80,28 +82,26 @@ export default {
   },
 
   methods: {
-    // ✅ NUEVO: scroll a sección
     scrollToSection(id) {
       const el = document.getElementById(id);
       if (!el) return;
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     },
 
-      async handleRemoveFavorite(id) {
-    try {
-      await removeFavorite(this.user.id, id);
-      this.favorites = this.favorites.filter((f) => f.id !== id);
+    async handleRemoveFavorite(id) {
+      try {
+        await removeFavorite(this.user.id, id);
+        this.favorites = this.favorites.filter((f) => f.id !== id);
 
-      toast.success("Eliminado de tu wishlist");
-    } catch (error) {
-      console.error(
-        "[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ",
-        error,
-      );
-      toast.error("No se pudo eliminar de tu wishlist");
-    }
+        toast.success("Eliminado de tu wishlist");
+      } catch (error) {
+        console.error(
+          "[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ",
+          error,
+        );
+        toast.error("No se pudo eliminar de tu wishlist");
+      }
     },
-
 
     async handleRemoveHistory(id) {
       try {
@@ -139,7 +139,7 @@ export default {
 
         await updateConnectionStatus(connectionId, status);
 
-        // recargar pendientes y amigos
+        // Recargar pendientes y amigos
         if (this.user && this.user.id) {
           const friends = await getFriends(this.user.id);
           const pending = await getPendingRequestsReceived(this.user.id);
@@ -147,7 +147,7 @@ export default {
           this.pendingRequests = pending;
         }
 
-        // toasts unificados
+        // Toasts unificados
         if (status === "accepted") toast.success("Solicitud aceptada");
         else if (status === "rejected") toast.info("Solicitud rechazada");
         else toast.success("Solicitud actualizada");
@@ -160,10 +160,10 @@ export default {
       }
     },
 
-
-      async handleRemoveFriend(friend) {
+    async handleRemoveFriend(friend) {
       try {
-        const connectionId = friend?.connection_id || friend?.connectionId || friend?.id;
+        const connectionId =
+          friend?.connection_id || friend?.connectionId || friend?.id;
 
         if (!connectionId) {
           console.error(
@@ -180,7 +180,8 @@ export default {
           this.friends = await getFriends(this.user.id);
         }
 
-        const nombreEliminado = friend.display_name || friend.email || "este usuario";
+        const nombreEliminado =
+          friend.display_name || friend.email || "este usuario";
         toast.success(`Eliminaste a ${nombreEliminado} de tus amigos`);
       } catch (error) {
         console.error(
@@ -212,7 +213,7 @@ export default {
       const puntuar = (vino) => {
         let score = 0;
 
-        // compara por campos comunes si existen
+        // Compara por campos comunes si existen
         const checks = [
           ["tipo", "tipo"],
           ["uva", "uva"],
@@ -226,8 +227,6 @@ export default {
           if (pv && vv && (vv.includes(pv) || pv.includes(vv))) score += 3;
         });
 
-        // fallback: si tus preferencias tienen otras keys (ej: dulzor, cuerpo, etc)
-        // suma 1 punto por coincidencias de texto
         Object.keys(prefs || {}).forEach((k) => {
           const pv = this.normalizarValor(prefs[k]);
           if (!pv) return;
@@ -245,7 +244,7 @@ export default {
 
       this.sugeridos = candidatos.filter((v) => v.__score > 0).slice(0, 10);
 
-      // si no matchea nada, mostramos algo “random” como fallback
+      // si no matchea nada, mostramos algo random
       if (!this.sugeridos.length) {
         this.sugeridos = this.vinosDB
           .filter((v) => !favIds.has(String(v.id)) && !hisIds.has(String(v.id)))
@@ -265,7 +264,6 @@ export default {
 
 <template>
   <section class="min-h-screen bg-[#f6f6eb] relative overflow-hidden">
-    <!-- Iconos mobile -->
     <div class="relative w-full h-0 lg:hidden">
       <img
         src="/icono1.png"
@@ -284,7 +282,6 @@ export default {
       />
     </div>
 
-    <!-- iconos escritorio -->
     <img
       src="/icono1.png"
       alt="icono"
@@ -326,7 +323,6 @@ export default {
       class="hidden lg:block absolute bottom-[40%] left-[4%] w-14 opacity-100 -rotate-12"
     />
 
-    <!-- CONTENEDOR PRINCIPAL  -->
     <div class="mx-auto max-w-6xl px-6 md:px-12 py-12 relative z-10">
       <div
         class="rounded-3xl border border-[#4e0d05]/10 bg-[#ede8d7]/70 backdrop-blur-sm p-6 md:p-8 shadow-sm"
@@ -367,7 +363,6 @@ export default {
             </div>
           </div>
 
-          <!-- ✅ SOLO CAMBIO: ahora son clickeables y scrollean -->
           <div class="grid grid-cols-3 gap-3 md:gap-4">
             <button
               type="button"
@@ -413,7 +408,7 @@ export default {
           </RouterLink>
         </div>
 
-        <!-- preferencias -->
+        <!-- Preferencias -->
         <div v-if="preferences" class="mt-8">
           <h3 class="font-semibold text-xl text-[#3c490b] mb-3">
             Tus preferencias
@@ -443,9 +438,8 @@ export default {
         </RouterLink>
       </div>
 
-      <!-- WISHLIST + HISTORIAL -->
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- WISHLIST -->
+        <!-- Whishlist -->
         <div
           id="wishlist"
           class="scroll-mt-24 rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
@@ -493,7 +487,7 @@ export default {
           </p>
         </div>
 
-        <!-- HISTORIAL -->
+        <!-- Historial -->
         <div
           id="historial"
           class="scroll-mt-24 rounded-3xl border border-[#3c490b]/25 bg-[#3c490b]/5 p-6 shadow-sm"
@@ -548,7 +542,7 @@ export default {
         </div>
       </div>
 
-      <!-- AMIGOS + PENDIENTES -->
+      <!-- AMIGOS y pendientes -->
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div
           id="amigos"
@@ -629,7 +623,6 @@ export default {
           </div>
         </div>
       </div>
-
     </div>
   </section>
 </template>

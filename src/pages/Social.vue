@@ -9,7 +9,7 @@ import {
 import WineCard from "../components/WineCard.vue";
 import AppLoader from "../components/AppLoader.vue";
 
-import { getAllReviewsLight } from "../services/reviews.js"; // ✅ NUEVO
+import { getAllReviewsLight } from "../services/reviews.js"; 
 
 export default {
   name: "Vinos",
@@ -31,15 +31,14 @@ export default {
       selectedMaxPrice: null,
       showMobileFilters: false,
 
-      // PAGINACIÓN
       currentPage: 1,
       perPage: 12,
 
       loading: true,
       error: null,
 
-      // ✅ NUEVO: promedios por vino
-      ratingsMap: {}, // { [wineId]: { avg, count } }
+      //promedios por vino
+      ratingsMap: {},
     };
   },
 
@@ -74,7 +73,7 @@ export default {
       return Math.max(...this.vinosList.map((v) => v.precio_aproximado || 0));
     },
 
-    // ✅ filtrado + ORDEN por rating (mejor -> peor) y sin reseñas al final
+    //  filtrado + orden por puntuacion 
     filteredVinos() {
       const query = this.searchQuery?.toLowerCase() || "";
 
@@ -98,14 +97,13 @@ export default {
         // con reseñas primero
         if (aHas !== bHas) return aHas ? -1 : 1;
 
-        // ambos con reseñas: avg desc
+        // ambos con reseñas
         if (aHas && bHas) {
           if (bData.avg !== aData.avg) return bData.avg - aData.avg;
-          // empate: más cantidad de reseñas primero
+          // más cantidad de reseñas primero
           if (bData.count !== aData.count) return bData.count - aData.count;
         }
 
-        // fallback
         return (a.nombre || "").localeCompare(b.nombre || "");
       });
     },
@@ -194,7 +192,7 @@ export default {
       this.goToPage(this.currentPage - 1);
     },
 
-    // construir ratingsMap
+    // Construir ratingsMap
     buildRatingsMap(reviews) {
       const acc = {}; 
 
@@ -229,7 +227,7 @@ export default {
       this.selectedMinPrice = this.priceMin;
       this.selectedMaxPrice = this.priceMax;
 
-      // ✅ 1 sola query para ratings
+      // 1 sola query para ratings
       const reviews = await getAllReviewsLight();
       this.buildRatingsMap(reviews);
     } catch (error) {
@@ -265,7 +263,6 @@ export default {
         class="absolute top-[120px] right-[20%] w-20 opacity-100 rotate-6"
       />
 
-      <!-- Estado de carga -->
       <div
         v-if="loading"
         class="w-full flex items-center justify-center min-h-[200px]"
@@ -282,7 +279,7 @@ export default {
           Descubrí los vinos de NYSO
         </AppH1>
 
-        <!-- buscador -->
+        <!-- Buscador -->
         <div class="relative w-full max-w-lg mb-6 z-10">
           <svg
             xmlns="http://www.w3.org/2000/svg"

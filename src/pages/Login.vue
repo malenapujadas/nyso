@@ -19,7 +19,7 @@ export default {
     async handleSubmit() {
       this.errorMsg = "";
 
-      // validaciones
+      // Validaciones
       if (!this.user.email || !this.user.password) {
         this.errorMsg = "Por favor, completa todos los campos.";
         return;
@@ -44,10 +44,10 @@ export default {
         if (error.message === "SUSPENDED_ACCOUNT") {
           this.errorMsg = "Tu cuenta ha sido suspendida. Contactate con soporte.";
         } else {
-          // Si es un error real de Supabase (contraseña mal, etc.)
+          // Si es un error real de Supabase 
           this.errorMsg = "Email o contraseña incorrectos.";
         }
-      } 
+      }
       this.loading = false;
     },
   },
@@ -111,9 +111,9 @@ export default {
 
         <input
           id="email"
+          v-model="user.email"
           type="email"
           placeholder="mail@gmail.com"
-          v-model="user.email"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
@@ -128,16 +128,16 @@ export default {
 
         <input
           id="password"
+          v-model="user.password"
           type="password"
           placeholder="••••••••"
-          v-model="user.password"
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
 
       <RouterLink
-        class="text-left text-xs md:text-sm text-[#3c490b]/70 font-bold hover:text-[#e099a8] transition-colors"
         to="/recuperar-contrasena"
+        class="text-left text-xs md:text-sm text-[#3c490b]/70 font-bold hover:text-[#e099a8] transition-colors"
       >
         ¿Olvidaste tu contraseña?
       </RouterLink>

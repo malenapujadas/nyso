@@ -14,8 +14,9 @@ export default {
       posts: [],
       loading: true,
       error: null,
-      openPost: null, //ID del post que está abierto en el acordeón
-      //sugerencias de usuarios
+      openPost: null, // ID del post que está abierto en el acordeón
+
+      // sugerencias de usuarios
       sugg: {
         nombre: "",
         email: "",
@@ -41,49 +42,48 @@ export default {
   },
 
   methods: {
-    //acordeon
+    // acordeon
     togglePost(id) {
       this.openPost = this.openPost === id ? null : id;
     },
-    //enviar sugerencia y validaciones 
+
+    // enviar sugerencia y validaciones
     async submitSugg() {
-      // 1. Limpiamos el mensaje de error/éxito previo
+      //  Limpiamos el mensaje de error/éxito 
       this.suggestionMessage = "";
 
-      // 2. Limpiamos los espacios en blanco de los extremos
+      // Limpiamos los espacios en blanco de los extremos
       const titulo = this.sugg.titulo.trim();
       const descripcion = this.sugg.descripcion.trim();
       const nombre = this.sugg.nombre.trim();
       const email = this.sugg.email.trim();
 
-      // 3. Validar que no haya campos requeridos vacíos
       if (!titulo || !descripcion) {
-        this.suggestionMessage = "Por favor completá el título y la descripción.";
+        this.suggestionMessage =
+          "Por favor completá el título y la descripción.";
         return;
       }
 
-      // 4. Validar longitud mínima del Título (10 caracteres)
       if (titulo.length < 10) {
         this.suggestionMessage = "El título debe tener al menos 10 caracteres.";
         return;
       }
 
-      // 5. Validar longitud mínima de la Descripción (20 caracteres)
       if (descripcion.length < 20) {
-        this.suggestionMessage = "La descripción debe tener al menos 20 caracteres.";
+        this.suggestionMessage =
+          "La descripción debe tener al menos 20 caracteres.";
         return;
       }
 
-      // 6. Si todo está correcto, enviamos los datos "limpios" (con trim)
       this.sendingSuggestion = true;
       try {
         await submitSuggestion({
           nombre: nombre,
           email: email,
           titulo: titulo,
-          descripcion: descripcion
+          descripcion: descripcion,
         });
-        
+
         this.suggestionMessage = "¡Gracias! Tu tema fue enviado al equipo.";
         setTimeout(() => (this.suggestionMessage = ""), 4000);
 
@@ -96,7 +96,8 @@ export default {
         };
       } catch (err) {
         console.error(err);
-        this.suggestionMessage = err.message || "Error al enviar la sugerencia.";
+        this.suggestionMessage =
+          err.message || "Error al enviar la sugerencia.";
       } finally {
         this.sendingSuggestion = false;
       }
@@ -106,79 +107,66 @@ export default {
 </script>
 
 <template>
-  <div
-    class="min-h-screen bg-[#f6f6eb] flex flex-col items-center overflow-visible"
-  >
-<!-- Banner -->
-<section
-  class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
->
-  <img
-    src="/icono3.png"
-    alt="icono"
-    class="absolute top-6 right-10 w-10 md:w-16 opacity-80 rotate-6 pointer-events-none"
-  />
-  <img
-    src="/icono6.png"
-    alt="icono"
-    class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
-  />
+  <div class="min-h-screen bg-[#f6f6eb] flex flex-col items-center overflow-visible">
+    <!-- Banner -->
+    <section
+      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+    >
+      <img
+        src="/icono3.png"
+        alt="icono"
+        class="absolute top-6 right-10 w-10 md:w-16 opacity-80 rotate-6 pointer-events-none"
+      />
+      <img
+        src="/icono6.png"
+        alt="icono"
+        class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
+      />
 
-  <!-- Imagen -->
-  <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
-    <img src="/nysito2.png" alt="NYSITO" class="w-28 sm:w-32 md:w-56" />
-  </div>
+      <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
+        <img src="/nysito2.png" alt="NYSITO" class="w-28 sm:w-32 md:w-56" />
+      </div>
 
-  <!-- Texto -->
-  <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
-    
-    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
-      ¡Hola de nuevo!
-    </h1>
+      <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
+          ¡Hola de nuevo!
+        </h1>
 
-    <!-- DESKTOP -->
-    <p class="hidden md:block text-base sm:text-lg font-medium leading-relaxed">
-      Acá vas a encontrar notas,
-      <br />
-      tips y curiosidades del mundo del vino.
-      <br />
-      <span class="font-semibold text-[#3c490b]">
-        Leé, aprendé y compartí con la comunidad NYSO.
-      </span>
-    </p>
+        <!-- Desktop -->
+        <p class="hidden md:block text-base sm:text-lg font-medium leading-relaxed">
+          Acá vas a encontrar notas,
+          <br />
+          tips y curiosidades del mundo del vino.
+          <br />
+          <span class="font-semibold text-[#3c490b]">
+            Leé, aprendé y compartí con la comunidad NYSO.
+          </span>
+        </p>
 
-    <!-- MOBILE -->
-    <p class="md:hidden text-base font-medium leading-relaxed">
-      Acá vas a encontrar notas,
-      <br />
-      tips y curiosidades
-      <br />
-      del mundo del vino.
-      <br />
-      <span class="font-semibold text-[#3c490b]">
-        Leé, aprendé y compartí
-        <br />
-        con la comunidad NYSO.
-      </span>
-    </p>
-
-  </div>
-</section>
-
+        <!-- Mobile -->
+        <p class="md:hidden text-base font-medium leading-relaxed">
+          Acá vas a encontrar notas,
+          <br />
+          tips y curiosidades
+          <br />
+          del mundo del vino.
+          <br />
+          <span class="font-semibold text-[#3c490b]">
+            Leé, aprendé y compartí
+            <br />
+            con la comunidad NYSO.
+          </span>
+        </p>
+      </div>
+    </section>
 
     <!-- Publicaciones -->
-    <section
-      class="relative w-full max-w-[1200px] py-12 px-6 space-y-8 text-left"
-    >
+    <section class="relative w-full max-w-[1200px] py-12 px-6 space-y-8 text-left">
       <h2 class="text-2xl md:text-3xl font-bold text-[#3c490b] mb-3">
         Últimas publicaciones
       </h2>
 
-      <!-- Estado de carga -->
-      <div
-        v-if="loading"
-        class="min-h-[120px] flex items-center justify-center"
-      >
+      <div v-if="loading" class="min-h-[120px] flex items-center justify-center">
         <AppLoader />
       </div>
 
@@ -205,9 +193,7 @@ export default {
             @click="togglePost(post.id)"
           >
             <!-- Título -->
-            <div
-              class="flex justify-between items-center px-5 md:px-8 py-4 md:py-5"
-            >
+            <div class="flex justify-between items-center px-5 md:px-8 py-4 md:py-5">
               <h3 class="text-lg md:text-xl font-bold">
                 {{ post.titulo }}
               </h3>
@@ -251,15 +237,11 @@ export default {
         class="hidden md:block absolute bottom-10 right-20 w-20 opacity-100 -rotate-6"
       />
 
-      <h3
-        class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-4 text-center"
-      >
+      <h3 class="text-2xl sm:text-3xl font-bold text-[#3c490b] mb-4 text-center">
         ¿Querés que hablemos de algo?
       </h3>
 
-      <p
-        class="text-[#4e0d05]/80 text-center mb-10 text-base max-w-xl mx-auto px-2"
-      >
+      <p class="text-[#4e0d05]/80 text-center mb-10 text-base max-w-xl mx-auto px-2">
         Enviá tu pregunta o tema y el equipo lo evaluará. Si respondemos, lo
         publicaremos en el blog.
       </p>
@@ -277,7 +259,7 @@ export default {
         </RouterLink>
       </p>
 
-      <!-- form -->
+      <!-- Form -->
       <form
         v-else
         @submit.prevent="submitSugg"
@@ -347,8 +329,8 @@ export default {
           class="text-center font-semibold rounded-full py-2 px-4 text-sm md:text-base border"
           :class="
             suggestionMessage.includes('Gracias')
-              ? 'bg-[#3c490b]/10 text-[#3c490b] border-[#3c490b]' // Estilo de éxito
-              : 'bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]' // Estilo de error (Igual al Register)
+              ? 'bg-[#3c490b]/10 text-[#3c490b] border-[#3c490b]'
+              : 'bg-[#e099a8]/20 text-[#4e0d05] border-[#e099a8]'
           "
         >
           {{ suggestionMessage }}
