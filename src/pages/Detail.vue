@@ -6,6 +6,7 @@ import { addFavorite, getFavorites } from "../services/favorites.js";
 import { addHistory, getHistory } from "../services/history.js";
 import { addReview, getReviewsByWineId } from "../services/reviews.js";
 import AppLoader from "../components/AppLoader.vue";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "Detail",
@@ -110,9 +111,7 @@ export default {
     // Agregar a Wishlist
     async handleAddFavorite() {
       if (!this.user) {
-        this.message = "Debes iniciar sesión para agregar a tu Wishlist";
-        this.messageType = "fav";
-        setTimeout(() => (this.message = null), 3000);
+        toast.info("Iniciá sesión para agregar a tu Wishlist");
         return;
       }
 
@@ -120,25 +119,20 @@ export default {
         if (!this.isFavorite) {
           await addFavorite(this.user.id, this.vino.id);
           this.isFavorite = true;
-          this.message = "Agregado a tu Wishlist";
-          this.messageType = "fav";
+          toast.success("Agregado a tu Wishlist");
         } else {
-          this.message = "Este vino ya está en tu Wishlist";
-          this.messageType = "fav";
+          toast.info("Este vino ya está en tu Wishlist");
         }
       } catch (e) {
         console.error(e);
-        this.message = "Error al agregar a tu Wishlist";
-        this.messageType = "fav";
+        toast.error("Error al agregar a tu Wishlist");
       }
     },
 
     // Agregar al historial
     async handleAddHistory() {
       if (!this.user) {
-        this.message = "Debes iniciar sesión para agregar al Historial";
-        this.messageType = "history";
-        setTimeout(() => (this.message = null), 3000);
+        toast.info("Iniciá sesión para agregar al Historial");
         return;
       }
 
@@ -146,53 +140,51 @@ export default {
       this.showModal = true;
     },
 
-    async confirmAddHistory() {
-      this.modalError = null;
+      async confirmAddHistory() {
+    this.modalError = null;
 
-      try {
-        const extra = (this.customNote || "").trim();
+    try {
+      const extra = (this.customNote || "").trim();
 
-        if (this.selectedNote && extra) {
-          this.modalError = "Por favor, elegí una opción predeterminada O escribí una nota, pero no ambas.";
-          return;
-        }
-
-        if (!this.selectedNote && !extra) {
-          this.modalError = "Elegí una opción o escribí una nota antes de guardar.";
-          return;
-        }
-
-        if (extra && extra.length < 10) {
-          this.modalError = "La nota extra debe tener al menos 10 caracteres.";
-          return;
-        }
-
-        // 2. Armamos la nota según lo que completó el usuario
-        let noteToSave = "";
-        if (this.selectedNote && extra) {
-          noteToSave = `${this.selectedNote} — Nota: ${extra}`;
-        } else if (this.selectedNote) {
-          noteToSave = this.selectedNote;
-        } else {
-          noteToSave = extra; // Solo escribió la nota
-        }
-
-        await addHistory(this.user.id, this.vino.id, noteToSave);
-
-        this.isInHistory = true;
-
-        this.message = "Agregado a tu Historial";
-        this.messageType = "history";
-        this.showModal = false;
-
-        this.selectedNote = "";
-        this.customNote = "";
-      } catch (e) {
-        console.error(e);
-        this.message = "Error al agregar al Historial";
-        this.messageType = "history";
+      if (this.selectedNote && extra) {
+        this.modalError =
+          "Por favor, elegí una opción predeterminada O escribí una nota, pero no ambas.";
+        return;
       }
-    },
+
+      if (!this.selectedNote && !extra) {
+        this.modalError = "Elegí una opción o escribí una nota antes de guardar.";
+        return;
+      }
+
+      if (extra && extra.length < 10) {
+        this.modalError = "La nota extra debe tener al menos 10 caracteres.";
+        return;
+      }
+
+      let noteToSave = "";
+      if (this.selectedNote && extra) {
+        noteToSave = `${this.selectedNote} — Nota: ${extra}`;
+      } else if (this.selectedNote) {
+        noteToSave = this.selectedNote;
+      } else {
+        noteToSave = extra;
+      }
+
+      await addHistory(this.user.id, this.vino.id, noteToSave);
+
+      this.isInHistory = true;
+      this.showModal = false;
+
+      this.selectedNote = "";
+      this.customNote = "";
+
+      toast.success("Agregado a tu Historial");
+    } catch (e) {
+      console.error(e);
+      toast.error("Error al agregar al Historial");
+    }
+  },
 
     cancelModal() {
     this.showModal = false;
@@ -207,64 +199,56 @@ export default {
     },
 
     async handleAddReview() {
-      if (!this.user) return;
+  if (!this.user) {
+    toast.info("Iniciá sesión para dejar tu reseña");
+    return;
+  }
 
-      // 1. Limpiamos cualquier mensaje previo
-      this.reviewMessage = null;
+  if (this.newReview.rating === 0) {
+    toast.info("Elegí una puntuación (estrellas)");
+    return;
+  }
 
-      // 2. Validar que haya tocado las estrellas
-      if (this.newReview.rating === 0) {
-        this.reviewMessage = "Por favor, elegí una puntuación (estrellas).";
-        return;
-      }
+  const comentarioLimpiado = this.newReview.comment.trim();
 
-      // 3. Limpiamos los espacios en blanco del comentario
-      const comentarioLimpiado = this.newReview.comment.trim();
+  if (!comentarioLimpiado) {
+    toast.info("Escribí un comentario");
+    return;
+  }
 
-      // 4. Validar que el comentario no esté vacío
-      if (!comentarioLimpiado) {
-        this.reviewMessage = "Por favor, escribí un comentario.";
-        return;
-      }
+  if (comentarioLimpiado.length < 10) {
+    toast.info("El comentario debe tener al menos 10 caracteres");
+    return;
+  }
 
-      // 5. Validar que tenga al menos 10 caracteres
-      if (comentarioLimpiado.length < 10) {
-        this.reviewMessage = "El comentario debe tener al menos 10 caracteres.";
-        return;
-      }
+  try {
+    const fullProfile = getAuthUser();
+    const userName =
+      fullProfile.display_name ||
+      fullProfile.nombre ||
+      this.user.email.split("@")[0] ||
+      "Usuario";
 
-      // Si todo está bien, avanzamos
-      try {
-        const fullProfile = getAuthUser();
-        const userName =
-          fullProfile.display_name ||
-          fullProfile.nombre ||
-          this.user.email.split("@")[0] ||
-          "Usuario";
+    const savedReview = await addReview(
+      this.user.id,
+      this.vino.id,
+      userName,
+      this.newReview.rating,
+      comentarioLimpiado
+    );
 
-        // Pasamos el comentarioLimpiado a la base de datos
-        const savedReview = await addReview(
-          this.user.id,
-          this.vino.id,
-          userName,
-          this.newReview.rating,
-          comentarioLimpiado
-        );
+    this.reviews.unshift(savedReview);
+    this.reviewsCurrentPage = 1;
 
-        this.reviews.unshift(savedReview);
-        this.reviewsCurrentPage = 1;
+    this.newReview.rating = 0;
+    this.newReview.comment = "";
 
-        // Limpiamos los campos y mostramos el éxito
-        this.newReview.rating = 0;
-        this.newReview.comment = "";
-        this.reviewMessage = "¡Gracias por tu reseña!";
-
-        setTimeout(() => (this.reviewMessage = null), 4000);
-      } catch (e) {
-        console.error(e);
-        this.reviewMessage = "Error al guardar la reseña.";
-      }
-    },
+    toast.success("¡Gracias por tu reseña!");
+  } catch (e) {
+    console.error(e);
+    toast.error("Error al guardar la reseña");
+  }
+},
 
     // PAGINACIÓN RESEÑAS
     goToReviewPage(p) {

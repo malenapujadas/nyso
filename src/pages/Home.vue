@@ -42,13 +42,12 @@ export default {
     />
 
     <AppH1
-      class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl uppercase tracking-tight font-[Poppins] relative z-10 px-4"
-    >
-      DESCUBRIR,
-      <span class="text-[#3c490b]">GUARDAR</span> Y COMPARTIR
-      <span class="text-[#e099a8]">VINOS</span>
-      DE UNA FORMA SIMPLE Y CERCANA, SIN NECESIDAD DE SER UN
-      <span class="text-[#e099a8]">EXPERTO.</span>
+    class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl md:uppercase tracking-tight font-[Poppins] relative z-10 px-4"    >
+      Descubrir,
+      <span class="text-[#3c490b]">guardar</span> y compartir
+      <span class="text-[#e099a8]">vinos</span>
+      de una forma simple y cercana, sin necesidad de ser un
+      <span class="text-[#e099a8]">experto.</span>
     </AppH1>
 
     <RouterLink to="/box" class="mt-10 inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300 relative z-10">

@@ -109,42 +109,62 @@ export default {
   <div
     class="min-h-screen bg-[#f6f6eb] flex flex-col items-center overflow-visible"
   >
-    <!-- Banner -->
-    <section
-      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-4 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
-    >
-      <img
-        src="/icono3.png"
-        alt="icono"
-        class="absolute top-4 md:top-10 right-4 md:right-20 w-10 md:w-14 rotate-6 opacity-100"
-      />
+<!-- Banner -->
+<section
+  class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+>
+  <img
+    src="/icono3.png"
+    alt="icono"
+    class="absolute top-6 right-10 w-10 md:w-16 opacity-80 rotate-6 pointer-events-none"
+  />
+  <img
+    src="/icono6.png"
+    alt="icono"
+    class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
+  />
 
-      <img
-        src="/icono6.png"
-        alt="icono"
-        class="absolute bottom-4 md:bottom-10 left-4 md:left-20 w-12 md:w-16 -rotate-6 opacity-100"
-      />
+  <!-- Imagen -->
+  <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
+    <img src="/nysito2.png" alt="NYSITO" class="w-28 sm:w-32 md:w-56" />
+  </div>
 
-      <img src="/nysito2.png" alt="NYSITO" class="w-28 md:w-56 z-10" />
+  <!-- Texto -->
+  <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
+    
+    <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
+      ¡Hola de nuevo!
+    </h1>
 
-      <!-- texto -->
-      <div class="max-w-xs md:max-w-lg text-left z-10 ml-3 md:ml-0">
-        <AppH1 class="text-2xl md:text-4xl font-extrabold mb-2 md:mb-4">
-          ¡Hola de nuevo!
-        </AppH1>
+    <!-- DESKTOP -->
+    <p class="hidden md:block text-base sm:text-lg font-medium leading-relaxed">
+      Acá vas a encontrar notas,
+      <br />
+      tips y curiosidades del mundo del vino.
+      <br />
+      <span class="font-semibold text-[#3c490b]">
+        Leé, aprendé y compartí con la comunidad NYSO.
+      </span>
+    </p>
 
-        <p
-          class="text-sm md:text-lg font-medium leading-snug md:leading-relaxed"
-        >
-          Acá vas a encontrar notas, tips y curiosidades del mundo del vino.
-          Desde nuevas etiquetas hasta consejos para disfrutar cada copa.
-          <br /><br />
-          <span class="font-semibold text-[#3c490b]">
-            Leé, aprendé y compartí con la comunidad NYSO.
-          </span>
-        </p>
-      </div>
-    </section>
+    <!-- MOBILE -->
+    <p class="md:hidden text-base font-medium leading-relaxed">
+      Acá vas a encontrar notas,
+      <br />
+      tips y curiosidades
+      <br />
+      del mundo del vino.
+      <br />
+      <span class="font-semibold text-[#3c490b]">
+        Leé, aprendé y compartí
+        <br />
+        con la comunidad NYSO.
+      </span>
+    </p>
+
+  </div>
+</section>
+
 
     <!-- Publicaciones -->
     <section

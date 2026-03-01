@@ -7,6 +7,7 @@ import {
   getPendingRequestsSent,
 } from "../services/connections.js";
 import AppLoader from "../components/AppLoader.vue";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "RedSocial",
@@ -19,7 +20,6 @@ export default {
       loading: true,
       searchQuery: "",
       user: null,
-      message: "",
       sentRequests: [],
       avatar_url: null,
 
@@ -68,23 +68,25 @@ export default {
   },
 
   methods: {
-    async handleConnect(receiverId) {
-      if (!this.user || !this.user.id) {
-        this.message = "Debes iniciar sesión para conectar.";
-        setTimeout(() => (this.message = ""), 3000);
-        return;
-      }
+      async handleConnect(receiverId) {
+    if (!this.user || !this.user.id) {
+      toast.info("Iniciá sesión para conectar");
+      return;
+    }
 
-      try {
-        await sendConnectionRequest(this.user.id, receiverId);
+    try {
+      await sendConnectionRequest(this.user.id, receiverId);
+
+      if (!this.sentRequests.includes(receiverId)) {
         this.sentRequests.push(receiverId);
-        this.message = "¡Solicitud enviada!";
-        setTimeout(() => (this.message = ""), 3000);
-      } catch (err) {
-        console.error("Error enviando solicitud:", err);
       }
-    },
 
+      toast.success("Solicitud enviada");
+    } catch (err) {
+      console.error("Error enviando solicitud:", err);
+      toast.error("No se pudo enviar la solicitud");
+    }
+  },
     // Lógica para mezclar y obtener sugerencias aleatorias
     generateSuggestions() {
       // Filtramos para no sugerir al admin ni al usuario mismo
@@ -156,8 +158,8 @@ export default {
     class="min-h-screen bg-[#f6f6eb] font-helvetica flex flex-col items-center overflow-hidden pb-20"
   >
     <section
-      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
-    >
+    class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+  >
       <img
         src="/icono3.png"
         alt="icono"
@@ -168,17 +170,23 @@ export default {
         alt="icono"
         class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
       />
-      <div class="flex justify-center w-[40%] md:w-auto z-10">
+      <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
         <img src="/nysito3.png" alt="Nysito" class="w-28 sm:w-32 md:w-56" />
       </div>
-      <div class="max-w-[60%] md:max-w-lg text-left z-10 leading-snug">
+      <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
         <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
           Red Social
         </h1>
         <p class="text-base sm:text-lg font-medium leading-relaxed">
-          Conectá con amigos y enterate cuáles son sus <br />
-          <span class="font-bold text-[#3c490b]">preferencias</span> y
-          <span class="font-bold text-[#3c490b]">vinos favoritos</span>.
+          Conectá con amigos
+          <br class="sm:hidden" />
+
+          y enterate cuáles son sus preferencias
+          <br />
+
+          y <span class="whitespace-nowrap font-bold text-[#3c490b]">
+            vinos favoritos.
+          </span>
         </p>
       </div>
     </section>
@@ -205,15 +213,6 @@ export default {
         class="w-full border border-[#4e0d05]/20 rounded-full p-3 pl-12 text-[#4e0d05] bg-white shadow-sm focus:ring-2 focus:ring-[#e099a8] outline-none placeholder-[#4e0d05]/50 transition-all"
       />
     </div>
-
-    <transition name="fade">
-      <div
-        v-if="message"
-        class="mt-4 px-6 py-2 bg-[#3c490b] text-[#f6f6eb] rounded-full text-sm font-medium shadow-lg"
-      >
-        {{ message }}
-      </div>
-    </transition>
 
     <section class="w-full max-w-5xl px-4 mt-8">
       <div v-if="loading" class="flex justify-center py-10">
@@ -403,15 +402,3 @@ export default {
     </section>
   </div>
 </template>
-
-<style scoped>
-/* Animación suave para el mensaje */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

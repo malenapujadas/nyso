@@ -1,32 +1,45 @@
 @import "tailwindcss";
 
-/* --- COLORES DE TOASTIFY  --- */
+/* --- TOASTIFY  --- */
 :root {
-  /* Fondo del cartelito (Borravino) */
+  /* Fondo  */
   --toastify-color-light: #4e0d05; 
   
-  /* Color del texto (Cremita) */
+  /* texto */
   --toastify-text-color-light: #f6f6eb; 
   
-  /* Color de la crucecita para cerrar */
+  /* cruz para cerrar */
   --toastify-color-transparent: #f6f6eb; 
   
-  /* Color de la barra de progreso (Rosa viejo para que resalte) */
+  /* Color de la barra de progreso  */
   --toastify-color-progress-light: #e099a8; 
 }
 
-/* Redondeamos un poco más los bordes para que combine con tus botones */
 .Toastify__toast {
   border-radius: 1rem !important; 
-  font-family: inherit !important; /* Para que use la tipografía de tu web */
+  font-family: inherit !important; 
 }
 
+/* --- TOASTS:  mobile --- */
+@media (max-width: 768px) {
 
-/* html, body, #app {
-height: 100%;
+  .Toastify__toast-container--bottom-right {
+    right: 12px !important;
+    left: 12px !important;    
+    bottom: 12px !important;
+    width: auto !important;
+  }
+
+  .Toastify__toast {
+    border-radius: 18px !important;  
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    max-width: 100% !important;
+  }
+
+  /* barra de progreso */
+  .Toastify__progress-bar {
+    height: 3px !important;
+  }
 }
-
-#app {
-  display: grid;
-  grid-template-rows: 56px 1fr 100px;
-} */

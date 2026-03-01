@@ -87,28 +87,34 @@ export default {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     },
 
-    async handleRemoveFavorite(id) {
-      try {
-        await removeFavorite(this.user.id, id);
-        this.favorites = this.favorites.filter((f) => f.id !== id);
-      } catch (error) {
-        console.error(
-          "[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ",
-          error,
-        );
-        throw new Error(error.message);
-      }
+      async handleRemoveFavorite(id) {
+    try {
+      await removeFavorite(this.user.id, id);
+      this.favorites = this.favorites.filter((f) => f.id !== id);
+
+      toast.success("Eliminado de tu wishlist");
+    } catch (error) {
+      console.error(
+        "[MyProfile.vue handleRemoveFavorite] Error al eliminar vino de favoritos: ",
+        error,
+      );
+      toast.error("No se pudo eliminar de tu wishlist");
+    }
     },
+
+
     async handleRemoveHistory(id) {
       try {
         await clearHistory(this.user.id, id);
         this.history = this.history.filter((h) => h.id !== id);
+
+        toast.success("Eliminado de tu historial");
       } catch (error) {
         console.error(
           "[MyProfile.vue handleRemoveHistory] Error al eliminar vino del historial: ",
           error,
         );
-        throw new Error(error.message);
+        toast.error("No se pudo eliminar de tu historial");
       }
     },
 
@@ -127,6 +133,7 @@ export default {
             "[MyProfile.vue handleResponse] connectionId undefined:",
             reqOrId,
           );
+          toast.error("No se pudo procesar la solicitud");
           return;
         }
 
@@ -139,15 +146,22 @@ export default {
           this.friends = friends;
           this.pendingRequests = pending;
         }
+
+        // toasts unificados
+        if (status === "accepted") toast.success("Solicitud aceptada");
+        else if (status === "rejected") toast.info("Solicitud rechazada");
+        else toast.success("Solicitud actualizada");
       } catch (error) {
         console.error(
           "[MyProfile.vue handleResponse] Error actualizando solicitud: ",
           error,
         );
+        toast.error("No se pudo actualizar la solicitud");
       }
     },
 
-    async handleRemoveFriend(friend) {
+
+      async handleRemoveFriend(friend) {
       try {
         const connectionId = friend?.connection_id || friend?.connectionId || friend?.id;
 
@@ -156,6 +170,7 @@ export default {
             "[MyProfile.vue handleRemoveFriend] connectionId undefined:",
             friend,
           );
+          toast.error("No se pudo eliminar el amigo");
           return;
         }
 
@@ -165,14 +180,14 @@ export default {
           this.friends = await getFriends(this.user.id);
         }
 
-        //notificacion de eliminaste a amigo
-        const nombreEliminado = friend.display_name || friend.email || 'este usuario';
-        toast(`Eliminaste a ${nombreEliminado} de tu lista de amigos.`);
+        const nombreEliminado = friend.display_name || friend.email || "este usuario";
+        toast.success(`Eliminaste a ${nombreEliminado} de tus amigos`);
       } catch (error) {
         console.error(
           "[MyProfile.vue handleRemoveFriend] Error eliminando amigo: ",
           error,
         );
+        toast.error("No se pudo eliminar el amigo");
       }
     },
 

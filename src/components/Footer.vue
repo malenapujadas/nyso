@@ -101,7 +101,8 @@ export default {
               />
             </a>
 
-            <a href="#">
+            
+              <a href="https://www.tiktok.com/@nyso_vinos " target="_blank">
               <img
                 src="/tiktok.png"
                 alt="TikTok"

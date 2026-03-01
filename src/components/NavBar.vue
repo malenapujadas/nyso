@@ -68,7 +68,7 @@ export default {
       }
     },
 
-    // Mobile: toggle con stopPropagation para que no se cierre instantáneo
+    // Mobile: toggle con stopPropagation para que no se cierre 
     toggleNotifications(e) {
       e?.stopPropagation();
       this.notifOpen = !this.notifOpen;
@@ -135,13 +135,13 @@ export default {
   <nav
     class="relative z-50 w-full bg-[#f6f6eb] text-[#4e0d05] border-b border-[#4e0d05] py-4 px-8 flex items-center justify-between"
   >
-    <!-- ✅ DESKTOP: Logo como siempre (izquierda) -->
-    <RouterLink to="/" class="hidden md:flex items-center">
+    <!-- DESKTOP -->
+    <RouterLink to="/" class="hidden lg:flex items-center">
       <img src="/logo.png" alt="NYSO" class="w-22 md:w-26" />
     </RouterLink>
 
-    <!-- ✅ MOBILE: izq notis / centro logo / der menú -->
-    <div class="flex md:hidden items-center justify-between w-full">
+    <!--  MOBILE -->
+    <div class="flex lg:hidden items-center justify-between w-full">
       <!-- Izq: Notificaciones -->
       <div class="w-12 flex justify-start">
         <div v-if="user && !isAdmin" ref="notifRoot" class="relative">
@@ -177,7 +177,7 @@ export default {
           <!-- Dropdown MOBILE -->
           <div
             v-if="notifOpen"
-            class="fixed left-4 right-4 top-[64px] z-[9999] rounded-2xl border border-[#4e0d05]/20 bg-[#ede8d7] shadow-lg overflow-hidden"
+            class="fixed left-4 right-4 lg:left-auto lg:right-8 top-[64px] lg:top-[72px] z-[9999] lg:w-[320px] rounded-2xl border border-[#4e0d05]/20 bg-[#ede8d7] shadow-lg p-4"
           >
             <div class="px-4 py-3 border-b border-[#4e0d05]/10">
               <p class="font-semibold text-sm text-[#4e0d05]">Notificaciones</p>
@@ -243,9 +243,9 @@ export default {
       </div>
     </div>
 
-    <!-- ✅ DESKTOP: Menú como lo tenías -->
+    <!-- DESKTOP -->
     <ul
-      class="hidden md:flex absolute left-1/2 -translate-x-1/2 justify-center gap-10 text-base font-medium"
+      class="hidden lg:flex absolute left-1/2 -translate-x-1/2 justify-center gap-10 text-base font-medium"
     >
       <li>
         <RouterLink
@@ -302,13 +302,13 @@ export default {
           class="hover:text-[#e099a8] transition-colors"
           :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/admin' }"
         >
-          Panel Admin
+          Administrador
         </RouterLink>
       </li>
     </ul>
 
-    <!-- ✅ DESKTOP: Usuario como lo tenías (derecha) -->
-    <div class="hidden md:flex items-center gap-4">
+    <!--  DESKTOP -->
+    <div class="hidden lg:flex items-center gap-4">
       <template v-if="!isAuthChecked">
         <span class="text-[#4e0d05]/40 text-sm italic">...</span>
       </template>
@@ -423,16 +423,16 @@ export default {
     </div>
   </nav>
 
-  <!-- Menu mobile (igual que antes, pero SIN notificaciones adentro) -->
+  <!-- Menu mobile-->
   <div
     v-if="menuOpen"
-    class="md:hidden w-full bg-[#f6f6eb] border-b border-[#4e0d05]/30 px-8 py-6 space-y-5"
+    class="lg:hidden w-full bg-[#f6f6eb] border-b border-[#4e0d05]/30 px-8 py-6 space-y-5"
   >
     <ul class="flex flex-col gap-4 text-lg font-medium">
       <RouterLink @click="menuOpen = false" to="/">Inicio</RouterLink>
       <RouterLink @click="menuOpen = false" to="/social">Vinos</RouterLink>
       <RouterLink @click="menuOpen = false" to="/blog">Blog</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/BOX">Box</RouterLink>
+      <RouterLink @click="menuOpen = false" to="/BOX">Box NYSO</RouterLink>
       <RouterLink @click="menuOpen = false" to="/red-social">Red Social</RouterLink>
       <RouterLink
         v-if="user && user.role === 'admin'"

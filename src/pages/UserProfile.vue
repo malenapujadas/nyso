@@ -5,6 +5,7 @@ import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
 import { sendConnectionRequest, getPendingRequestsSent } from "../services/connections.js";
 import AppLoader from "../components/AppLoader.vue";
 import ProfilePreferences from "../components/ProfilePreferences.vue";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "UserProfile",
@@ -18,7 +19,6 @@ export default {
       avatar_url: null,
 
       user: null,
-      message: "",
       sentRequests: [],
     };
   },
@@ -44,10 +44,9 @@ export default {
   },
 
   methods: {
-    async handleConnect() {
+      async handleConnect() {
       if (!this.user || !this.user.id) {
-        this.message = "Debes iniciar sesión para conectar con alguien.";
-        setTimeout(() => (this.message = ""), 3000);
+        toast.info("Iniciá sesión para conectar con alguien");
         return;
       }
 
@@ -58,10 +57,10 @@ export default {
           this.sentRequests.push(this.receiverId);
         }
 
-        this.message = "Solicitud de amistad enviada!";
-        setTimeout(() => (this.message = ""), 3000);
+        toast.success("Solicitud de amistad enviada");
       } catch (err) {
         console.error("Error enviando solicitud de conexión:", err);
+        toast.error("No se pudo enviar la solicitud");
       }
     },
   },
@@ -112,7 +111,7 @@ export default {
       <img
         src="/icono1.png"
         alt="icono"
-        class="absolute top-10 left-10 w-14 opacity-100 rotate-12"
+        class="absolute top-10 right-10 w-14 opacity-100 rotate-12"
       />
       <img
         src="/icono6.png"
@@ -192,10 +191,6 @@ export default {
                 >
                   Solicitud enviada
                 </span>
-              </div>
-
-              <div v-if="message" class="mt-3 text-sm text-[#3c490b]">
-                {{ message }}
               </div>
             </div>
           </div>
