@@ -119,7 +119,7 @@ export default {
     <div
       class="w-full bg-[#2d3707] text-[#f6f6eb]/70 text-xs md:text-sm py-3 md:py-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-8"
     >
-      <p>© 2025 NYSO. Todos los derechos reservados.</p>
+      <p>© 2026 NYSO. Todos los derechos reservados.</p>
     </div>
   </footer>
 </template>

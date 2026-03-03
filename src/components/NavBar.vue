@@ -68,7 +68,6 @@ export default {
       }
     },
 
-    // Mobile
     toggleNotifications(e) {
       e?.stopPropagation();
       this.notifOpen = !this.notifOpen;
@@ -84,7 +83,6 @@ export default {
       this.loadPending();
     },
 
-    // Ir a solicitudes 
     goToFriendRequests() {
       this.menuOpen = false;
       this.notifOpen = false;
@@ -95,9 +93,8 @@ export default {
             const el = document.getElementById("solicitudes");
             if (!el) return;
 
-            const yOffset = 90; 
-            const y =
-              el.getBoundingClientRect().top + window.pageYOffset - yOffset;
+            const yOffset = 90;
+            const y = el.getBoundingClientRect().top + window.pageYOffset - yOffset;
 
             window.scrollTo({ top: y, behavior: "smooth" });
           });
@@ -105,7 +102,6 @@ export default {
       });
     },
 
-    // cerrar 
     onDocClick(e) {
       if (!this.notifOpen) return;
       const root = this.$refs?.notifRoot;
@@ -141,9 +137,9 @@ export default {
       <img src="/logo.png" alt="NYSO" class="w-22 md:w-26" />
     </RouterLink>
 
-    <!--  MOBILE -->
+    <!-- MOBILE -->
     <div class="flex lg:hidden items-center justify-between w-full">
-  
+      <!-- Notificaciones -->
       <div class="w-12 flex justify-start">
         <div v-if="user && !isAdmin" ref="notifRoot" class="relative">
           <button
@@ -163,9 +159,7 @@ export default {
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path
-                d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"
-              />
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
               <path d="M13.73 21a2 2 0 01-3.46 0" />
             </svg>
 
@@ -202,16 +196,12 @@ export default {
                 <p class="text-sm text-[#4e0d05] font-semibold truncate">
                   {{
                     r?.requester?.display_name ||
-                    (r?.requester?.email
-                      ? r.requester.email.split("@")[0]
-                      : null) ||
+                    (r?.requester?.email ? r.requester.email.split("@")[0] : null) ||
                     r.requester_id ||
                     "Alguien"
                   }}
                 </p>
-                <p class="text-xs text-[#4e0d05]/70">
-                  te envió una solicitud de amistad.
-                </p>
+                <p class="text-xs text-[#4e0d05]/70">te envió una solicitud de amistad.</p>
               </button>
             </div>
 
@@ -235,7 +225,7 @@ export default {
         <img src="/logo.png" alt="NYSO" class="w-22" />
       </RouterLink>
 
-      <!-- Menu-->
+      <!-- Menu -->
       <div class="w-12 flex justify-end">
         <button
           @click="menuOpen = !menuOpen"
@@ -247,71 +237,72 @@ export default {
       </div>
     </div>
 
-    <!-- DESKTOP -->
+    <!-- DESKTOP MENU -->
     <ul
       class="hidden lg:flex absolute left-1/2 -translate-x-1/2 justify-center gap-10 text-base font-medium"
     >
       <li>
         <RouterLink
           to="/"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/' }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/' }"
         >
           Inicio
         </RouterLink>
       </li>
+
       <li>
         <RouterLink
           to="/social"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/social' }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/social' }"
         >
           Vinos
         </RouterLink>
       </li>
+
       <li>
         <RouterLink
           to="/blog"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/blog' }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/blog' }"
         >
           Blog
         </RouterLink>
       </li>
+
       <li>
         <RouterLink
           to="/red-social"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{
-            'text-[#4e0d05] font-semibold': $route.path === '/red-social',
-          }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/red-social' }"
         >
           Red Social
         </RouterLink>
       </li>
+
       <li>
         <RouterLink
           to="/box"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{
-            'text-[#4e0d05] font-semibold': $route.path === '/box',
-          }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/box' }"
         >
           Box NYSO
         </RouterLink>
       </li>
+
       <li v-if="user && user.role === 'admin'">
         <RouterLink
           to="/admin"
-          class="hover:text-[#e099a8] transition-colors"
-          :class="{ 'text-[#4e0d05] font-semibold': $route.path === '/admin' }"
+          class="hover:text-[#e099a8] transition-colors text-[#4e0d05]"
+          :class="{ 'font-semibold': $route.path === '/admin' }"
         >
           Administrador
         </RouterLink>
       </li>
     </ul>
 
-    <!--  DESKTOP -->
+    <!-- DESKTOP RIGHT -->
     <div class="hidden lg:flex items-center gap-4">
       <template v-if="!isAuthChecked">
         <span class="text-[#4e0d05]/40 text-sm italic">...</span>
@@ -325,7 +316,7 @@ export default {
           Mi perfil
         </RouterLink>
 
-        <!-- Campanita desktop + dropdown -->
+        <!-- Campanita desktop -->
         <div v-if="!isAdmin" ref="notifRoot" class="relative">
           <button
             type="button"
@@ -344,9 +335,7 @@ export default {
               stroke-linecap="round"
               stroke-linejoin="round"
             >
-              <path
-                d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"
-              />
+              <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7" />
               <path d="M13.73 21a2 2 0 01-3.46 0" />
             </svg>
 
@@ -383,16 +372,12 @@ export default {
                 <p class="text-sm text-[#4e0d05] font-semibold truncate">
                   {{
                     r?.requester?.display_name ||
-                    (r?.requester?.email
-                      ? r.requester.email.split("@")[0]
-                      : null) ||
+                    (r?.requester?.email ? r.requester.email.split("@")[0] : null) ||
                     r.requester_id ||
                     "Alguien"
                   }}
                 </p>
-                <p class="text-xs text-[#4e0d05]/70">
-                  te envió una solicitud de amistad.
-                </p>
+                <p class="text-xs text-[#4e0d05]/70">te envió una solicitud de amistad.</p>
               </button>
             </div>
 
@@ -417,10 +402,7 @@ export default {
       </template>
 
       <template v-else>
-        <RouterLink
-          to="/ingresar"
-          class="text-sm font-medium hover:text-[#e099a8]"
-        >
+        <RouterLink to="/ingresar" class="text-sm font-medium text-[#4e0d05] hover:text-[#e099a8]">
           Login
         </RouterLink>
 
@@ -434,23 +416,58 @@ export default {
     </div>
   </nav>
 
-  <!-- Menu mobile -->
+  <!-- MENU MOBILE -->
   <div
     v-if="menuOpen"
     class="lg:hidden w-full bg-[#f6f6eb] border-b border-[#4e0d05]/30 px-8 py-6 space-y-5"
   >
+    <!-- links: mismo orden que desktop + SIEMPRE BORDO -->
     <ul class="flex flex-col gap-4 text-lg font-medium">
-      <RouterLink @click="menuOpen = false" to="/">Inicio</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/social">Vinos</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/blog">Blog</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/BOX">Box NYSO</RouterLink>
-      <RouterLink @click="menuOpen = false" to="/red-social">
+      <RouterLink
+        @click="menuOpen = false"
+        to="/"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
+      >
+        Inicio
+      </RouterLink>
+
+      <RouterLink
+        @click="menuOpen = false"
+        to="/social"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
+      >
+        Vinos
+      </RouterLink>
+
+      <RouterLink
+        @click="menuOpen = false"
+        to="/blog"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
+      >
+        Blog
+      </RouterLink>
+
+      <RouterLink
+        @click="menuOpen = false"
+        to="/red-social"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
+      >
         Red Social
       </RouterLink>
+
+      <RouterLink
+        @click="menuOpen = false"
+        to="/box"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
+      >
+        Box NYSO
+      </RouterLink>
+
       <RouterLink
         v-if="user && user.role === 'admin'"
         @click="menuOpen = false"
         to="/admin"
+        class="text-[#4e0d05] hover:text-[#e099a8] transition-colors"
       >
         Administrador
       </RouterLink>
@@ -460,13 +477,17 @@ export default {
 
     <div class="flex flex-col gap-3">
       <template v-if="user">
-        <RouterLink @click="menuOpen = false" to="/mi-perfil">
+        <RouterLink
+          @click="menuOpen = false"
+          :to="isAdmin ? '/admin/perfil' : '/mi-perfil'"
+          class="text-[#4e0d05] text-lg font-medium hover:text-[#e099a8] transition-colors"
+        >
           Mi perfil
         </RouterLink>
 
         <button
           @click="handleLogOut"
-          class="inline-block px-3 py-1 border border-[#e099a8]/60 text-[#4e0d05] rounded-full text-sm hover:bg-[#e099a8] hover:text-white transition-all"
+          class="inline-flex items-center justify-center rounded-full px-4 py-2 border border-[#e099a8] text-[#4e0d05] font-semibold bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all"
         >
           Cerrar sesión
         </button>
@@ -476,15 +497,16 @@ export default {
         <RouterLink
           @click="menuOpen = false"
           to="/ingresar"
-          class="text-lg text-[#4e0d05] font-medium hover:text-[#e099a8] transition-colors"
+          class="text-[#4e0d05] text-lg font-medium hover:text-[#e099a8] transition-colors"
         >
           Login
         </RouterLink>
 
+        <!-- ✅ ahora con el MISMO estilo redondeado que desktop -->
         <RouterLink
           @click="menuOpen = false"
           to="/crear-cuenta"
-          class="text-lg text-[#4e0d05] font-medium hover:text-[#e099a8] transition-colors"
+          class="inline-flex items-center justify-center rounded-full px-4 py-2 border border-[#e099a8] text-[#4e0d05] font-semibold bg-[#e099a8]/20 hover:bg-[#e099a8] hover:text-white transition-all whitespace-nowrap"
         >
           Registrarme
         </RouterLink>

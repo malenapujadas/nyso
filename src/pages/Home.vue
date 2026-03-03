@@ -41,13 +41,20 @@ export default {
     />
 
     <AppH1
-      class="text-[#4e0d05] font-extrabold text-2xl md:text-3xl leading-tight max-w-md md:max-w-3xl md:uppercase tracking-tight font-[Poppins] relative z-10 px-4"
+      class="text-[#4e0d05] font-extrabold text-lg sm:text-xl md:text-3xl leading-tight max-w-md md:max-w-3xl tracking-tight font-[Poppins] relative z-10 px-4 text-center"
     >
-      Descubrir,
-      <span class="text-[#3c490b]">guardar</span> y compartir
-      <span class="text-[#e099a8]">vinos</span>
-      de una forma simple y cercana, sin necesidad de ser un
-      <span class="text-[#e099a8]">experto.</span>
+      <span class="block">
+        Descubrir, <span class="text-[#3c490b]">guardar</span> y compartir
+        <span class="text-[#e099a8]">vinos</span>
+      </span>
+
+      <span class="block mt-1">
+        de una forma simple y cercana,
+      </span>
+
+      <span class="block mt-1">
+        sin necesidad de ser un <span class="text-[#e099a8]">experto.</span>
+      </span>
     </AppH1>
 
     <RouterLink
@@ -244,7 +251,7 @@ export default {
   <!-- Banner -->
   <section class="w-full mb-0 pb-0">
     <RouterLink
-      to="/crear-cuenta"
+      to="/box"
       class="block w-full cursor-pointer"
       aria-label="Ir a registro"
     >

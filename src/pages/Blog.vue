@@ -110,7 +110,7 @@ export default {
   <div class="min-h-screen bg-[#f6f6eb] flex flex-col items-center overflow-visible">
     <!-- Banner -->
     <section
-      class="w-full bg-[#e099a8] text-[#f6f6eb] flex flex-row items-center justify-center gap-6 md:gap-20 py-10 px-6 md:px-20 relative overflow-hidden"
+      class="w-full bg-[#e099a8] text-[#f6f6eb] relative overflow-hidden"
     >
       <img
         src="/icono3.png"
@@ -123,40 +123,45 @@ export default {
         class="absolute bottom-6 left-6 w-12 md:w-20 opacity-80 -rotate-6 pointer-events-none"
       />
 
-      <div class="flex justify-start shrink-0 -ml-3 sm:ml-0 z-10">
-        <img src="/nysito2.png" alt="NYSITO" class="w-28 sm:w-32 md:w-56" />
-      </div>
+      <div class="w-full max-w-6xl mx-auto px-6 md:px-20 py-10">
+        <div class="flex flex-row items-center justify-center gap-6 md:gap-20">
 
-      <div class="flex-1 md:max-w-lg text-left z-10 leading-snug">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
-          ¡Hola de nuevo!
-        </h1>
+          <div class="shrink-0 z-10">
+            <img src="/nysito2.png" alt="NYSITO" class="w-28 sm:w-32 md:w-56" />
+          </div>
 
-        <!-- Desktop -->
-        <p class="hidden md:block text-base sm:text-lg font-medium leading-relaxed">
-          Acá vas a encontrar notas,
-          <br />
-          tips y curiosidades del mundo del vino.
-          <br />
-          <span class="font-semibold text-[#3c490b]">
-            Leé, aprendé y compartí con la comunidad NYSO.
-          </span>
-        </p>
+          <div class="z-10 text-left leading-snug w-[260px] sm:w-[360px] md:w-[520px]">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
+              ¡Hola de nuevo!
+            </h1>
 
-        <!-- Mobile -->
-        <p class="md:hidden text-base font-medium leading-relaxed">
-          Acá vas a encontrar notas,
-          <br />
-          tips y curiosidades
-          <br />
-          del mundo del vino.
-          <br />
-          <span class="font-semibold text-[#3c490b]">
-            Leé, aprendé y compartí
-            <br />
-            con la comunidad NYSO.
-          </span>
-        </p>
+            <!-- Desktop -->
+            <p class="hidden md:block text-base sm:text-lg font-medium leading-relaxed">
+              Acá vas a encontrar notas,
+              <br />
+              tips y curiosidades del mundo del vino.
+              <br />
+              <span class="font-semibold text-[#3c490b]">
+                Leé, aprendé y compartí con la comunidad NYSO.
+              </span>
+            </p>
+
+            <!-- Mobile - tablet -->
+            <p class="md:hidden text-base font-medium leading-relaxed">
+              Acá vas a encontrar notas,
+              <br />
+              tips y curiosidades
+              <br />
+              del mundo del vino.
+              <br />
+              <span class="font-semibold text-[#3c490b]">
+                Leé, aprendé y compartí
+                <br />
+                con la comunidad NYSO.
+              </span>
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
