@@ -197,45 +197,6 @@ export default {
       }
     },
 
-    // Abrir el modal de confirmación
-    /* triggerCancelModal() {
-      this.showCancelModal = true;
-    }, */
-
-    // Ejecutar la baja real
-    /* async confirmCancelSubscription() {
-      try {
-        await cancelSubscription(this.user.id);
-        
-        this.showCancelModal = false;
-        
-        this.isSubscribed = false;
-        
-        
-        /* const sub = await getUserSubscription(this.user.id);
-        this.isSubscribed = !!sub; */
-      /*   toast.info("Tu suscripción ha sido cancelada.");
-      } catch (error) {
-        console.error(error);
-        toast.error("No se pudo procesar la baja.");
-      }
-    },  */
-    /* async handleCancelSubscription() {
-      const confirmar = confirm("¿Estás seguro de que querés darte de baja del Box NYSO?");
-      
-      if (confirmar) {
-        try {
-          await cancelSubscription(this.user.id);
-          this.isSubscribed = false; // Actualizamos la vista
-          toast.info("Tu suscripción ha sido cancelada.");
-        } catch (error) {
-          console.error(error);
-          toast.error("No se pudo procesar la baja. Intentá de nuevo.");
-        }
-      }
-    }, */
-
-
     normalizarValor(val) {
       if (val === null || val === undefined) return "";
       if (Array.isArray(val))
@@ -308,24 +269,6 @@ export default {
 
 <template>
   <section class="min-h-screen bg-[#f6f6eb] relative overflow-hidden">
-    <div class="relative w-full h-0 lg:hidden">
-      <img
-        src="/icono1.png"
-        alt="icono"
-        class="absolute top-[-40px] left-8 w-12 opacity-100 rotate-12"
-      />
-      <img
-        src="/icono3.png"
-        alt="icono"
-        class="absolute top-[-10px] right-3 w-10 opacity-100 rotate-3"
-      />
-      <img
-        src="/icono7.png"
-        alt="icono"
-        class="absolute top-[30px] left-16 w-6 opacity-100 -rotate-12"
-      />
-    </div>
-
     <img
       src="/icono1.png"
       alt="icono"
@@ -346,11 +289,7 @@ export default {
       alt="icono"
       class="hidden lg:block absolute top-1/3 right-[8%] w-20 opacity-100 rotate-3"
     />
-    <img
-      src="/icono7.png"
-      alt="icono"
-      class="hidden lg:block absolute bottom-[18%] left-[4%] w-25 opacity-100 -rotate-12"
-    />
+
     <img
       src="/icono6.png"
       alt="icono"
@@ -485,13 +424,6 @@ export default {
             <div class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#3c490b] text-[#f6f6eb] font-bold text-sm md:text-base">
               ✓ Suscrito
             </div>
-            
-<!--             <button 
-              @click="triggerCancelModal"
-              class="inline-flex items-center justify-center px-6 py-3 rounded-full  text-[#4e0d05] font-bold underline transition text-sm md:text-base" 
-            >
-              Dar de baja
-            </button> -->
           </div>
       </div>
 
@@ -681,40 +613,5 @@ export default {
         </div>
       </div>
     </div>
-    <!-- MODAL DE CONFIRMAR BAJA DE SUSCRIPCION -->
-    <!-- <div
-      v-if="showCancelModal"
-      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
-    >
-      <div
-        class="bg-[#ede8d7] p-8 rounded-3xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20 text-center"
-      >
-        <div class="mb-6">
-          <div class="w-16 h-16 bg-[#4e0d05]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span class="text-2xl">🍷</span>
-          </div>
-          <h3 class="text-xl font-bold text-[#4e0d05] mb-2">¿Darte de baja?</h3>
-          <p class="text-sm text-[#4e0d05]/70">
-            Lamentamos que te vayas. Al confirmar, dejarás de recibir tu Box mensual de NYSO.
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-3">
-          <button
-            @click="confirmCancelSubscription"
-            class="w-full py-3 rounded-full bg-[#4e0d05] text-[#f6f6eb] font-bold hover:bg-[#3c490b] transition shadow-md"
-          >
-            Confirmar Baja
-          </button>
-          
-          <button
-            @click="showCancelModal = false"
-            class="w-full py-3 rounded-full border border-[#4e0d05]/30 text-[#4e0d05] font-semibold hover:bg-white/50 transition"
-          >
-            Seguir suscrito
-          </button>
-        </div>
-      </div>
-    </div> -->
   </section>
 </template>

@@ -1,15 +1,48 @@
 <script>
 import { RouterLink } from "vue-router";
+import { subscribeToAuthChanges, getCurrentUser } from "../services/auth.js";
+import { getUserProfileByEmail } from "../services/user-profiles.js";
 
 export default {
   name: "Footer",
   components: { RouterLink },
+
+  data() {
+    return {
+      isAdmin: false,
+    };
+  },
+
+  mounted() {
+    subscribeToAuthChanges(async (userState) => {
+      try {
+        if (!userState || !userState.id) {
+          this.isAdmin = false;
+          return;
+        }
+
+        const fullUser = await getCurrentUser();
+        const email = fullUser?.email || userState?.email;
+
+        if (!email) {
+          this.isAdmin = false;
+          return;
+        }
+
+        const profile = await getUserProfileByEmail(email);
+
+        this.isAdmin = profile?.role === "admin"; 
+      } catch (e) {
+        console.error("[Footer] Error al chequear admin:", e);
+        this.isAdmin = false;
+      }
+    });
+  },
 };
 </script>
 
 <template>
   <footer class="relative bg-[#f6f6eb] flex flex-col items-center justify-center">
-    <!-- Línea decorativa ANTES del contenido del footer -->
     <div class="w-full h-16 md:h-20 overflow-hidden">
       <img
         src="/lineacuadros.png"
@@ -18,14 +51,12 @@ export default {
       />
     </div>
 
-    <!-- Contenido principal -->
     <div
       class="w-full bg-[#3c490b] text-[#f6f6eb] rounded-t-[40px] px-8 py-14 md:px-10 md:py-16 shadow-inner"
     >
       <div
         class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 items-start justify-items-center text-center md:text-left"
       >
-        <!-- Sobre NYSO -->
         <div class="flex flex-col items-center md:items-start">
           <h3
             class="font-bold text-base md:text-lg mb-3 uppercase tracking-wide text-[#e099a8]"
@@ -70,6 +101,16 @@ export default {
                 Box NYSO
               </RouterLink>
             </li>
+
+            <!-- si es admin -->
+            <li v-if="isAdmin">
+              <RouterLink
+                to="/admin"
+                class="hover:text-[#e099a8] transition-colors"
+              >
+                Administrador
+              </RouterLink>
+            </li>
           </ul>
         </div>
 
@@ -101,8 +142,7 @@ export default {
               />
             </a>
 
-            
-              <a href="https://www.tiktok.com/@nyso_vinos " target="_blank">
+            <a href="https://www.tiktok.com/@nyso_vinos " target="_blank">
               <img
                 src="/tiktok.png"
                 alt="TikTok"

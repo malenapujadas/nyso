@@ -217,11 +217,6 @@ export default {
       class="absolute bottom-6 right-6 w-20 md:w-36 opacity-100"
     />
     <img
-      src="/icono3.png"
-      alt="icono"
-      class="absolute top-1/3 left-1/3 w-16 md:w-28 opacity-100 rotate-6"
-    />
-    <img
       src="/icono6.png"
       alt="icono"
       class="absolute bottom-10 left-1/4 w-20 md:w-32 opacity-100 -rotate-6"
@@ -235,8 +230,12 @@ export default {
 
     <div class="w-full max-w-2xl z-10 text-center md:text-left">
       <p class="text-2xl md:text-3xl font-extrabold leading-tight mb-6">
-        <span class="block">Creá tu perfil para guardar tus favoritos,</span>
-        <span class="block">compartir y conectar con gente como vos.</span>
+        <span class="block md:inline">
+          Creá tu perfil para guardar tus favoritos,
+        </span>
+        <span class="block md:inline">
+          compartir y conectar con gente como vos.
+        </span>
       </p>
 
       <RouterLink
