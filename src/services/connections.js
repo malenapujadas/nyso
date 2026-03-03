@@ -3,14 +3,14 @@ import { supabase } from "./supabase.js";
 // enviar solicitud de conexión
 export async function sendConnectionRequest(requesterId, receiverId) {
   try {
-    // 1. Buscamos si existe la conexión en la dirección A -> B
+    //  Buscamos si existe la conexión en la dirección A 
     let { data: existingConn } = await supabase
       .from("connections")
       .select("*")
       .match({ requester_id: requesterId, receiver_id: receiverId })
       .maybeSingle();
 
-    // 2. Si no existe, buscamos en la dirección inversa B -> A (por si te había mandado él antes)
+    // Si no existe, buscamos en la dirección inversa 
     if (!existingConn) {
       const { data: reverseConn } = await supabase
         .from("connections")
@@ -22,12 +22,12 @@ export async function sendConnectionRequest(requesterId, receiverId) {
     }
 
     if (existingConn) {
-      // 3. Si YA EXISTE (en cualquier dirección), la "revivimos"
+      // 3. Si ya existe la revivimos
       const { data, error } = await supabase
         .from("connections")
         .update({ 
           status: "pending",
-          requester_id: requesterId, // El que pide ahora sos vos
+          requester_id: requesterId, 
           receiver_id: receiverId 
         })
         .eq("id", existingConn.id)
@@ -39,7 +39,7 @@ export async function sendConnectionRequest(requesterId, receiverId) {
       return data;
 
     } else {
-      // 4. Si NO EXISTÍA de ninguna forma, la creamos desde cero
+      // Si no EXISTÍA de ninguna forma, la creamos desde cero
       const { data, error } = await supabase
         .from("connections")
         .insert([
@@ -118,11 +118,11 @@ export async function getFriends(userId) {
 }
 
 
-// 1. Para Red Social (Saber a quién le envié yo)
+// Para Red Social 
 export async function getPendingRequestsSent(userId) {
   const { data, error } = await supabase
     .from("connections")
-    .select("receiver_id") // Solo necesito el ID del destinatario
+    .select("receiver_id") 
     .eq("requester_id", userId) // YO soy el que pide
     .eq("status", "pending");
 
@@ -135,7 +135,7 @@ export async function getPendingRequestsSent(userId) {
   return data.map((req) => req.receiver_id);
 }
 
-// 2. Para Mi Perfil (Saber quién me envió a mí)
+// Para Mi Perfil
 export async function getPendingRequestsReceived(userId) {
   const { data, error } = await supabase
     .from("connections")
@@ -145,7 +145,7 @@ export async function getPendingRequestsReceived(userId) {
       requester_id, 
       requester:requester_id(id, display_name, email)
     `) // Traigo datos del que me pide
-    .eq("receiver_id", userId) // YO soy el que recibe
+    .eq("receiver_id", userId)
     .eq("status", "pending");
 
   if (error) {

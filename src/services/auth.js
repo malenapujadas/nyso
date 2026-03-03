@@ -148,14 +148,14 @@ export function subscribeToAuthChanges(callback) {
 }
 
 export async function getCurrentUser() {
-  // 1. Buscamos el usuario de Auth (email, id)
+  //  Buscamos el usuario de Auth 
   const { data: authData } = await supabase.auth.getUser();
   if (!authData?.user) return null;
 
-  // 2. Buscamos tu perfil extendido (avatar, rol, preferencias)
+  // Buscamos perfil extendido 
   const profile = await getUserProfileById(authData.user.id);
 
-  // 3. Juntamos todo en un solo objeto y lo devolvemos
+  // Juntamos todo en un solo objeto y lo devolvemos
   return {
     ...authData.user,
     ...profile

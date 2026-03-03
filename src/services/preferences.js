@@ -4,7 +4,7 @@ export async function savePreferencesForUser(userId, answers) {
   const payload = {
     user_id: userId,
     ...answers,
-    // convertir arrays a texto JSON antes de guardar
+    // convertir arrays a texto json antes de guardar
     sabores: JSON.stringify(answers.sabores || []),
     temas: JSON.stringify(answers.temas || []),
   };
@@ -24,7 +24,7 @@ export async function savePreferencesForUser(userId, answers) {
   return data;
 }
 
-//obtiene las preferencias (si existen) desde user_preferences
+//obtiene las preferencias  desde user_preferences
 export async function getPreferencesForUser(userId) {
   const { data, error } = await supabase
     .from("user_preferences")
@@ -41,7 +41,7 @@ export async function getPreferencesForUser(userId) {
   }
 
   if (data) {
-    // convertir de texto JSON a arrays reales
+    // convertir de texto json a arrays reales
     data.sabores =
       typeof data.sabores === "string"
         ? JSON.parse(data.sabores)

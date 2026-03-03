@@ -112,7 +112,7 @@ export async function markSuggestionAsResponded(id, responseText) {
   return data;
 }
 
-// funcion que coordina las 3 anteriores (leer sugerencia, crear post, marcar como respondida)
+// funcion que coordina leer sugerencia, crear post y marcar como respondida
 export async function respondSuggestion(suggestionId, responseText) {
   if (!responseText?.trim()) {
     throw new Error("Debe ingresar una respuesta antes de enviar.");

@@ -14,7 +14,7 @@ export async function createSubscription(subscriptionData) {
   return data;
 }
 
-// Para validar si ya tiene una activa (opcional, para que no se suscriba 2 veces)
+// Para validar si ya tiene una activa 
 export async function getUserSubscription(userId) {
   const { data, error } = await supabase
     .from("subscriptions")
@@ -27,8 +27,8 @@ export async function getUserSubscription(userId) {
     return null;
   }
   
-  // Si hay al menos una suscripción en la lista, devolvemos la primera. 
-  // Si no hay nada, devolvemos null.
+  // Si hay al menos una suscripción en la lista, devolvemos la primera
+  // Si no hay nada devolvemos null
   return data.length > 0 ? data[0] : null;
 }
 
@@ -48,7 +48,7 @@ export async function cancelSubscription(userId) {
   return data;
 }
 
-// 3. Traer TODAS las suscripciones para el Admin
+// Traer TODAS las suscripciones para el Admin
 export async function getAllSubscriptions() {
   const { data, error } = await supabase
     .from("subscriptions")
@@ -63,14 +63,14 @@ export async function getAllSubscriptions() {
     return [];
   }
   
-  // Aplanamos un poco el objeto para que sea más fácil usar el email
+  // Aplanamos el objeto para que sea más fácil usar el email
   return data.map(sub => ({
     ...sub,
     email: sub.user_profiles?.email || 'No disponible'
   }));
 }
 
-// 4. Actualizar estado (Ej: de 'pending' a 'active')
+// Actualizar estado 
 export async function updateSubscriptionStatus(id, newStatus) {
   const { data, error } = await supabase
     .from("subscriptions")
@@ -85,7 +85,7 @@ export async function updateSubscriptionStatus(id, newStatus) {
   return data;
 }
 
-// 5. Contar cuántas suscripciones pendientes hay (Para la notificación)
+// Contar cuántas suscripciones pendientes hay (Para la notificación)
 export async function getPendingSubscriptionsCount() {
   const { count, error } = await supabase
     .from("subscriptions")
