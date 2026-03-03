@@ -198,12 +198,12 @@ export default {
     },
 
     // Abrir el modal de confirmación
-    triggerCancelModal() {
+    /* triggerCancelModal() {
       this.showCancelModal = true;
-    },
+    }, */
 
     // Ejecutar la baja real
-    async confirmCancelSubscription() {
+    /* async confirmCancelSubscription() {
       try {
         await cancelSubscription(this.user.id);
         
@@ -214,12 +214,12 @@ export default {
         
         /* const sub = await getUserSubscription(this.user.id);
         this.isSubscribed = !!sub; */
-        toast.info("Tu suscripción ha sido cancelada.");
+      /*   toast.info("Tu suscripción ha sido cancelada.");
       } catch (error) {
         console.error(error);
         toast.error("No se pudo procesar la baja.");
       }
-    },
+    },  */
     /* async handleCancelSubscription() {
       const confirmar = confirm("¿Estás seguro de que querés darte de baja del Box NYSO?");
       
@@ -486,12 +486,12 @@ export default {
               ✓ Suscrito
             </div>
             
-            <button 
+<!--             <button 
               @click="triggerCancelModal"
               class="inline-flex items-center justify-center px-6 py-3 rounded-full  text-[#4e0d05] font-bold underline transition text-sm md:text-base" 
             >
               Dar de baja
-            </button>
+            </button> -->
           </div>
       </div>
 
@@ -682,7 +682,7 @@ export default {
       </div>
     </div>
     <!-- MODAL DE CONFIRMAR BAJA DE SUSCRIPCION -->
-    <div
+    <!-- <div
       v-if="showCancelModal"
       class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
     >
@@ -715,6 +715,6 @@ export default {
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
   </section>
 </template>

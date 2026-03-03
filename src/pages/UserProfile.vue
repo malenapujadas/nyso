@@ -1,4 +1,5 @@
 <script>
+import AppH1 from "../components/AppH1.vue";
 import { getPreferencesForUser } from "../services/preferences.js";
 import { getUserProfileById } from "../services/user-profiles.js";
 import { getCurrentUser, subscribeToAuthChanges } from "../services/auth.js";
@@ -9,7 +10,7 @@ import { toast } from "vue3-toastify";
 
 export default {
   name: "UserProfile",
-  components: { AppLoader, ProfilePreferences },
+  components: { AppH1, AppLoader, ProfilePreferences },
 
   data() {
     return {

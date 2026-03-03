@@ -37,7 +37,7 @@ async function loadExtendedProfile() {
 
   // Si el perfil no existe, lo crea
   if (!profile) {
-    console.log("[auth] No existe perfil → Creándolo…");
+    /* console.log("[auth] No existe perfil → Creándolo…"); */
 
     await createUserProfile({
       id: user.id,

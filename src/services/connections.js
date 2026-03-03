@@ -35,7 +35,7 @@ export async function sendConnectionRequest(requesterId, receiverId) {
         .single();
 
       if (error) throw error;
-      console.log("[connections.js] Solicitud reciclada correctamente:", data);
+      /* console.log("[connections.js] Solicitud reciclada correctamente:", data); */
       return data;
 
     } else {
@@ -53,7 +53,7 @@ export async function sendConnectionRequest(requesterId, receiverId) {
         .single();
 
       if (error) throw error;
-      console.log("[connections.js] Solicitud creada correctamente:", data);
+      /* console.log("[connections.js] Solicitud creada correctamente:", data); */
       return data;
     }
   } catch (error) {
