@@ -20,10 +20,31 @@ export async function getUserSubscription(userId) {
     .from("subscriptions")
     .select("*")
     .eq("user_id", userId)
-    .in("status", ["pending", "active"]) // Solo buscamos las vigentes
-    .maybeSingle();
+    .in("status", ["pending", "active"]); // Sacamos el .maybeSingle()
 
-  if (error) console.error(error);
+  if (error) {
+    console.error(error);
+    return null;
+  }
+  
+  // Si hay al menos una suscripción en la lista, devolvemos la primera. 
+  // Si no hay nada, devolvemos null.
+  return data.length > 0 ? data[0] : null;
+}
+
+// funion para poder dar de baja mi propia suscripcion
+export async function cancelSubscription(userId) {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .update({ status: "canceled" })
+    .eq("user_id", userId)
+    .in("status", ["pending", "active"]) 
+    .select();
+
+  if (error) {
+    console.error("Error al cancelar suscripción:", error);
+    throw error;
+  }
   return data;
 }
 

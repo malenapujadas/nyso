@@ -6,6 +6,7 @@ import { getFavorites, removeFavorite } from "../services/favorites.js";
 import { getHistory, clearHistory } from "../services/history.js";
 import { getPreferencesForUser } from "../services/preferences.js";
 import * as opciones from "../data/preferences-options.js";
+import { getUserSubscription, cancelSubscription } from "../services/subscriptions.js";
 import {
   getFriends,
   getPendingRequestsReceived,
@@ -25,6 +26,8 @@ export default {
         display_name: null,
         avatar_url: null,
       },
+      isSubscribed: false,
+      showCancelModal: false,
       favorites: [],
       history: [],
       preferences: null,
@@ -42,13 +45,15 @@ export default {
 
         const vinosDB = await getVinos();
 
-        const [favIds, hisIds, friends, pending] = await Promise.all([
+        const [favIds, hisIds, friends, pending, sub] = await Promise.all([
           getFavorites(this.user.id),
           getHistory(this.user.id),
           getFriends(this.user.id),
           getPendingRequestsReceived(this.user.id),
+          getUserSubscription(this.user.id),
         ]);
 
+        this.isSubscribed = !!sub;
         this.friends = friends;
         this.pendingRequests = pending;
 
@@ -191,6 +196,45 @@ export default {
         toast.error("No se pudo eliminar el amigo");
       }
     },
+
+    // Abrir el modal de confirmación
+    triggerCancelModal() {
+      this.showCancelModal = true;
+    },
+
+    // Ejecutar la baja real
+    async confirmCancelSubscription() {
+      try {
+        await cancelSubscription(this.user.id);
+        
+        this.showCancelModal = false;
+        
+        this.isSubscribed = false;
+        
+        
+        /* const sub = await getUserSubscription(this.user.id);
+        this.isSubscribed = !!sub; */
+        toast.info("Tu suscripción ha sido cancelada.");
+      } catch (error) {
+        console.error(error);
+        toast.error("No se pudo procesar la baja.");
+      }
+    },
+    /* async handleCancelSubscription() {
+      const confirmar = confirm("¿Estás seguro de que querés darte de baja del Box NYSO?");
+      
+      if (confirmar) {
+        try {
+          await cancelSubscription(this.user.id);
+          this.isSubscribed = false; // Actualizamos la vista
+          toast.info("Tu suscripción ha sido cancelada.");
+        } catch (error) {
+          console.error(error);
+          toast.error("No se pudo procesar la baja. Intentá de nuevo.");
+        }
+      }
+    }, */
+
 
     normalizarValor(val) {
       if (val === null || val === undefined) return "";
@@ -431,11 +475,24 @@ export default {
         </div>
 
         <RouterLink
+          v-if="!isSubscribed"
           to="/box"
           class="inline-flex items-center justify-center px-6 py-3 rounded-full border border-[#3c490b] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
         >
           Comprar box mensual
         </RouterLink>
+        <div v-else>
+            <div class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#3c490b] text-[#f6f6eb] font-bold text-sm md:text-base">
+              ✓ Suscrito
+            </div>
+            
+            <button 
+              @click="triggerCancelModal"
+              class="inline-flex items-center justify-center px-6 py-3 rounded-full  text-[#4e0d05] font-bold underline transition text-sm md:text-base" 
+            >
+              Dar de baja
+            </button>
+          </div>
       </div>
 
       <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -621,6 +678,41 @@ export default {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL DE CONFIRMAR BAJA DE SUSCRIPCION -->
+    <div
+      v-if="showCancelModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+    >
+      <div
+        class="bg-[#ede8d7] p-8 rounded-3xl shadow-xl w-[90%] max-w-md border border-[#4e0d05]/20 text-center"
+      >
+        <div class="mb-6">
+          <div class="w-16 h-16 bg-[#4e0d05]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🍷</span>
+          </div>
+          <h3 class="text-xl font-bold text-[#4e0d05] mb-2">¿Darte de baja?</h3>
+          <p class="text-sm text-[#4e0d05]/70">
+            Lamentamos que te vayas. Al confirmar, dejarás de recibir tu Box mensual de NYSO.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <button
+            @click="confirmCancelSubscription"
+            class="w-full py-3 rounded-full bg-[#4e0d05] text-[#f6f6eb] font-bold hover:bg-[#3c490b] transition shadow-md"
+          >
+            Confirmar Baja
+          </button>
+          
+          <button
+            @click="showCancelModal = false"
+            class="w-full py-3 rounded-full border border-[#4e0d05]/30 text-[#4e0d05] font-semibold hover:bg-white/50 transition"
+          >
+            Seguir suscrito
+          </button>
         </div>
       </div>
     </div>

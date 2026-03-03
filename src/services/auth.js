@@ -181,3 +181,27 @@ function setAuthUserState(newData) {
 export function getAuthUser() {
   return { ...user };
 }
+
+export async function updateEmail(newEmail) {
+  const { data, error } = await supabase.auth.updateUser({ email: newEmail });
+  if (error) {
+      console.error(
+        "[auth.js updateEmail] Error al editar el mail: ",
+        error
+      );
+      throw new Error(error.message);
+    }
+  return data
+}
+
+export async function updatePassword(newPassword) {
+  const { data, error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) {
+      console.error(
+        "[auth.js updatePassword] Error al editar la contraseña: ",
+        error
+      );
+      throw new Error(error.message);
+    }
+  return data;
+}

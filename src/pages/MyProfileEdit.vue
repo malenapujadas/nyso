@@ -1,6 +1,6 @@
 <script>
 import AppH1 from "../components/AppH1.vue";
-import { getCurrentUser, updateAuthUserData } from "../services/auth.js";
+import { getCurrentUser, updateAuthUserData, updateEmail, updatePassword } from "../services/auth.js";
 import {
   getPreferencesForUser,
   savePreferencesForUser,
@@ -15,6 +15,8 @@ export default {
   data() {
     return {
       display_name: "",
+      email: "",
+      newPassword: "",
       answers: {
         gusto: "",
         como: "",
@@ -26,6 +28,8 @@ export default {
       },
       avatar_url: null,
       loading: false,
+      errorMsg: "",
+      successMsg: "",
       ...opciones,
       avataresDisponibles: [
         "/avatar1.png",
@@ -59,6 +63,29 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
+        // validar cambios de atuch --> mail y contra
+        // si cambio el mail, lo actualizo
+        if (this.email !== user.email) {
+          if (!this.email.includes("@")) {
+            this.errorMsg = "Por favor, ingresá un Email válido.";
+            this.loading = false;
+            return;
+          }
+          await updateEmail(this.email);
+          this.successMsg = "Se envió un correo de confirmación a tu nuevo Email.";
+        }
+
+        // Si escribió algo en el campo contraseña, la cambiamos
+        if (this.newPassword.trim().length > 0) {
+          if (this.newPassword.length < 6) {
+            this.errorMsg = "La nueva contraseña debe tener al menos 6 caracteres.";
+            this.loading = false;
+            return;
+          }
+          await updatePassword(this.newPassword);
+          this.successMsg = "¡Datos y contraseña actualizados!";
+        }
+
         // Guardar preferencias
         await savePreferencesForUser(user.id, this.answers);
 
@@ -66,6 +93,7 @@ export default {
         const profileData = {
           display_name: this.display_name,
           avatar_url: this.avatar_url,
+          email: this.email
         };
 
         // Guardamos en la tabla user_profiles
@@ -80,7 +108,11 @@ export default {
         this.$router.push("/mi-perfil");
       } catch (error) {
         console.error("[MyProfileEdit] Error al editar datos:", error);
-        alert("Ocurrió un error al guardar los cambios. Intentá nuevamente.");
+          if (error.message.includes("Email address") && error.message.includes("invalid")) {
+              this.errorMsg = "El formato del Email no es válido.";
+          } else {
+              this.errorMsg = "Ocurrió un error al guardar los cambios.";
+          }
       } finally {
         this.loading = false;
       }
@@ -92,6 +124,7 @@ export default {
       // Precargar nombre de usuario
       this.display_name =
         user.user_metadata?.display_name || user.display_name || "";
+        this.email = user.email || "";
 
       // Precargar avatar de usuario
       this.avatar_url = user.avatar_url || null;
@@ -154,6 +187,20 @@ export default {
       <AppH1 class="text-[#3c490b] text-2xl md:text-3xl font-extrabold mb-6 text-center">
         Editar mi perfil
       </AppH1>
+
+      <div
+        v-if="errorMsg"
+        class="text-center text-[#4e0d05] font-semibold bg-[#e099a8]/20 border border-[#e099a8] rounded-full py-2 mb-6 text-sm"
+      >
+        {{ errorMsg }}
+      </div>
+
+      <div
+        v-if="successMsg"
+        class="text-center text-[#3c490b] font-semibold bg-[#3c490b]/10 border border-[#3c490b] rounded-full py-2 mb-6 text-sm"
+      >
+        {{ successMsg }}
+      </div>
 
       <div class="space-y-6">
         <div>
@@ -227,6 +274,32 @@ export default {
             </button>
           </div>
         </div>
+
+        <!-- Mail y contraseña -->
+         <div>
+          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="email">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            v-model="email"
+            class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none mb-4"
+          />
+
+          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="password">
+            Nueva Contraseña (dejar vacío para no cambiar)
+          </label>
+          <input
+            id="password"
+            type="password"
+            v-model="newPassword"
+            placeholder="••••••••"
+            class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none"
+          />
+        </div>
+
+        <hr class="border-[#4e0d05]/10 my-6" />
 
         <div>
           <h3 class="font-semibold text-[#3c490b] mb-2">

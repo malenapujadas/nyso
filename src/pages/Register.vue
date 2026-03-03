@@ -23,23 +23,35 @@ export default {
     async handleSubmit() {
       this.errorMsg = "";
 
-      // Validaciones
-      if (!this.user.nacimiento) {
+      //validacion para que no este vacio
+      const nombre = this.user.nombre.trim();
+      const email = this.user.email.trim();
+      const password = this.user.password; 
+      const nacimientoRaw = this.user.nacimiento;
+
+      // Validaciones grales 
+      if (!nacimientoRaw) {
         this.errorMsg = "Por favor, ingresá tu fecha de nacimiento.";
         return;
       }
 
-      if (!this.user.nombre || !this.user.email || !this.user.password) {
+      if (!nombre || !email || !password) {
         this.errorMsg = "Por favor, completá todos los campos.";
         return;
       }
 
-      if (this.user.password.length < 6) {
+      //chequear q la contraseña no sea solo espacios
+      if (password.trim().length === 0) {
+        this.errorMsg = "Por favor, ingresá una contraseña válida.";
+        return;
+      }
+
+      if (password.length < 6) {
         this.errorMsg = "La contraseña debe tener al menos 6 caracteres.";
         return;
       }
 
-      const nacimiento = new Date(this.user.nacimiento);
+      const nacimiento = new Date(nacimientoRaw);
       const hoy = new Date();
       let edad = hoy.getFullYear() - nacimiento.getFullYear();
       const mes = hoy.getMonth() - nacimiento.getMonth();
@@ -55,7 +67,7 @@ export default {
 
       try {
         this.loading = true;
-        await register(this.user.email, this.user.password, this.user.nombre);
+        await register(email, password, nombre);
         this.$router.push("/preferencias");
       } catch (error) {
         this.errorMsg = "No se pudo crear la cuenta";

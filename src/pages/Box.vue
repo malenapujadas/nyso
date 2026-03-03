@@ -13,9 +13,10 @@ export default {
   data() {
     return {
       user: null,
+      isSubscribed: false,
       showModal: false,
       loading: false,
-      success: false, 
+      success: false,
       errorMsg: "",
 
       // Datos del formulario
@@ -31,12 +32,15 @@ export default {
   async mounted() {
     this.user = await getCurrentUser();
     if (this.user) {
+      // cheqeuar si ya tiene una suscripción vigente
+      const sub = await getUserSubscription(this.user.id);
+      this.isSubscribed = !!sub; // si hay -- true
     }
   },
   methods: {
     openSubscribeModal() {
       if (!this.user) {
-        this.$router.push("/ingresar"); 
+        this.$router.push("/ingresar");
         return;
       }
       this.showModal = true;
@@ -111,6 +115,7 @@ export default {
         });
 
         this.success = true;
+        this.isSubscribed = true;
       } catch (error) {
         this.errorMsg = "Hubo un error al procesar tu solicitud.";
       } finally {
@@ -168,11 +173,18 @@ export default {
 
           <div class="mt-7 flex flex-col sm:flex-row gap-3">
             <button
+              v-if="!isSubscribed"
               @click="openSubscribeModal"
               class="px-6 py-3 rounded-full bg-[#4e0d05] text-[#f6f6eb] font-semibold text-base hover:bg-[#3c490b] transition"
             >
               Comprar box mensual
             </button>
+            <div
+              v-else
+              class="px-6 py-3 rounded-full bg-[#3c490b]/15 border border-[#3c490b]/40 text-[#3c490b] font-bold text-base text-center"
+            >
+              ✓ Ya estás suscrito al box
+            </div>
           </div>
 
           <!-- Info -->
@@ -278,11 +290,18 @@ export default {
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button
+              v-if="!isSubscribed"
               @click="openSubscribeModal"
               class="px-6 py-3 rounded-full bg-[#e099a8] text-[#3c490b] font-semibold text-base hover:bg-[#3c490b] hover:text-[#f6f6eb] transition"
             >
               Suscribirme
             </button>
+            <div 
+              v-else 
+              class="px-6 py-3 rounded-full bg-[#3c490b]/20 border border-[#3c490b]/40 text-[#3c490b] font-bold text-base text-center"
+            >
+              ✓ Suscripción activa
+            </div>
           </div>
         </div>
       </div>
@@ -320,7 +339,9 @@ export default {
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+              >
                 Nombre Completo
               </label>
               <input
@@ -333,7 +354,9 @@ export default {
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+              >
                 Dirección de Entrega
               </label>
               <input
@@ -347,7 +370,9 @@ export default {
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                <label
+                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                >
                   Ciudad
                 </label>
                 <input
@@ -358,7 +383,9 @@ export default {
                 />
               </div>
               <div>
-                <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+                <label
+                  class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+                >
                   C.P.
                 </label>
                 <input
@@ -371,7 +398,9 @@ export default {
             </div>
 
             <div>
-              <label class="block text-xs font-bold text-[#4e0d05] uppercase mb-1">
+              <label
+                class="block text-xs font-bold text-[#4e0d05] uppercase mb-1"
+              >
                 Teléfono / WhatsApp
               </label>
               <input
@@ -394,9 +423,9 @@ export default {
         </div>
 
         <div v-else class="text-center py-6">
-            <h3 class="text-2xl font-bold text-[#3c490b] mb-2">
-              ¡Solicitud Enviada!
-            </h3>
+          <h3 class="text-2xl font-bold text-[#3c490b] mb-2">
+            ¡Solicitud Enviada!
+          </h3>
           <p class="text-[#4e0d05]/80 mb-6">
             Ya recibimos tus datos. En las próximas 24hs te vamos a escribir al
             WhatsApp/Mail que nos dejaste para finalizar la suscripción.

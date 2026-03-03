@@ -6,7 +6,7 @@ export async function getUserProfileById(id) {
     .select("*")
     .eq("id", id)
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error(
