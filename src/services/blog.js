@@ -188,3 +188,23 @@ export async function getPendingSuggestionsCount() {
   
   return count || 0;
 }
+
+//editar algun blog
+export async function updatePost(postId, updatedData) {
+  const { data, error } = await supabase
+    .from("blog")
+    .update({
+      titulo: updatedData.titulo,
+      descripcion: updatedData.descripcion,
+    })
+    .eq("id", postId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error("[blog.js updatePost] Error al actualizar post:", error);
+    throw new Error(error.message);
+  }
+
+  return data;
+}

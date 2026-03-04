@@ -19,6 +19,7 @@ async function loadUserCurrentAuthState() {
   const { data, error } = await supabase.auth.getUser();
 
   if (error) return console.warn("[auth.js] No hay usuario autenticado");
+  
 
   setAuthUserState({
     id: data.user.id,

@@ -5,10 +5,12 @@ import {
   deleteSuggestion,
   fetchLastPost,
   deletePost,
+  updatePost,
 } from "../../services/blog.js";
 import { subscribeToAuthChanges } from "../../services/auth.js";
 import AppH1 from "../../components/AppH1.vue";
 import AppLoader from "../../components/AppLoader.vue";
+import { toast } from "vue3-toastify";
 
 export default {
   name: "AdminBlog",
@@ -37,6 +39,14 @@ export default {
       confirmTitle: "",
       confirmMessage: "",
       confirmAction: null,
+      showEditModal: false,
+      //modal para editar
+      editingPost: {
+        id: null,
+        titulo: "",
+        descripcion: "",
+      },
+      savingEdit: false,
     };
   },
 
@@ -63,7 +73,7 @@ export default {
     suggTotalPages() {
       return Math.max(
         1,
-        Math.ceil(this.filteredSuggestions.length / this.suggPerPage)
+        Math.ceil(this.filteredSuggestions.length / this.suggPerPage),
       );
     },
 
@@ -87,7 +97,7 @@ export default {
     postsTotalPages() {
       return Math.max(
         1,
-        Math.ceil(this.filteredPosts.length / this.postsPerPage)
+        Math.ceil(this.filteredPosts.length / this.postsPerPage),
       );
     },
 
@@ -181,9 +191,10 @@ export default {
         await respondSuggestion(sugg.id, text);
         await this.load();
         this.replyText = { ...this.replyText, [sugg.id]: "" };
+        toast.success("Respuesta publicada en el blog");
       } catch (err) {
         console.error(err);
-        alert(err.message || "Error al responder");
+        toast.error(err.message || "Error al responder");
       } finally {
         this.sendingReply = { ...this.sendingReply, [sugg.id]: false };
       }
@@ -203,7 +214,7 @@ export default {
         async () => {
           await deleteSuggestion(id);
           await this.load();
-        }
+        },
       );
     },
 
@@ -214,11 +225,45 @@ export default {
         async () => {
           await deletePost(id);
           await this.load();
-        }
+        },
       );
     },
 
-    // paginación 
+    openEditPost(post) {
+      // Creamos una copia para no editar el objeto original directamente en la lista
+      this.editingPost = {
+        id: post.id,
+        titulo: post.titulo,
+        sinopsis: post.sinopsis || "",
+        descripcion: post.descripcion || "",
+      };
+      this.showEditModal = true;
+    },
+
+    async saveEdit() {
+      if (
+        !this.editingPost.titulo.trim() ||
+        !this.editingPost.descripcion.trim()
+      ) {
+        toast.warning("El título y la descripción son obligatorios.");
+        return;
+      }
+
+      this.savingEdit = true;
+      try {
+        await updatePost(this.editingPost.id, this.editingPost);
+        await this.load(); // Recargamos la lista para ver los cambios
+        this.showEditModal = false;
+        toast.success("Publicación actualizada con éxito");
+      } catch (err) {
+        console.error(err);
+        toast.error("Error al actualizar: " + (err.message || "Intente nuevamente"));
+      } finally {
+        this.savingEdit = false;
+      }
+    },
+
+    // paginación
     goToSuggPage(p) {
       const page = Number(p);
       if (!Number.isFinite(page)) return;
@@ -506,16 +551,25 @@ export default {
                 {{ p.titulo }}
               </h3>
               <p class="text-sm text-[#4e0d05]/80">
-                {{ p.sinopsis || p.descripcion }}
+                {{ p.descripcion }}
               </p>
             </div>
 
-            <button
-              @click="deletePostConfirm(p.id, p.titulo)"
-              class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors sm:ml-4 self-end sm:self-auto"
-            >
-              Eliminar ✕
-            </button>
+            <div class="flex gap-3 shrink-0 self-end sm:self-auto">
+              <button
+                @click="openEditPost(p)"
+                class="text-[#3c490b] hover:text-[#4e0d05] font-semibold transition-colors"
+              >
+                Editar 
+              </button>
+
+              <button
+                @click="deletePostConfirm(p.id, p.titulo)"
+                class="text-[#e099a8] hover:text-[#4e0d05] font-semibold transition-colors"
+              >
+                Eliminar ✕
+              </button>
+            </div>
           </div>
 
           <!-- Paginación posts-->
@@ -600,6 +654,60 @@ export default {
             class="px-6 py-2 rounded-full bg-[#e099a8] text-[#3c490b] hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all"
           >
             Sí, eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- MODAL PARA EDITAR -->
+    <div
+      v-if="showEditModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4"
+    >
+      <div
+        class="bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl p-6 sm:p-8 w-full max-w-2xl shadow-xl overflow-y-auto max-h-[90vh]"
+      >
+        <div class="mb-6 text-center">
+          <h3 class="text-xl sm:text-2xl font-bold text-[#3c490b]">
+            Editar publicación
+          </h3>
+          <p class="text-sm text-[#4e0d05]/60">Modificá el contenido del blog</p>
+        </div>
+
+        <div class="space-y-5 text-left">
+          <div>
+            <label class="block text-xs font-bold text-[#4e0d05]/70 uppercase mb-2 ml-1">Título</label>
+            <input 
+              v-model="editingPost.titulo" 
+              type="text" 
+              class="w-full border border-[#e099a8]/50 rounded-2xl p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none" 
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-[#4e0d05]/70 uppercase mb-2 ml-1">Contenido completo</label>
+            <textarea 
+              v-model="editingPost.descripcion" 
+              rows="6" 
+              class="w-full border border-[#e099a8]/50 rounded-2xl p-3 text-[#4e0d05] bg-[#f6f6eb] focus:ring-1 focus:ring-[#e099a8] outline-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+          <button
+            @click="showEditModal = false"
+            class="px-8 py-2 rounded-full border border-[#4e0d05]/40 text-[#4e0d05] font-semibold hover:bg-white/50 transition-all"
+          >
+            Cancelar
+          </button>
+
+          <button
+            @click="saveEdit"
+            :disabled="savingEdit"
+            class="px-8 py-2 rounded-full bg-[#e099a8] text-[#3c490b] font-bold hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all disabled:opacity-50 shadow-sm"
+          >
+            <span v-if="savingEdit">Guardando...</span>
+            <span v-else>Guardar cambios</span>
           </button>
         </div>
       </div>
