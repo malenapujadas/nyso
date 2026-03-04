@@ -1,4 +1,5 @@
 <script>
+import { toast } from "vue3-toastify";
 import AppH1 from "../components/AppH1.vue";
 import { getCurrentUser, updateAuthUserData, updateEmail, updatePassword } from "../services/auth.js";
 import {
@@ -16,6 +17,7 @@ export default {
     return {
       display_name: "",
       email: "",
+      currentPassword: "", 
       newPassword: "",
       answers: {
         gusto: "",
@@ -40,8 +42,29 @@ export default {
     };
   },
   methods: {
+    toastOk(msg) {
+      toast.success(msg, {
+        autoClose: 3000,
+        pauseOnHover: true,
+        closeOnClick: true,
+      });
+    },
+    toastErr(msg) {
+      toast.error(msg, {
+        autoClose: 3500,
+        pauseOnHover: true,
+        closeOnClick: true,
+      });
+    },
+    toastInfo(msg) {
+      toast.info(msg, {
+        autoClose: 3500,
+        pauseOnHover: true,
+        closeOnClick: true,
+      });
+    },
+
     chipClass(selected) {
-      // clase dinamica, si esta seleccionado me lo pinta de rosa
       return [
         "px-3 py-1 rounded-full border",
         selected ? "bg-[#e099a8] text-white" : "bg-white text-[#3c490b]",
@@ -57,62 +80,131 @@ export default {
       if (i === -1) this.answers.temas.push(val);
       else this.answers.temas.splice(i, 1);
     },
+
     async handleSubmit() {
+      this.errorMsg = "";
+      this.successMsg = "";
+
       try {
         this.loading = true;
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
-        // validar cambios de atuch --> mail y contra
-        // si cambio el mail, lo actualizo
         if (this.email !== user.email) {
           if (!this.email.includes("@")) {
-            this.errorMsg = "Por favor, ingresá un Email válido.";
+            const msg = "Por favor, ingresá un Email válido.";
+            this.errorMsg = msg;
+            this.toastErr(msg);
             this.loading = false;
             return;
           }
-          await updateEmail(this.email);
-          this.successMsg = "Se envió un correo de confirmación a tu nuevo Email.";
+
+          try {
+            await updateEmail(this.email);
+            const msg = "Se envió un correo de confirmación a tu nuevo Email.";
+            this.successMsg = msg;
+            this.toastOk(msg);
+          } catch (e) {
+            const raw = e?.message || "";
+
+            if (raw.toLowerCase().includes("rate limit")) {
+              const msg =
+                "Probaste cambiar el Email muchas veces. Esperá un ratito e intentá de nuevo.";
+              this.errorMsg = msg;
+              this.toastErr(msg);
+            } else if (raw.toLowerCase().includes("invalid")) {
+              const msg = "El formato del Email no es válido.";
+              this.errorMsg = msg;
+              this.toastErr(msg);
+            } else {
+              const msg = "No se pudo actualizar el Email.";
+              this.errorMsg = msg;
+              this.toastErr(msg);
+            }
+          }
         }
 
-        // Si escribió algo en el campo contraseña, la cambiamos
-        if (this.newPassword.trim().length > 0) {
-          if (this.newPassword.length < 6) {
-            this.errorMsg = "La nueva contraseña debe tener al menos 6 caracteres.";
+        const newPass = (this.newPassword || "").trim();
+        const currentPass = (this.currentPassword || "").trim();
+
+        if (newPass.length > 0) {
+          if (!currentPass) {
+            const msg = "Para cambiar la contraseña, ingresá tu contraseña actual.";
+            this.errorMsg = msg;
+            this.toastInfo(msg);
             this.loading = false;
             return;
           }
-          await updatePassword(this.newPassword);
-          this.successMsg = "¡Datos y contraseña actualizados!";
+
+          if (currentPass === newPass) {
+            const msg = "No se puede usar la misma contraseña que la anterior.";
+            this.errorMsg = msg;
+            this.toastInfo(msg);
+            this.loading = false;
+            return;
+          }
+
+          if (newPass.length < 6) {
+            const msg = "La nueva contraseña debe tener al menos 6 caracteres.";
+            this.errorMsg = msg;
+            this.toastErr(msg);
+            this.loading = false;
+            return;
+          }
+
+          try {
+            await updatePassword(newPass);
+            const msg = "¡Contraseña actualizada!";
+            this.successMsg = msg;
+            this.toastOk(msg);
+
+            this.currentPassword = "";
+            this.newPassword = "";
+          } catch (e) {
+            const raw = e?.message || "";
+
+            if (raw.toLowerCase().includes("should be different")) {
+              const msg = "No se puede usar la misma contraseña que la anterior.";
+              this.errorMsg = msg;
+              this.toastInfo(msg);
+            } else {
+              const msg = "No se pudo actualizar la contraseña.";
+              this.errorMsg = msg;
+              this.toastErr(msg);
+            }
+          }
         }
 
-        // Guardar preferencias
         await savePreferencesForUser(user.id, this.answers);
 
-        // Armamos el objeto con todos los datos del perfil
         const profileData = {
           display_name: this.display_name,
           avatar_url: this.avatar_url,
-          email: this.email
+          email: this.email,
         };
 
-        // Guardamos en la tabla user_profiles
         await updateUserProfile(user.id, profileData);
 
-        // Guardar nombre de usuario en Auth 
         if (this.display_name) {
           await updateAuthUserData({ display_name: this.display_name });
         }
 
-        // Redirigir
+        this.toastOk("¡Cambios guardados!");
         this.$router.push("/mi-perfil");
       } catch (error) {
         console.error("[MyProfileEdit] Error al editar datos:", error);
-          if (error.message.includes("Email address") && error.message.includes("invalid")) {
-              this.errorMsg = "El formato del Email no es válido.";
-          } else {
-              this.errorMsg = "Ocurrió un error al guardar los cambios.";
-          }
+
+        const raw = error?.message || "";
+
+        if (raw.includes("Email address") && raw.includes("invalid")) {
+          const msg = "El formato del Email no es válido.";
+          this.errorMsg = msg;
+          this.toastErr(msg);
+        } else {
+          const msg = raw || "Ocurrió un error al guardar los cambios.";
+          this.errorMsg = msg;
+          this.toastErr(msg);
+        }
       } finally {
         this.loading = false;
       }
@@ -124,7 +216,7 @@ export default {
       // Precargar nombre de usuario
       this.display_name =
         user.user_metadata?.display_name || user.display_name || "";
-        this.email = user.email || "";
+      this.email = user.email || "";
 
       // Precargar avatar de usuario
       this.avatar_url = user.avatar_url || null;
@@ -276,7 +368,7 @@ export default {
         </div>
 
         <!-- Mail y contraseña -->
-         <div>
+        <div>
           <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="email">
             Email
           </label>
@@ -287,8 +379,20 @@ export default {
             class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none mb-4"
           />
 
+          <!-- contraseña actual -->
+          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="currentPassword">
+            Contraseña actual 
+          </label>
+          <input
+            id="currentPassword"
+            type="password"
+            v-model="currentPassword"
+            placeholder="••••••••"
+            class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none mb-4"
+          />
+
           <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="password">
-            Nueva Contraseña (dejar vacío para no cambiar)
+            Nueva Contraseña 
           </label>
           <input
             id="password"

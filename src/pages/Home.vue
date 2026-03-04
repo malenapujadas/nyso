@@ -212,11 +212,6 @@ export default {
       class="absolute top-8 left-6 w-14 md:w-32 rotate-12 opacity-100"
     />
     <img
-      src="/icono2.png"
-      alt="icono"
-      class="absolute bottom-6 right-6 w-20 md:w-36 opacity-100"
-    />
-    <img
       src="/icono6.png"
       alt="icono"
       class="absolute bottom-10 left-1/4 w-20 md:w-32 opacity-100 -rotate-6"
@@ -263,7 +258,7 @@ export default {
 
       <!-- Mobile -->
       <img
-        src="/KITMENS-mobile.png"
+        src="/KITMENS_mobile.png"
         alt="KITMENS"
         class="block md:hidden w-full h-auto object-cover"
       />

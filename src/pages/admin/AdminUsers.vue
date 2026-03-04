@@ -148,11 +148,6 @@ export default {
       class="hidden md:block absolute bottom-[35%] right-20 w-24 opacity-80 rotate-3 pointer-events-none"
     />
     <img
-      src="/icono7.png"
-      alt="icono"
-      class="hidden md:block absolute top-[20%] left-10 w-18 opacity-90 rotate-12 pointer-events-none"
-    />
-    <img
       src="/icono2.png"
       alt="icono"
       class="hidden md:block absolute bottom-16 right-20 w-20 opacity-100 -rotate-6 pointer-events-none"

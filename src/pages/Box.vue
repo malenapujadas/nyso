@@ -391,6 +391,8 @@ export default {
                 <input
                   v-model="form.zip_code"
                   required
+                  maxlength="4"
+                  inputmode="numeric"
                   type="text"
                   class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
                 />
@@ -407,6 +409,8 @@ export default {
                 v-model="form.phone"
                 required
                 type="tel"
+                maxlength="10"
+                inputmode="numeric"
                 class="w-full p-3 rounded-xl border border-[#4e0d05]/20 bg-white"
                 placeholder="Para coordinar el pago"
               />
