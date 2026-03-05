@@ -1,7 +1,12 @@
 <script>
 import { toast } from "vue3-toastify";
 import AppH1 from "../components/AppH1.vue";
-import { getCurrentUser, updateAuthUserData, updateEmail, updatePassword } from "../services/auth.js";
+import {
+  getCurrentUser,
+  updateAuthUserData,
+  updateEmail,
+  updatePassword,
+} from "../services/auth.js";
 import {
   getPreferencesForUser,
   savePreferencesForUser,
@@ -17,7 +22,7 @@ export default {
     return {
       display_name: "",
       email: "",
-      currentPassword: "", 
+      currentPassword: "",
       newPassword: "",
       answers: {
         gusto: "",
@@ -90,62 +95,40 @@ export default {
         const user = await getCurrentUser();
         if (!user) throw new Error("Usuario no encontrado");
 
+        // --- 1. VALIDACIÓN Y CAMBIO DE EMAIL ---
         if (this.email !== user.email) {
           if (!this.email.includes("@")) {
-            const msg = "Por favor, ingresá un Email válido.";
-            this.errorMsg = msg;
-            this.toastErr(msg);
-            this.loading = false;
-            return;
+            throw new Error("Por favor, ingresá un Email válido.");
           }
-
           try {
             await updateEmail(this.email);
-            const msg = "Se envió un correo de confirmación a tu nuevo Email.";
-            this.successMsg = msg;
-            this.toastOk(msg);
+            this.toastOk("Se envió un correo de confirmación al nuevo Email.");
           } catch (e) {
-            const raw = e?.message || "";
-
-            if (raw.toLowerCase().includes("rate limit")) {
-              const msg =
-                "Probaste cambiar el Email muchas veces. Esperá un ratito e intentá de nuevo.";
-              this.errorMsg = msg;
-              this.toastErr(msg);
-            } else if (raw.toLowerCase().includes("invalid")) {
-              const msg = "El formato del Email no es válido.";
-              this.errorMsg = msg;
-              this.toastErr(msg);
-            } else {
-              const msg = "No se pudo actualizar el Email.";
-              this.errorMsg = msg;
-              this.toastErr(msg);
-            }
+            // Error específico de Supabase
+            if (e.message.includes("rate limit"))
+              throw new Error("Muchos intentos. Esperá unos minutos.");
+            throw e;
           }
         }
 
-        const newPass = (this.newPassword || "").trim();
-        const currentPass = (this.currentPassword || "").trim();
+        // --- 2. VALIDACIÓN Y CAMBIO DE CONTRASEÑA ---
+        const cleanPass = (this.newPassword || "").trim();
 
-        if (newPass.length > 0) {
-          if (!currentPass) {
-            const msg = "Para cambiar la contraseña, ingresá tu contraseña actual.";
+        // Si el usuario escribió ALGO (aunque hayan sido solo espacios, el trim lo vacía)
+        if (this.newPassword.length > 0) {
+          // 1. Validamos que después de quitar espacios, no haya quedado vacío
+          if (cleanPass.length === 0) {
+            const msg = "La contraseña no puede ser solo espacios en blanco.";
             this.errorMsg = msg;
-            this.toastInfo(msg);
+            this.toastErr(msg);
             this.loading = false;
             return;
           }
 
-          if (currentPass === newPass) {
-            const msg = "No se puede usar la misma contraseña que la anterior.";
-            this.errorMsg = msg;
-            this.toastInfo(msg);
-            this.loading = false;
-            return;
-          }
-
-          if (newPass.length < 6) {
-            const msg = "La nueva contraseña debe tener al menos 6 caracteres.";
+          // 2. Validamos el mínimo de 6 caracteres reales (letras/números/símbolos)
+          if (cleanPass.length < 6) {
+            const msg =
+              "La nueva contraseña debe tener al menos 6 caracteres reales.";
             this.errorMsg = msg;
             this.toastErr(msg);
             this.loading = false;
@@ -153,25 +136,19 @@ export default {
           }
 
           try {
-            await updatePassword(newPass);
-            const msg = "¡Contraseña actualizada!";
-            this.successMsg = msg;
-            this.toastOk(msg);
+            // 3. ENVIAMOS LA LIMPIA (cleanPass), no la original (this.newPassword)
+            await updatePassword(cleanPass);
 
-            this.currentPassword = "";
+            this.toastOk("¡Contraseña actualizada con éxito!");
             this.newPassword = "";
           } catch (e) {
-            const raw = e?.message || "";
-
-            if (raw.toLowerCase().includes("should be different")) {
-              const msg = "No se puede usar la misma contraseña que la anterior.";
-              this.errorMsg = msg;
-              this.toastInfo(msg);
-            } else {
-              const msg = "No se pudo actualizar la contraseña.";
-              this.errorMsg = msg;
-              this.toastErr(msg);
-            }
+            console.error("Error en password:", e);
+            const msg =
+              "No se pudo actualizar la contraseña. Intentá con otra.";
+            this.errorMsg = msg;
+            this.toastErr(msg);
+            this.loading = false;
+            return;
           }
         }
 
@@ -189,8 +166,14 @@ export default {
           await updateAuthUserData({ display_name: this.display_name });
         }
 
+        this.successMsg = "¡Perfil actualizado con éxito!";
         this.toastOk("¡Cambios guardados!");
-        this.$router.push("/mi-perfil");
+
+        // --- 4. REDIRECCIÓN CON DELAY ---
+        // Esperamos 2 segundos para que el usuario lea los mensajes antes de irse
+        setTimeout(() => {
+          this.$router.push("/mi-perfil");
+        }, 4000);
       } catch (error) {
         console.error("[MyProfileEdit] Error al editar datos:", error);
 
@@ -276,7 +259,9 @@ export default {
       @submit.prevent="handleSubmit"
       class="relative z-10 bg-[#ede8d7] border border-[#4e0d05]/20 rounded-3xl shadow-md p-10 w-full max-w-xl"
     >
-      <AppH1 class="text-[#3c490b] text-2xl md:text-3xl font-extrabold mb-6 text-center">
+      <AppH1
+        class="text-[#3c490b] text-2xl md:text-3xl font-extrabold mb-6 text-center"
+      >
         Editar mi perfil
       </AppH1>
 
@@ -369,7 +354,10 @@ export default {
 
         <!-- Mail y contraseña -->
         <div>
-          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="email">
+          <label
+            class="block text-[#4e0d05] text-sm font-semibold mb-2"
+            for="email"
+          >
             Email
           </label>
           <input
@@ -380,7 +368,7 @@ export default {
           />
 
           <!-- contraseña actual -->
-          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="currentPassword">
+          <!-- <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="currentPassword">
             Contraseña actual 
           </label>
           <input
@@ -389,10 +377,13 @@ export default {
             v-model="currentPassword"
             placeholder="••••••••"
             class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none mb-4"
-          />
+          /> -->
 
-          <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="password">
-            Nueva Contraseña 
+          <label
+            class="block text-[#4e0d05] text-sm font-semibold mb-2"
+            for="password"
+          >
+            Nueva contraseña
           </label>
           <input
             id="password"
