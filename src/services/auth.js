@@ -18,9 +18,16 @@ loadUserCurrentAuthState();
 async function loadUserCurrentAuthState() {
   const { data, error } = await supabase.auth.getUser();
 
-  if (error) return console.warn("[auth.js] No hay usuario autenticado");
-  
+  /* if (error) return console.warn("[auth.js] No hay usuario autenticado");
+   */
 
+  // Si hay error (no está logueado), simplemente salimos en silencio
+  if (error || !data?.user) {
+    // Ponemos el estado del usuario en null para que la app sepa que es un visitante
+    setAuthUserState(null); 
+    return;
+  }
+  
   setAuthUserState({
     id: data.user.id,
     email: data.user.email,

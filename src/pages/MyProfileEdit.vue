@@ -96,7 +96,7 @@ export default {
         if (!user) throw new Error("Usuario no encontrado");
 
         // --- 1. VALIDACIÓN Y CAMBIO DE EMAIL ---
-        if (this.email !== user.email) {
+        /* if (this.email !== user.email) {
           if (!this.email.includes("@")) {
             throw new Error("Por favor, ingresá un Email válido.");
           }
@@ -109,7 +109,7 @@ export default {
               throw new Error("Muchos intentos. Esperá unos minutos.");
             throw e;
           }
-        }
+        } */
 
         // --- 2. VALIDACIÓN Y CAMBIO DE CONTRASEÑA ---
         const cleanPass = (this.newPassword || "").trim();
@@ -354,7 +354,7 @@ export default {
 
         <!-- Mail y contraseña -->
         <div>
-          <label
+          <!-- <label
             class="block text-[#4e0d05] text-sm font-semibold mb-2"
             for="email"
           >
@@ -365,7 +365,7 @@ export default {
             type="email"
             v-model="email"
             class="w-full rounded-2xl border border-[#4e0d05]/30 bg-[#f6f6eb] text-[#4e0d05] p-3 focus:ring-1 focus:ring-[#e099a8] outline-none mb-4"
-          />
+          /> -->
 
           <!-- contraseña actual -->
           <!-- <label class="block text-[#4e0d05] text-sm font-semibold mb-2" for="currentPassword">
