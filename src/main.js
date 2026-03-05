@@ -1,11 +1,14 @@
 import './style.css';
 import { createApp } from "vue";
 import router  from './router/router';
-import App from './App.vue'
+import App from './App.vue';
+import { registerSW } from 'virtual:pwa-register';
 
 // toastify  estilos
 import Vue3Toastify from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+
+registerSW({ immediate: true })
 
 const app = createApp(App);
 app.use(router);

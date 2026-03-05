@@ -9,8 +9,39 @@ export default {
   data() {
     return {
       logo,
+      installPrompt: null,
     };
   },
+
+  mounted() {
+    // Escuchamos el evento de instalación
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Bloqueamos el cartel por defecto del navegador
+      e.preventDefault();
+      // Guardamos el evento para usarlo después
+      this.installPrompt = e;
+    });
+
+    // Opcional: Escuchar si ya se instaló para ocultar el botón
+    window.addEventListener('appinstalled', () => {
+      this.installPrompt = null;
+      console.log('App instalada con éxito');
+    });
+  },
+  methods: {
+    async handleInstallClick() {
+      if (!this.installPrompt) return;
+
+      // Mostramos el prompt guardado
+      this.installPrompt.prompt();
+
+      // Esperamos la respuesta del usuario
+      const { outcome } = await this.installPrompt.userChoice;
+      if (outcome === 'accepted') {
+        this.installPrompt = null;
+      }
+    }
+  }
 };
 </script>
 
@@ -57,12 +88,22 @@ export default {
       </span>
     </AppH1>
 
-    <RouterLink
-      to="/box"
-      class="mt-10 inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300 relative z-10"
-    >
-      COMPRAR BOX MENSUAL
-    </RouterLink>
+    <div class="mt-10 flex flex-col sm:flex-row items-center gap-4 relative z-10">
+      <RouterLink
+        to="/box"
+        class="inline-block px-8 py-3 rounded-full border border-[#4e0d05] text-[#4e0d05] font-semibold text-sm md:text-base bg-transparent hover:bg-[#4e0d05] hover:text-[#f6f6eb] transition-all duration-300"
+      >
+        COMPRAR BOX MENSUAL
+      </RouterLink>
+
+      <button
+        v-if="installPrompt"
+        @click="handleInstallClick"
+        class="inline-block px-8 py-3 rounded-full border-2 border-[#3c490b] text-[#3c490b] font-bold text-sm md:text-base bg-transparent hover:bg-[#3c490b] hover:text-[#f6f6eb] transition-all duration-300"
+      >
+        INSTALAR APP
+      </button>
+    </div>
   </section>
 
   <section class="relative bg-[#f6f6eb] w-full h-16 md:h-20">
