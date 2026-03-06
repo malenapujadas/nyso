@@ -13,6 +13,7 @@ export default {
       },
       loading: false,
       errorMsg: "",
+      showPassword: false,
     };
   },
   methods: {
@@ -119,21 +120,31 @@ export default {
       </div>
 
       <div>
-        <label
-          for="password"
-          class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
-        >
-          Contraseña
-        </label>
+      <label
+        for="password"
+        class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
+      >
+        Contraseña
+      </label>
 
+      <div class="relative">
         <input
           id="password"
           v-model="user.password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           placeholder="••••••••"
-          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          class="w-full border border-[#e099a8] rounded-full py-2 px-4 pr-10 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
+
+        <button
+          type="button"
+          @click="showPassword = !showPassword"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4e0d05]/80 hover:text-[#4e0d05]"
+        >
+          {{ showPassword ? "🙈" : "👁" }}
+        </button>
       </div>
+    </div>
 
       <RouterLink
         to="/recuperar-contrasena"

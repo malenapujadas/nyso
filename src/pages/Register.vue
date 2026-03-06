@@ -16,6 +16,7 @@ export default {
       },
       loading: false,
       errorMsg: "",
+      showPassword: false,
     };
   },
 
@@ -175,8 +176,8 @@ export default {
           class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] bg-white focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
         />
       </div>
-
       <div>
+
         <label
           for="password"
           class="block text-[#3c490b] text-xs md:text-sm font-bold mb-1"
@@ -184,13 +185,24 @@ export default {
           Contraseña
         </label>
 
-        <input
-          id="password"
-          v-model="user.password"
-          type="password"
-          placeholder="••••••••"
-          class="w-full border border-[#e099a8] rounded-full py-2 px-4 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
-        />
+        <div class="relative">
+          <input
+            id="password"
+            v-model="user.password"
+            :type="showPassword ? 'text' : 'password'"
+            placeholder="••••••••"
+            class="w-full border border-[#e099a8] rounded-full py-2 px-4 pr-10 text-sm md:text-base text-[#4e0d05] placeholder-[#4e0d05]/60 focus:outline-none focus:ring-1 focus:ring-[#e099a8]"
+          />
+
+          <button
+            type="button"
+            @click="showPassword = !showPassword"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4e0d05]/80 hover:text-[#4e0d05]"
+            :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            {{ showPassword ? "🙈" : "👁" }}
+          </button>
+        </div>
 
         <p class="text-xs md:text-xs text-[#4e0d05]/80 mt-1">
           * La contraseña debe contener al menos 6 caracteres
